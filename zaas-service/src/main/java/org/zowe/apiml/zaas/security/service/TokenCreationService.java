@@ -103,10 +103,7 @@ public class TokenCreationService {
 
     private String generatePassTicket(String user) {
         try {
-            log.debug("Generating PassTicket for user: {} and ZOSMF applid: {}", user, zosmfApplId);
             String passTicket = passTicketService.generate(user, zosmfApplId);
-            log.debug("Generated PassTicket: {}", passTicket);
-
             return passTicket;
         } catch (IRRPassTicketGenerationException e) {
             throw new AuthenticationTokenException("Generation of PassTicket failed", e);
