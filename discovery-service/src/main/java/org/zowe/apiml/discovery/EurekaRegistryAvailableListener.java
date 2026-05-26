@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.discovery.staticdef.StaticServicesRegistrationService;
 import org.zowe.apiml.product.service.ServiceStartupEventHandler;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -29,15 +27,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class EurekaRegistryAvailableListener implements ApplicationListener<EurekaRegistryAvailableEvent> {
 
     private final StaticServicesRegistrationService registrationService;
+
     private final ServiceStartupEventHandler handler;
+
     private final AtomicBoolean startUpInfoPublished = new AtomicBoolean(false);
 
     @Override
     public void onApplicationEvent(EurekaRegistryAvailableEvent event) {
-        registrationService.registerServices();
-        if (startUpInfoPublished.compareAndSet(false, true)) {
-            handler.onServiceStartup("Discovery Service", ServiceStartupEventHandler.DEFAULT_DELAY_FACTOR);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

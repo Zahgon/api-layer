@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.query;
 
 import org.springframework.http.HttpMethod;
@@ -24,7 +23,6 @@ import org.zowe.apiml.security.common.error.InvalidCertificateException;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
 import org.zowe.apiml.security.common.token.TokenNotProvidedException;
 import org.zowe.apiml.security.common.token.TokenNotValidException;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,20 +34,18 @@ import java.security.cert.X509Certificate;
  * Filter for /query endpoint requests with JWT token.
  */
 public class QueryFilter extends AbstractAuthenticationProcessingFilter {
+
     private final AuthenticationSuccessHandler successHandler;
+
     private final AuthenticationFailureHandler failureHandler;
+
     private final AuthenticationService authenticationService;
+
     private final HttpMethod httpMethod;
+
     private final boolean protectedByCertificate;
 
-    public QueryFilter(
-        String authEndpoint,
-        AuthenticationSuccessHandler successHandler,
-        AuthenticationFailureHandler failureHandler,
-        AuthenticationService authenticationService,
-        HttpMethod httpMethod,
-        boolean protectedByCertificate,
-        AuthenticationManager authenticationManager) {
+    public QueryFilter(String authEndpoint, AuthenticationSuccessHandler successHandler, AuthenticationFailureHandler failureHandler, AuthenticationService authenticationService, HttpMethod httpMethod, boolean protectedByCertificate, AuthenticationManager authenticationManager) {
         super(authEndpoint);
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
@@ -70,48 +66,22 @@ public class QueryFilter extends AbstractAuthenticationProcessingFilter {
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        if (!request.getMethod().equals(httpMethod.name())) {
-            throw new AuthMethodNotSupportedException(request.getMethod());
-        }
-
-        // Must be already authenticated by certificate
-        if (protectedByCertificate &&
-            (SecurityContextHolder.getContext().getAuthentication() == null ||
-                !(SecurityContextHolder.getContext().getAuthentication().getCredentials() instanceof X509Certificate) ||
-                !SecurityContextHolder.getContext().getAuthentication().isAuthenticated())) {
-            throw new InvalidCertificateException("Invalid certificate.");
-        }
-
-        String token = authenticationService.getJwtTokenFromRequest(request)
-            .orElseThrow(() -> new TokenNotProvidedException("Authorization token not provided."));
-
-        Authentication result = this.getAuthenticationManager().authenticate(new TokenAuthentication(token, TokenAuthentication.Type.JWT));
-        if (result.isAuthenticated()) {
-            return result;
-        } else {
-            throw new TokenNotValidException("JWT Token is not authenticated");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Calls successful query handler
      */
     @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
-        successHandler.onAuthenticationSuccess(request, response, authResult);
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Calls unauthorized handler
      */
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request,
-                                              HttpServletResponse response,
-                                              AuthenticationException failed) throws IOException, ServletException {
-        SecurityContextHolder.clearContext();
-        failureHandler.onAuthenticationFailure(request, response, failed);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

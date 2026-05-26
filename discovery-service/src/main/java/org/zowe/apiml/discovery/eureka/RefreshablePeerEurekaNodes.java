@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.eureka;
 
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -45,35 +44,27 @@ import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.cloud.netflix.eureka.server.EurekaServerConfigBean;
 import org.springframework.context.ApplicationListener;
 import org.zowe.apiml.product.eureka.client.ApimlPeerEurekaNode;
-
 import javax.net.ssl.SSLContext;
 import java.net.*;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
-
 import static com.netflix.discovery.util.DiscoveryBuildInfo.buildVersion;
 
 @Slf4j
-public class RefreshablePeerEurekaNodes extends PeerEurekaNodes
-    implements ApplicationListener<EnvironmentChangeEvent> {
+public class RefreshablePeerEurekaNodes extends PeerEurekaNodes implements ApplicationListener<EnvironmentChangeEvent> {
 
     private static final String USER_AGENT = "Java-EurekaClient-Replication";
 
     private Collection<ClientRequestFilter> replicationClientAdditionalFilters;
+
     private SSLContext secureSslContext;
+
     private int maxPeerRetries;
 
-    public RefreshablePeerEurekaNodes(final PeerAwareInstanceRegistry registry,
-                                      final EurekaServerConfig serverConfig,
-                                      final EurekaClientConfig clientConfig, final ServerCodecs serverCodecs,
-                                      final ApplicationInfoManager applicationInfoManager,
-                                      final Collection<ClientRequestFilter> replicationClientAdditionalFilters,
-                                      final @Qualifier("secureSslContext") SSLContext secureSslContext,
-                                      final int maxPeerRetries) {
-        super(registry, serverConfig, clientConfig, serverCodecs,
-            applicationInfoManager);
+    public RefreshablePeerEurekaNodes(final PeerAwareInstanceRegistry registry, final EurekaServerConfig serverConfig, final EurekaClientConfig clientConfig, final ServerCodecs serverCodecs, final ApplicationInfoManager applicationInfoManager, final Collection<ClientRequestFilter> replicationClientAdditionalFilters, @Qualifier("secureSslContext") final SSLContext secureSslContext, final int maxPeerRetries) {
+        super(registry, serverConfig, clientConfig, serverCodecs, applicationInfoManager);
         this.replicationClientAdditionalFilters = replicationClientAdditionalFilters;
         this.secureSslContext = secureSslContext;
         this.maxPeerRetries = maxPeerRetries;
@@ -81,40 +72,21 @@ public class RefreshablePeerEurekaNodes extends PeerEurekaNodes
 
     @Override
     public PeerEurekaNode createPeerEurekaNode(String peerEurekaNodeUrl) {
-        HttpReplicationClient replicationClient = createReplicationClient(serverConfig, serverCodecs, peerEurekaNodeUrl, replicationClientAdditionalFilters);
-
-
-        String targetHost = hostFromUrl(peerEurekaNodeUrl);
-        if (targetHost == null) {
-            targetHost = "host";
-        }
-        return new ApimlPeerEurekaNode(registry, targetHost, peerEurekaNodeUrl, replicationClient, serverConfig, maxPeerRetries);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private int getPort(int defaultPort) {
         var propertyResolver = ((EurekaServerConfigBean) this.serverConfig).getPropertyResolver();
-        return Stream.of(
-                "apiml.internal-discovery.port",
-                "apiml.service.port"
-            )
-            .map(propertyResolver::getProperty)
-            .filter(Objects::nonNull)
-            .map(Integer::parseInt)
-            .findFirst()
-            .orElse(defaultPort);
+        return Stream.of("apiml.internal-discovery.port", "apiml.service.port").map(propertyResolver::getProperty).filter(Objects::nonNull).map(Integer::parseInt).findFirst().orElse(defaultPort);
     }
 
     @Override
     public boolean isThisMyUrl(String url) {
-        int urlPort = URI.create(url).getPort();
-        int instancePort = getPort(urlPort);
-        return (urlPort == instancePort) && super.isThisMyUrl(url);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    private Jersey3ReplicationClient createReplicationClient(EurekaServerConfig config,
-                                                             ServerCodecs serverCodecs, String serviceUrl, Collection<ClientRequestFilter> additionalFilters) {
+    private Jersey3ReplicationClient createReplicationClient(EurekaServerConfig config, ServerCodecs serverCodecs, String serviceUrl, Collection<ClientRequestFilter> additionalFilters) {
         String name = Jersey3ReplicationClient.class.getSimpleName() + ": " + serviceUrl + "apps/: ";
-
         EurekaJersey3Client jerseyClient;
         try {
             String hostname;
@@ -123,83 +95,48 @@ public class RefreshablePeerEurekaNodes extends PeerEurekaNodes
             } catch (MalformedURLException e) {
                 hostname = serviceUrl;
             }
-
             String jerseyClientName = "Discovery-PeerNodeClient-" + hostname;
             var fullJsonCodec = serverCodecs.getFullJsonCodec();
-            EurekaJersey3ClientImpl.EurekaJersey3ClientBuilder clientBuilder = new CustomEurekaJersey3ClientBuilder(fullJsonCodec, config)
-                .withClientName(jerseyClientName).withUserAgent(USER_AGENT)
-                .withEncoderWrapper(fullJsonCodec)
-                .withDecoderWrapper(fullJsonCodec)
-                .withConnectionTimeout(config.getPeerNodeConnectTimeoutMs())
-                .withReadTimeout(config.getPeerNodeReadTimeoutMs())
-                .withMaxConnectionsPerHost(config.getPeerNodeTotalConnectionsPerHost())
-                .withMaxTotalConnections(config.getPeerNodeTotalConnections())
-                .withConnectionIdleTimeout(config.getPeerNodeConnectionIdleTimeoutSeconds());
-
-            if (serviceUrl.startsWith("https://") && "true"
-                .equals(System.getProperty("com.netflix.eureka.shouldSSLConnectionsUseSystemSocketFactory"))) {
+            EurekaJersey3ClientImpl.EurekaJersey3ClientBuilder clientBuilder = new CustomEurekaJersey3ClientBuilder(fullJsonCodec, config).withClientName(jerseyClientName).withUserAgent(USER_AGENT).withEncoderWrapper(fullJsonCodec).withDecoderWrapper(fullJsonCodec).withConnectionTimeout(config.getPeerNodeConnectTimeoutMs()).withReadTimeout(config.getPeerNodeReadTimeoutMs()).withMaxConnectionsPerHost(config.getPeerNodeTotalConnectionsPerHost()).withMaxTotalConnections(config.getPeerNodeTotalConnections()).withConnectionIdleTimeout(config.getPeerNodeConnectionIdleTimeoutSeconds());
+            if (serviceUrl.startsWith("https://") && "true".equals(System.getProperty("com.netflix.eureka.shouldSSLConnectionsUseSystemSocketFactory"))) {
                 clientBuilder.withSystemSSLConfiguration();
             }
             jerseyClient = clientBuilder.build();
         } catch (Throwable e) {
             throw new RuntimeException("Cannot Create new Replica Node :" + name, e);
         }
-
         String ip = null;
         try {
             ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             log.warn("Cannot find localhost ip", e);
         }
-
         Client jerseyApacheClient = jerseyClient.getClient();
         jerseyApacheClient.register(new Jersey3DynamicGZIPContentEncodingFilter(config));
-
         for (ClientRequestFilter filter : additionalFilters) {
             jerseyApacheClient.register(filter);
         }
-
         EurekaServerIdentity identity = new EurekaServerIdentity(ip);
         jerseyApacheClient.register(new EurekaIdentityHeaderFilter(identity));
-
         return new Jersey3ReplicationClient(jerseyClient, serviceUrl);
     }
 
     @Override
     public void onApplicationEvent(final EnvironmentChangeEvent event) {
-        if (shouldUpdate(event.getKeys())) {
-            updatePeerEurekaNodes(resolvePeerUrls());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /*
      * Check whether specific properties have changed.
      */
     protected boolean shouldUpdate(final Set<String> changedKeys) {
-        assert changedKeys != null;
-
-        // if eureka.client.use-dns-for-fetching-service-urls is true, then
-        // service-url will not be fetched from environment.
-        if (this.clientConfig.shouldUseDnsForFetchingServiceUrls()) {
-            return false;
-        }
-
-        if (changedKeys.contains("eureka.client.region")) {
-            return true;
-        }
-
-        for (final String key : changedKeys) {
-            // property keys are not expected to be null.
-            if (key.startsWith("eureka.client.service-url.")
-                || key.startsWith("eureka.client.availability-zones.")) {
-                return true;
-            }
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     class CustomEurekaJersey3ClientBuilder extends EurekaJersey3ClientImpl.EurekaJersey3ClientBuilder {
+
         private final CodecWrapper fullJsonCodec;
+
         private final EurekaServerConfig config;
 
         public CustomEurekaJersey3ClientBuilder(CodecWrapper fullJsonCodec, EurekaServerConfig config) {
@@ -209,22 +146,14 @@ public class RefreshablePeerEurekaNodes extends PeerEurekaNodes
 
         @Override
         public EurekaJersey3Client build() {
-            try {
-                return new EurekaJersey3ClientImpl(
-                    config.getPeerNodeConnectTimeoutMs(),
-                    config.getPeerNodeReadTimeoutMs(),
-                    config.getPeerNodeConnectionIdleTimeoutSeconds(),
-                    new CustomClientConfig(fullJsonCodec, config));
-            } catch (Throwable e) {
-                throw new RuntimeException("Cannot create Jersey client ", e);
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         class CustomClientConfig extends ClientConfig {
+
             public CustomClientConfig(CodecWrapper fullJsonCodec, EurekaServerConfig config) {
                 DiscoveryJerseyProvider discoveryJerseyProvider = new DiscoveryJerseyProvider(fullJsonCodec, fullJsonCodec);
                 register(discoveryJerseyProvider);
-
                 // Common properties to all clients
                 ConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(secureSslContext, NoopHostnameVerifier.INSTANCE);
                 Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create().register("https", socketFactory).build();
@@ -232,10 +161,8 @@ public class RefreshablePeerEurekaNodes extends PeerEurekaNodes
                 cm.setDefaultMaxPerRoute(config.getPeerNodeTotalConnectionsPerHost());
                 cm.setMaxTotal(config.getPeerNodeTotalConnections());
                 property(ApacheClientProperties.CONNECTION_MANAGER, cm);
-
                 String fullUserAgentName = USER_AGENT + "/v" + buildVersion();
                 property(CoreProtocolPNames.USER_AGENT, fullUserAgentName);
-
                 // To pin a client to specific server in case redirect happens, we handle redirects directly
                 // (see DiscoveryClient.makeRemoteCall methods).
                 property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE);

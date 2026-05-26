@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.mapping;
 
 import lombok.NoArgsConstructor;
@@ -32,15 +31,11 @@ public class NativeMapper implements NativeMapperWrapper {
 
     @Override
     public CertificateResponse getUserIDForCertificate(byte[] cert) {
-        CertificateResponse response =  userMapper.getUserIDForCertificate(cert);
-        log.debug("{}", response);
-        return response;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public MapperResponse getUserIDForDN(String dn, String registry) {
-        MapperResponse response = userMapper.getUserIDForDN(dn, registry);
-        log.debug("Mapping {} from registry {}: {}",dn, registry, response);
-        return response;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

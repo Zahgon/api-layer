@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config;
 
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -33,11 +32,10 @@ public class EurekaFactory {
      * @param instanceConfig eureka instance config to copy from
      */
     InstanceInfo createInstanceInfo(EurekaInstanceConfig instanceConfig) {
-        return new InstanceInfoFactory().create(instanceConfig);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public CloudEurekaClient createCloudEurekaClient(EurekaInstanceConfig eurekaInstanceConfig, InstanceInfo newInfo, EurekaClientConfigBean configBean, ApplicationContext context, RestClientTransportClientFactories factories, RestClientDiscoveryClientOptionalArgs args1) {
-        ApplicationInfoManager perClientAppManager = new ApplicationInfoManager(eurekaInstanceConfig, newInfo, null);
-        return new CloudEurekaClient(perClientAppManager, configBean, factories, args1, context);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

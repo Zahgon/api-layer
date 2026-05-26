@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +28,6 @@ import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.product.opentelemetry.OtelRequestContext;
 import org.zowe.apiml.security.common.error.AuthExceptionHandler;
 import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -40,6 +38,7 @@ import java.util.function.BiConsumer;
 public class FailedAuthenticationWebHandler implements ServerAuthenticationFailureHandler {
 
     private final ObjectMapper mapper;
+
     private final AuthExceptionHandler handler;
 
     @InjectApimlLogger
@@ -47,42 +46,6 @@ public class FailedAuthenticationWebHandler implements ServerAuthenticationFailu
 
     @Override
     public Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException exception) {
-        var exchange = webFilterExchange.getExchange();
-        var requestUri = exchange.getRequest().getURI().getPath();
-        var otelContext = OtelRequestContext.of(exchange);
-        log.debug("Unauthorized access to '{}' endpoint", requestUri);
-        otelContext.authenticationFailed();
-        otelContext.authErrorMessage(exception.getMessage());
-        otelContext.authErrorType(exception.getClass().getName());
-        var bufferFactory = new DefaultDataBufferFactory();
-        AtomicReference<DefaultDataBuffer> buffer = new AtomicReference<>();
-        BiConsumer<ApiMessageView, HttpStatus> consumer = (message, status) -> {
-            exchange.getResponse().setStatusCode(status);
-            if (message != null) {
-                exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
-                try {
-                    buffer.set(bufferFactory.wrap(mapper.writeValueAsBytes(message)));
-                } catch (IOException e) {
-                    apimlLog.log("org.zowe.apiml.security.errorWrittingResponse", e.getMessage());
-                }
-            } else {
-                buffer.set(bufferFactory.wrap(new byte[0]));
-            }
-        };
-        var addHeader = (BiConsumer<String, String>) (name, value) -> exchange.getResponse().getHeaders().add(name, value);
-        try {
-            handler.handleException(requestUri, consumer, addHeader, exception);
-        } catch (ServletException e) {
-            // This should never happen in modulith mode, but handler declares ServletException in its signature
-            throw new RuntimeException(e);
-        }
-        DataBuffer dataBuffer = buffer.get();
-        if (dataBuffer != null) {
-            return exchange.getResponse().writeWith(Mono.just(dataBuffer));
-        } else {
-            return exchange.getResponse().setComplete(); // avoids NPE
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.zosmf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,13 +25,11 @@ import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.config.AuthConfigurationProperties;
 import org.zowe.apiml.security.common.error.ServiceNotAccessibleException;
 import org.zowe.apiml.security.common.login.LoginRequest;
-
 import javax.net.ssl.SSLHandshakeException;
 import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
-
 import static org.zowe.apiml.security.SecurityUtils.readPassword;
 
 @RequiredArgsConstructor
@@ -40,30 +37,36 @@ import static org.zowe.apiml.security.SecurityUtils.readPassword;
 public abstract class AbstractZosmfService {
 
     protected static final String ZOSMF_INFO_END_POINT = "/zosmf/info";
+
     protected static final String ZOSMF_AUTHENTICATE_END_POINT = "/zosmf/services/authenticate";
+
     protected static final String ZOSMF_CSRF_HEADER = "X-CSRF-ZOSMF-HEADER";
+
     protected static final String ZOSMF_DOMAIN = "zosmf_saf_realm";
 
     @InjectApimlLogger
     protected ApimlLogger apimlLog = ApimlLogger.empty();
 
     protected final ApplicationContext applicationContext;
+
     protected final AuthConfigurationProperties authConfigurationProperties;
+
     protected final RestTemplate restTemplateWithoutKeystore;
+
     protected final ObjectMapper securityObjectMapper;
 
     protected DiscoveryClient discovery;
 
     @PostConstruct
     protected void afterPropertiesSet() {
-        discovery = applicationContext.getBean(DiscoveryClient.class);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return serviceId of z/OSMF service from configuration, which is used
      */
     protected String getZosmfServiceId() {
-        return authConfigurationProperties.validatedZosmfServiceId();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -73,40 +76,7 @@ public abstract class AbstractZosmfService {
      * @return prepared header value (see header Authentication)
      */
     protected String getAuthenticationValue(Authentication authentication) {
-        final String user = authentication.getPrincipal().toString();
-        char[] password = null;
-        byte[] credentials = null;
-        boolean cleanup = false;
-        try {
-            if (authentication.getCredentials() instanceof LoginRequest) {
-                LoginRequest loginRequest = (LoginRequest) authentication.getCredentials();
-                password = loginRequest.getPassword();
-            } else {
-                password = readPassword(authentication.getCredentials());
-                cleanup = !(authentication.getCredentials() instanceof char[]);
-            }
-
-            final byte[] userByteArray = user.getBytes(StandardCharsets.UTF_8);
-            credentials = new byte[userByteArray.length + 1 + password.length];
-
-            int j = 0;
-            for (byte b : userByteArray) {
-                credentials[j++] = b;
-            }
-            credentials[j++] = (byte) ':';
-            for (char c : password) {
-                credentials[j++] = (byte) c;
-            }
-
-            return "Basic " + Base64.getEncoder().encodeToString(credentials);
-        } finally {
-            if (credentials != null) {
-                Arrays.fill(credentials, (byte) 0);
-            }
-            if (cleanup) {
-                Arrays.fill(password, (char) 0);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -117,11 +87,7 @@ public abstract class AbstractZosmfService {
      * @return URL to the instance
      */
     public static final String getUrl(ServiceInstance serviceInstance) {
-        if (serviceInstance.isSecure()) {
-            return "https://" + serviceInstance.getHost() + ":" + serviceInstance.getPort();
-        } else {
-            return "http://" + serviceInstance.getHost() + ":" + serviceInstance.getPort();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -132,18 +98,7 @@ public abstract class AbstractZosmfService {
      * @throws ServiceNotAccessibleException if z/OSMF is not available in discovery service
      */
     protected String getURI(String zosmf) {
-        Supplier<ServiceNotAccessibleException> authenticationServiceExceptionSupplier = () -> {
-            log.debug("z/OSMF instance not found or incorrectly configured.");
-            return new ServiceNotAccessibleException("z/OSMF instance not found or incorrectly configured.");
-        };
-
-        return Optional.ofNullable(discovery.getInstances(zosmf))
-            .orElseThrow(authenticationServiceExceptionSupplier)
-            .stream()
-            .filter(Objects::nonNull)
-            .findFirst()
-            .map(AbstractZosmfService::getUrl)
-            .orElseThrow(authenticationServiceExceptionSupplier);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -155,43 +110,7 @@ public abstract class AbstractZosmfService {
      * @return translated exception
      */
     protected RuntimeException handleExceptionOnCall(String url, RuntimeException re) {
-        if (re instanceof ResourceAccessException) {
-            if (re.getCause() instanceof SSLHandshakeException) {
-                apimlLog.log("org.zowe.apiml.security.auth.zosmf.sslError", re.getMessage());
-            } else {
-                apimlLog.log("org.zowe.apiml.security.serviceUnavailable", url, re.getMessage());
-            }
-            log.debug("ResourceAccessException accessing {}", url, re);
-            return new ServiceNotAccessibleException("Could not get an access to z/OSMF service.", re);
-        }
-
-        if (re instanceof HttpClientErrorException.Unauthorized) {
-            log.debug("Request to z/OSMF requires authentication {}", re.getMessage());
-            return new BadCredentialsException("Invalid Credentials");
-        }
-
-        if (re instanceof RestClientResponseException) {
-            RestClientResponseException responseException = (RestClientResponseException) re;
-            if (log.isTraceEnabled()) {
-                log.trace("z/OSMF request {} failed with status code {}, server response: {}", url, responseException.getRawStatusCode(), responseException.getResponseBodyAsString());
-            } else {
-                log.debug("z/OSMF request {} failed with status code {}", url, responseException.getRawStatusCode());
-            }
-        }
-
-        if (re.getCause() instanceof ConnectException) {
-            apimlLog.log("org.zowe.apiml.security.auth.zosmf.connectError", re.getMessage());
-            return new ServiceNotAccessibleException("Could not connect to z/OSMF service.");
-        }
-
-        if (re instanceof RestClientException) {
-            log.debug("z/OSMF isn't accessible. {}", re.getMessage());
-            apimlLog.log("org.zowe.apiml.security.generic", re.getMessage(), url);
-            return new AuthenticationServiceException("A failure occurred when authenticating.", re);
-        }
-
-        log.debug("Unhandled error: {}", re.getMessage(), re);
-        return re;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -201,16 +120,6 @@ public abstract class AbstractZosmfService {
      * @return the token if is set in cookies, otherwise null
      */
     protected String readTokenFromCookie(List<String> cookies, String cookieName) {
-        if (cookies == null) return null;
-
-        return cookies.stream()
-            .filter(x -> x.startsWith(cookieName + "="))
-            .findFirst()
-            .map(x -> {
-                final int beginIndex = cookieName.length() + 1;
-                final int endIndex = x.indexOf(';');
-                return endIndex > 0 ? x.substring(beginIndex, endIndex) : x.substring(beginIndex);
-            })
-            .orElse(null);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import org.springframework.boot.SpringApplication;
@@ -24,43 +23,11 @@ import org.zowe.apiml.enable.config.EnableApiDiscoveryConfig;
 import org.zowe.apiml.enable.register.RegisterToApiLayer;
 import org.zowe.apiml.gateway.config.GatewayHealthIndicator;
 
-@SpringBootApplication(exclude = {
-    ReactiveOAuth2ClientAutoConfiguration.class,
-    OpenTelemetryAutoConfiguration.class,
-    OpenTelemetryLoggingAutoConfiguration.class,
-    io.opentelemetry.instrumentation.spring.autoconfigure.OpenTelemetryAutoConfiguration.class,
-    CacheMetricsAutoConfiguration.class
-})
-@ComponentScan(
-    excludeFilters = {
-        @ComponentScan.Filter(
-            type = FilterType.REGEX,
-            pattern = ".*Application"
-        ),
-        @ComponentScan.Filter(
-            type = FilterType.ASSIGNABLE_TYPE,
-            classes = {
-                EnableApiDiscoveryConfig.class,
-                EurekaController.class,
-                RegisterToApiLayer.class,
-                GatewayHealthIndicator.class
-            }
-        ),
-        @ComponentScan.Filter(
-            type = FilterType.ANNOTATION,
-            classes = EnableApiDiscovery.class
-        )
-    }
-)
+@SpringBootApplication(exclude = { ReactiveOAuth2ClientAutoConfiguration.class, OpenTelemetryAutoConfiguration.class, OpenTelemetryLoggingAutoConfiguration.class, io.opentelemetry.instrumentation.spring.autoconfigure.OpenTelemetryAutoConfiguration.class, CacheMetricsAutoConfiguration.class })
+@ComponentScan(excludeFilters = { @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*Application"), @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { EnableApiDiscoveryConfig.class, EurekaController.class, RegisterToApiLayer.class, GatewayHealthIndicator.class }), @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = EnableApiDiscovery.class) })
 public class ApimlApplication {
 
     public static void main(String[] args) {
-        try {
-            SpringApplication.run(ApimlApplication.class, args);
-        } catch (Throwable t) {
-            t.printStackTrace(); // NOSONAR
-            System.exit(2);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

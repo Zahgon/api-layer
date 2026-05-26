@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,7 +23,6 @@ import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import reactor.core.publisher.Mono;
-
 import java.util.List;
 
 @Component
@@ -51,41 +49,17 @@ public class InMemoryRateLimiterFilterFactory extends AbstractGatewayFilterFacto
 
     @Override
     public GatewayFilter apply(Config config) {
-        this.rateLimiter.setParameters(config.capacity, config.tokens, config.refillDuration);
-        return (exchange, chain) -> {
-            List<PathContainer.Element> pathElements = exchange.getRequest().getPath().elements();
-            String requestPath = (!pathElements.isEmpty() && pathElements.size() > 1) ? pathElements.get(1).value() : null;
-            if (requestPath == null) {
-                return chain.filter(exchange);
-            }
-            return keyResolver.resolve(exchange).flatMap(key -> {
-                if (key.isEmpty()) {
-                    return chain.filter(exchange);
-                }
-                return rateLimiter.isAllowed(requestPath, key).flatMap(response -> {
-                    if (response.isAllowed()) {
-                        return chain.filter(exchange);
-                    } else {
-                        apimlLog.log("org.zowe.apiml.gateway.connectionsLimitApproached", "Connections limit exceeded for service '{}'", requestPath);
-                        exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
-                        Message message = messageService.createMessage("org.zowe.apiml.gateway.connectionsLimitApproached", "Connections limit exceeded for service '{}'", requestPath);
-                        try {
-                            return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(mapper.writeValueAsBytes(message.mapToView()))));
-                        } catch (JsonProcessingException e) {
-                            apimlLog.log("org.zowe.apiml.security.errorWrittingResponse", e.getMessage());
-                            return Mono.error(e);
-                        }
-                    }
-                });
-            });
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Getter
     @Setter
     public static class Config {
+
         private int capacity;
+
         private int tokens;
+
         private int refillDuration;
     }
 }

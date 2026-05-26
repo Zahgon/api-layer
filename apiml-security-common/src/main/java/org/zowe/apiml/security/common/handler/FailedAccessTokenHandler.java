@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.handler;
 
 import jakarta.servlet.ServletException;
@@ -17,7 +16,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.security.common.audit.RauditxService;
 import org.zowe.apiml.security.common.error.AuthExceptionHandler;
-
 import java.io.IOException;
 
 @Component
@@ -40,14 +38,6 @@ public class FailedAccessTokenHandler extends FailedAuthenticationHandler {
      */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws ServletException, IOException {
-        rauditxService.builder()
-            .messageSegment("Authentication failed. Cannot generate PAT")
-            .alwaysLogSuccesses()
-            .alwaysLogFailures()
-            .failure()
-            .issue();
-
-        super.onAuthenticationFailure(request, response, exception);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

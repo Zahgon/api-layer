@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.content;
 
 import org.springframework.http.HttpHeaders;
@@ -17,7 +16,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.zowe.apiml.constants.ApimlConstants;
 import org.zowe.apiml.security.common.error.ResourceAccessExceptionHandler;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
-
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
@@ -26,16 +24,11 @@ import java.util.Optional;
  */
 public class BearerContentFilter extends AbstractSecureContentFilter {
 
-    public BearerContentFilter(AuthenticationManager authenticationManager,
-                               AuthenticationFailureHandler failureHandler,
-                               ResourceAccessExceptionHandler resourceAccessExceptionHandler) {
+    public BearerContentFilter(AuthenticationManager authenticationManager, AuthenticationFailureHandler failureHandler, ResourceAccessExceptionHandler resourceAccessExceptionHandler) {
         super(authenticationManager, failureHandler, resourceAccessExceptionHandler, new String[0]);
     }
 
-    public BearerContentFilter(AuthenticationManager authenticationManager,
-                               AuthenticationFailureHandler failureHandler,
-                               ResourceAccessExceptionHandler resourceAccessExceptionHandler,
-                               String[] endpoints) {
+    public BearerContentFilter(AuthenticationManager authenticationManager, AuthenticationFailureHandler failureHandler, ResourceAccessExceptionHandler resourceAccessExceptionHandler, String[] endpoints) {
         super(authenticationManager, failureHandler, resourceAccessExceptionHandler, endpoints);
     }
 
@@ -46,16 +39,6 @@ public class BearerContentFilter extends AbstractSecureContentFilter {
      * @return the JWT token
      */
     protected Optional<AbstractAuthenticationToken> extractContent(HttpServletRequest request) {
-        return Optional.ofNullable(
-            request.getHeader(HttpHeaders.AUTHORIZATION)
-        ).filter(
-            header -> header.startsWith(ApimlConstants.BEARER_AUTHENTICATION_PREFIX)
-        ).map(
-            header -> {
-                header = header.replaceFirst(ApimlConstants.BEARER_AUTHENTICATION_PREFIX, "").trim();
-                return new TokenAuthentication(header, TokenAuthentication.Type.JWT);
-            }
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import org.zowe.apiml.passticket.IRRPassTicketGenerationException;
 import org.zowe.apiml.passticket.PassTicketService;
 import org.zowe.apiml.security.common.error.AuthenticationTokenException;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -37,10 +35,15 @@ import java.util.Optional;
 public class TokenCreationService {
 
     private final Providers providers;
+
     private final Optional<ZosmfAuthenticationProvider> zosmfAuthenticationProvider;
+
     private final ZosmfService zosmfService;
+
     private final PassTicketService passTicketService;
+
     private final AuthenticationService authenticationService;
+
     private final SafIdtProvider safIdtProvider;
 
     @Value("${apiml.security.zosmf.applid:IZUDFLT}")
@@ -54,41 +57,15 @@ public class TokenCreationService {
      * @return Valid JWT token or null
      */
     public String createJwtTokenWithoutCredentials(String user) {
-        if (isZosmfAvailable()) {
-            log.debug("ZOSMF is available and used. Attempt to authenticate with PassTicket");
-            final String passTicket = generatePassTicket(user);
-            return ((TokenAuthentication) zosmfAuthenticationProvider
-                .orElseThrow(() -> new IllegalStateException("The z/OSMF is not configured. The config value `apiml.security.auth.provider` should be set to `zosmf`."))
-                .authenticate(new UsernamePasswordAuthenticationToken(user, passTicket)))
-                .getCredentials();
-        } else {
-            final String domain = "security-domain";
-            log.debug("ZOSMF is not available or used. Generating APIML's JWT.");
-            final String jwtTokenString = authenticationService.createJwtToken(user, domain, null);
-            log.debug("Successfully generated API ML JWT");
-            return authenticationService.createTokenAuthentication(user, jwtTokenString).getCredentials();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Map<ZosmfService.TokenType, String> createZosmfTokensWithoutCredentials(String user) {
-        if (!isZosmfAvailable()) return Collections.emptyMap();
-
-        log.debug("ZOSMF is available and used. Attempt to authenticate with PassTicket");
-        final String passTicket = generatePassTicket(user);
-
-        return zosmfService.authenticate(new UsernamePasswordAuthenticationToken(user, passTicket)).getTokens();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String createSafIdTokenWithoutCredentials(String user, String applId) throws PassTicketException {
-        char[] passTicket = null;
-        try {
-            passTicket = passTicketService.generate(user, applId).toCharArray();
-            return safIdtProvider.generate(user, passTicket, applId);
-        } finally {
-            if (passTicket != null) {
-                Arrays.fill(passTicket, (char) 0);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean isZosmfAvailable() {
@@ -97,7 +74,6 @@ public class TokenCreationService {
         } catch (AuthenticationServiceException ex) {
             // Intentionally do nothing. The issue is logged deeper.
         }
-
         return false;
     }
 
@@ -106,12 +82,9 @@ public class TokenCreationService {
             log.debug("Generating PassTicket for user: {} and ZOSMF applid: {}", user, zosmfApplId);
             String passTicket = passTicketService.generate(user, zosmfApplId);
             log.debug("Generated PassTicket: {}", passTicket);
-
             return passTicket;
         } catch (IRRPassTicketGenerationException e) {
             throw new AuthenticationTokenException("Generation of PassTicket failed", e);
         }
-
     }
-
 }

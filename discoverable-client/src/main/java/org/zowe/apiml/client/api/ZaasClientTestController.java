@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,9 +26,7 @@ import org.zowe.apiml.zaasclient.service.ZaasClient;
 
 @RestController
 @RequestMapping("/api/v1/zaasClient")
-@Tag(
-    description = "/api/v1/zaasClient",
-    name = "Zaas client test call")
+@Tag(description = "/api/v1/zaasClient", name = "Zaas client test call")
 @Import(DefaultZaasClientConfiguration.class)
 public class ZaasClientTestController {
 
@@ -42,32 +39,13 @@ public class ZaasClientTestController {
     @PostMapping(value = "/login")
     @Operation(summary = "Forward login to gateway service via zaas client")
     public ResponseEntity<String> forwardLogin(@RequestBody LoginRequest loginRequest) {
-        try {
-            String jwt = zaasClient.login(loginRequest.getUsername(), loginRequest.getPassword());
-            return ResponseEntity.ok().body(jwt);
-        } catch (ZaasClientException e) {
-            return ResponseEntity.status(e.getErrorCode().getReturnCode()).body(e.getErrorCode().getMessage());
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(value = "/logout")
     @Operation(summary = "Forward logout to gateway service via zaas client")
-    public ResponseEntity<String> forwardLogout(
-        @CookieValue(value = "apimlAuthenticationToken", required = false) String cookieToken,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader
-    ) throws ZaasConfigurationException {
-        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(authorizationHeader)) {
-            return ResponseEntity.status(500).body("Missing cookie or authorization header in the request");
-        }
-
-        try {
-            String token = StringUtils.isEmpty(cookieToken) ? authorizationHeader : cookieToken;
-            zaasClient.logout(token);
-        } catch (ZaasClientException e) {
-            return ResponseEntity.status(e.getErrorCode().getReturnCode()).body(e.getErrorCode().getMessage());
-        }
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> forwardLogout(@CookieValue(value = "apimlAuthenticationToken", required = false) String cookieToken, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) throws ZaasConfigurationException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }
 
@@ -75,6 +53,8 @@ public class ZaasClientTestController {
 @AllArgsConstructor
 @NoArgsConstructor
 class LoginRequest {
+
     private String username;
+
     private char[] password;
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,7 +16,6 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
 import static org.zowe.apiml.constants.ApimlConstants.X_INSTANCEID;
 
 /**
@@ -36,17 +34,11 @@ public class DeterministicRoutingResponseHeaderFilterFactory implements GlobalFi
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-            String instanceId = exchange.getRequest().getHeaders().getFirst(X_INSTANCEID);
-            if (instanceId != null) {
-                exchange.getResponse().getHeaders().add(X_INSTANCEID, instanceId);
-            }
-        }));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

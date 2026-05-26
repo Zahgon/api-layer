@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zowe.apiml.client.model.LoginBody;
 import org.zowe.apiml.client.services.AparBasedService;
-
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -23,35 +21,28 @@ import java.util.Map;
 @RequiredArgsConstructor
 @SuppressWarnings("squid:S1452")
 public class AuthenticationController {
+
     private static final String AUTHENTICATION_SERVICE = "authentication";
 
     private final AparBasedService authentication;
 
     @DeleteMapping(value = "/zosmf/services/authenticate", produces = "application/json; charset=utf-8")
-    public ResponseEntity<?> logout(HttpServletResponse response,
-                                    @RequestHeader Map<String, String> headers) {
-        return authentication.process(AUTHENTICATION_SERVICE, "delete", response, headers);
+    public ResponseEntity<?> logout(HttpServletResponse response, @RequestHeader Map<String, String> headers) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(value = "/zosmf/services/authenticate", produces = "application/json; charset=utf-8")
-    public ResponseEntity<?> authenticate(
-        HttpServletResponse response,
-        @RequestHeader Map<String, String> headers
-    ) {
-        return authentication.process(AUTHENTICATION_SERVICE, "create", response, headers);
+    public ResponseEntity<?> authenticate(HttpServletResponse response, @RequestHeader Map<String, String> headers) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PutMapping(value = "/zosmf/services/authenticate", produces = "application/json; charset=utf-8")
-    public ResponseEntity<?> changePassword(
-        @RequestBody LoginBody loginBody,
-        HttpServletResponse response,
-        @RequestHeader Map<String, String> headers
-    ) {
-        return authentication.process(AUTHENTICATION_SERVICE, "update", response, headers, loginBody);
+    public ResponseEntity<?> changePassword(@RequestBody LoginBody loginBody, HttpServletResponse response, @RequestHeader Map<String, String> headers) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping(value = "/zosmf/notifications/inbox", produces = "application/json; charset=utf-8")
     public ResponseEntity<?> verify(HttpServletResponse response, @RequestHeader Map<String, String> headers) {
-        return authentication.process(AUTHENTICATION_SERVICE, "verify", response, headers);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.auth.saf;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.zowe.apiml.security.common.config.AuthConfigurationProperties;
-
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -26,7 +24,9 @@ import java.util.Arrays;
 public class SafResourceAccessConfig {
 
     private static final String ENDPOINT = "endpoint";
+
     private static final String NATIVE = "native";
+
     private static final String DUMMY = "dummy";
 
     private static final String[] PROVIDERS = new String[] { NATIVE, ENDPOINT, DUMMY };
@@ -38,19 +38,19 @@ public class SafResourceAccessConfig {
     private boolean endpointEnabled;
 
     protected SafResourceAccessVerifying createEndpoint(RestTemplate restTemplate, AuthConfigurationProperties authConfigurationProperties) {
-        return new SafResourceAccessEndpoint(restTemplate, authConfigurationProperties);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected SafResourceAccessVerifying createNative() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, NoSuchFieldException {
-        return new SafResourceAccessSaf();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected SafResourceAccessVerifying createDummy() throws IOException {
-        return new SafResourceAccessDummy();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    private SafResourceAccessVerifying create(RestTemplate restTemplate,AuthConfigurationProperties authConfigurationProperties, String type, boolean force) {
-        switch (StringUtils.lowerCase(type)) {
+    private SafResourceAccessVerifying create(RestTemplate restTemplate, AuthConfigurationProperties authConfigurationProperties, String type, boolean force) {
+        switch(StringUtils.lowerCase(type)) {
             case ENDPOINT:
                 if (endpointEnabled || force) {
                     return createEndpoint(restTemplate, authConfigurationProperties);
@@ -71,25 +71,12 @@ public class SafResourceAccessConfig {
                 }
                 return null;
             default:
-                throw new IllegalArgumentException(
-                    String.format("Unknown provider to check SAF resource '%s', use one from %s",
-                       type, Arrays.toString(PROVIDERS)
-                    ));
+                throw new IllegalArgumentException(String.format("Unknown provider to check SAF resource '%s', use one from %s", type, Arrays.toString(PROVIDERS)));
         }
     }
 
     @Bean
     public SafResourceAccessVerifying safResourceAccessVerifying(RestTemplate restTemplate, AuthConfigurationProperties authConfigurationProperties) {
-        if (!StringUtils.isEmpty(provider)) {
-            return create(restTemplate, authConfigurationProperties, provider, true);
-        }
-
-        for (String type : PROVIDERS) {
-            SafResourceAccessVerifying srv = create(restTemplate, authConfigurationProperties, type, false);
-            if (srv != null) return srv;
-        }
-
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

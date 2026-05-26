@@ -7,12 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.token;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Objects;
@@ -32,28 +30,21 @@ public class X509AuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return this.x509Certificates;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Object getPrincipal() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-
-        if (this == obj) {
-            return true;
-        }
-        return (obj instanceof X509AuthenticationToken) && ((X509AuthenticationToken) obj).getCredentials() == this.getCredentials();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getCredentials());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

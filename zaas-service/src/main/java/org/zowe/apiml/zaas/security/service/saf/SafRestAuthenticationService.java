@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.saf;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -20,10 +19,8 @@ import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
 import java.net.URI;
 import java.util.Collections;
-
 import static org.springframework.util.StringUtils.hasLength;
 
 /**
@@ -50,79 +47,39 @@ public class SafRestAuthenticationService implements SafIdtProvider {
 
     @Value("${apiml.security.saf.urls.authenticate}")
     String authenticationUrl;
+
     @Value("${apiml.security.saf.urls.verify}")
     String verifyUrl;
 
     @Override
     public String generate(String username, char[] password, String applId) {
-        Authentication authentication = Authentication.builder()
-            .username(username)
-            .pass(password)
-            .appl(applId)
-            .build();
-
-        try {
-            ResponseEntity<Token> response = restTemplate.exchange(
-                URI.create(authenticationUrl),
-                HttpMethod.POST,
-                new HttpEntity<>(authentication, HEADERS),
-                Token.class);
-            if (HttpStatus.INTERNAL_SERVER_ERROR.equals(response.getStatusCode())) {
-                log.debug("The request with URL {} used to generate the SAF IDT token failed with response code {}.", authenticationUrl, response.getStatusCode());
-                if (response.getBody() != null) {    //NOSONAR tests return null
-                    throw new SafIdtException(response.getBody().toString());  //NOSONAR tests return null
-                }
-                throw new SafIdtException("Cannot connect to ZSS authentication service and generate the SAF IDT token. Please, verify your configuration.");
-            }
-            Token responseBody = response.getBody();
-            if (responseBody == null || StringUtils.isEmpty(responseBody.getJwt())) {
-                throw new SafIdtException("ZSS authentication service has not returned the Identity token");
-            }
-
-            return responseBody.getJwt();
-        } catch (HttpClientErrorException.Unauthorized | HttpClientErrorException.Forbidden e) {
-            throw new SafIdtAuthException("Authentication to ZSS failed", e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean verify(String safToken, String applid) {
-        if (!hasLength(safToken)) {
-            return false;
-        }
-
-        try {
-            ResponseEntity<Void> response = restTemplate.exchange(
-                URI.create(verifyUrl),
-                HttpMethod.POST,
-                new HttpEntity<>(new Token(safToken, applid), HEADERS),
-                Void.class);
-
-            if (HttpStatus.INTERNAL_SERVER_ERROR.equals(response.getStatusCode())) {
-                log.debug("The request with URL {} used to validate the SAF IDT token failed with response code {}.", verifyUrl, response.getStatusCode());
-                throw new SafIdtException("Cannot connect to ZSS authentication service and validate the SAF IDT token. Please, verify your configuration.");
-            }
-            return response.getStatusCode().is2xxSuccessful();
-        } catch (RestClientException e) {
-            return false;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Token {
+
         String jwt;
+
         String appl;
     }
 
     @lombok.Value
     @Builder
     public static class Authentication {
+
         String username;
+
         @JsonSerialize(using = StdArraySerializers.CharArraySerializer.class)
         char[] pass;
+
         String appl;
     }
-
 }

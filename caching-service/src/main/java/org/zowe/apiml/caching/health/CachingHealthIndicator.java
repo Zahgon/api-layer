@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.health;
 
 import com.netflix.discovery.shared.Application;
@@ -22,7 +21,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.eurekaservice.client.ApiMediationClient;
 import org.zowe.apiml.product.constants.CoreService;
-
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,29 +35,16 @@ public class CachingHealthIndicator extends AbstractHealthIndicator implements A
     private final AtomicBoolean serviceUp = new AtomicBoolean();
 
     private final ApiMediationClient apiMediationClient;
+
     private final Optional<InfinispanHealthIndicator> infinispanHealthIndicator;
 
     @Override
     protected void doHealthCheck(Health.Builder builder) {
-        builder.up();
-
-        boolean gatewayUp = Optional.ofNullable(apiMediationClient.getEurekaClient())
-            .map(eurekaClient -> eurekaClient.getApplication(CoreService.GATEWAY.getServiceId()))
-            .map(Application::getInstances)
-            .map(instanceList -> !instanceList.isEmpty())
-            .orElse(false);
-        builder.withDetail(CoreService.GATEWAY.getServiceId(), gatewayUp ? Status.UP : Status.DOWN);
-
-        infinispanHealthIndicator.ifPresent(indicator -> indicator.doHealthCheck(builder));
-        boolean isCachingUp = this.serviceUp.get();
-        if (!(isCachingUp && gatewayUp)) {
-            builder.down();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void onApplicationEvent(@Nonnull final ApplicationReadyEvent event) {
-        serviceUp.set(true);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

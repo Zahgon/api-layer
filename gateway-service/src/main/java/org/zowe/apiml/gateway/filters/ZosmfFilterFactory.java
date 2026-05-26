@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import org.springframework.stereotype.Service;
@@ -17,9 +16,7 @@ import org.zowe.apiml.gateway.service.InstanceInfoService;
 import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.zaas.ZaasTokenResponse;
 import reactor.core.publisher.Mono;
-
 import java.util.function.Function;
-
 
 @Service
 public class ZosmfFilterFactory extends AbstractTokenFilterFactory<AbstractTokenFilterFactory.Config> {
@@ -33,12 +30,11 @@ public class ZosmfFilterFactory extends AbstractTokenFilterFactory<AbstractToken
 
     @Override
     protected AuthenticationScheme getAuthenticationScheme() {
-        return AuthenticationScheme.ZOSMF;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Function<RequestCredentials, Mono<AuthorizationResponse<ZaasTokenResponse>>> getAuthorizationResponseTransformer(ServerWebExchange exchange) {
-        return requestCredentials -> zaasSchemeTransform.zosmf(requestCredentials, exchange);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

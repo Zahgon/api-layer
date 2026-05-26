@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.zaas;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +38,6 @@ import org.zowe.apiml.zaas.security.service.saf.SafIdtAuthException;
 import org.zowe.apiml.zaas.security.service.saf.SafIdtException;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSchemeException;
 import org.zowe.apiml.passticket.ApplicationNameNotProvidedException;
-
 import javax.management.ServiceNotFoundException;
 import javax.net.ssl.SSLException;
 
@@ -52,170 +50,88 @@ public class ZaasExceptionHandler {
 
     private final MessageService messageService;
 
-    @ExceptionHandler(value = {IRRPassTicketGenerationException.class})
+    @ExceptionHandler(value = { IRRPassTicketGenerationException.class })
     public ResponseEntity<ApiMessageView> handlePassTicketException(IRRPassTicketGenerationException ex) {
-        log.error(ex.getMessage());
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.ticket.generateFailed",
-            ex.getErrorCode().getMessage()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler(value = {UsernameNotProvidedException.class})
+    @ExceptionHandler(value = { UsernameNotProvidedException.class })
     public ResponseEntity<ApiMessageView> handleUsernameNotProvidedException(UsernameNotProvidedException ex) {
-        log.error(ex.getMessage());
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.ticket.generateFailed", ex.getMessage()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler(value = {SafIdtException.class, SafIdtAuthException.class})
+    @ExceptionHandler(value = { SafIdtException.class, SafIdtAuthException.class })
     public ResponseEntity<ApiMessageView> handleSafIdtExceptions(RuntimeException ex) {
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.idt.failed", ex.getMessage()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler(value = {ApplicationNameNotProvidedException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler(value = { ApplicationNameNotProvidedException.class, HttpMessageNotReadableException.class })
     public ResponseEntity<ApiMessageView> handleApplIdNotFoundException() {
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.ticket.invalidApplicationName").mapToView();
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler(value = {ServiceNotFoundException.class})
+    @ExceptionHandler(value = { ServiceNotFoundException.class })
     public ResponseEntity<ApiMessageView> handleServiceNotFoundException(ServiceNotFoundException ex) {
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.zaas.zosmf.noZosmfTokenReceived", ex.getMessage()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.SERVICE_UNAVAILABLE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler(value = {IllegalStateException.class})
+    @ExceptionHandler(value = { IllegalStateException.class })
     public ResponseEntity<ApiMessageView> handleZoweJwtCreationErrors(IllegalStateException ex) {
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.zaas.zoweJwt.noToken", ex.getMessage()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler(value = {TokenNotValidException.class, AuthSchemeException.class})
+    @ExceptionHandler(value = { TokenNotValidException.class, AuthSchemeException.class })
     public ResponseEntity<ApiMessageView> handleTokenNotValidException() {
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.common.unauthorized").mapToView();
-        return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler(value = {TokenExpireException.class})
+    @ExceptionHandler(value = { TokenExpireException.class })
     public ResponseEntity<ApiMessageView> handleTokenExpiredException() {
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.zaas.security.expiredToken").mapToView();
-        return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiMessageView> handleAccessDeniedException(HttpServletRequest request, AccessDeniedException accessDeniedException) {
-        log.debug("Unauthenticated access", accessDeniedException);
-        log.debug("URL: {}", request.getRequestURL());
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.forbidden", request.getRequestURI()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.FORBIDDEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ApiMessageView> handleNoResourceFoundException(NoHandlerFoundException e) {
-        log.debug("Resource not found", e);
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.common.notFound").mapToView();
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ApiMessageView> handleMethodNotAllowedException(HttpServletRequest request, HttpRequestMethodNotSupportedException notAllowedMethodException) {
-        log.debug("MethodNotAllowedException exception", notAllowedMethodException);
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.common.methodNotAllowed", request.getMethod(), request.getRequestURI()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.METHOD_NOT_ALLOWED)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(SSLException.class)
     public ResponseEntity<ApiMessageView> handleSslException(HttpServletRequest request, SSLException sslException) {
-        log.debug("SSL exception", sslException);
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.common.tlsError", request.getRequestURI(), sslException.getMessage()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(UnsupportedResourceClassException.class)
     public ResponseEntity<ApiMessageView> handleUnsupportedResourceClassException(UnsupportedResourceClassException unsupportedResourceClassException) {
-        log.debug("Unsupported resource class", unsupportedResourceClassException);
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.common.auth.saf.endpoint.nonZoweClass", unsupportedResourceClassException.getResourceClass()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(EndpointImproperlyConfigureException.class)
     public ResponseEntity<ApiMessageView> handleendpointImproperlyConfigureException(EndpointImproperlyConfigureException improprietyConfigureException) {
-        log.debug("Endpoint is improperly configured", improprietyConfigureException);
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.common.auth.saf.endpoint.endpointImproperlyConfigure", improprietyConfigureException.getEndpoint()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiMessageView> handleInternalException(Exception exception) {
-        log.debug("Unexpected internal error", exception);
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.common.internalServerError").mapToView();
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, MissingServletRequestParameterException.class})
+    @ExceptionHandler({ IllegalArgumentException.class, MissingServletRequestParameterException.class })
     public ResponseEntity<ApiMessageView> handleIllegalArguments(Exception exception) {
-        log.debug("Client sent illegal arguments", exception);
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.common.badRequest", exception.getMessage()).mapToView();
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ApiMessageView> handleUnsupportedMediaException(HttpMediaTypeNotSupportedException exception) {
-        log.debug("Requested media type is not supported", exception);
-        ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.common.unsupportedMediaType").mapToView();
-        return ResponseEntity
-            .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(messageView);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

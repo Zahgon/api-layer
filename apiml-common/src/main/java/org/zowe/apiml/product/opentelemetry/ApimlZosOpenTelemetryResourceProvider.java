@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.opentelemetry;
 
 import io.opentelemetry.api.common.Attributes;
@@ -20,11 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.product.zos.ZosSystemInformation;
-
 import javax.annotation.Nonnull;
-
 import java.util.Optional;
-
 import static org.zowe.apiml.product.zos.ZosSystemInformation.ZOS_ENVIRON;
 import static org.zowe.apiml.product.zos.ZosSystemInformation.ZOS_JOB_NAME;
 import static org.zowe.apiml.product.zos.ZosSystemInformation.ZOS_SMF_ID;
@@ -54,7 +50,7 @@ public class ApimlZosOpenTelemetryResourceProvider extends ApimlOpenTelemetryRes
 
     @PostConstruct
     void afterPropertiesSet() {
-        log.debug("Using ZOS OpenTelemetry resource provider");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void attribute(AttributesBuilder attributesBuilder, @Nonnull String openTelemetryAttribute, String zosAttribute) {
@@ -72,44 +68,11 @@ public class ApimlZosOpenTelemetryResourceProvider extends ApimlOpenTelemetryRes
     @Override
     @Nonnull
     protected Attributes internalCalculateAttributes() {
-        var attributesBuilder = Attributes.builder();
-
-        var zosAttributes = zosSystemInformation.get();
-
-        if (StringUtils.isBlank(environmentName)) {
-            attribute(attributesBuilder, "deployment.environment.name", ZOS_ENVIRON);
-        }
-
-        if (StringUtils.isBlank(sysplexName)) {
-            attribute(attributesBuilder, "zos.sysplex.name", ZOS_SYSPLEX);
-        }
-
-        if (StringUtils.isBlank(lparName)) {
-            attribute(attributesBuilder, "mainframe.lpar.name", ZOS_SYSNAME);
-        }
-
-        if (StringUtils.isBlank(smfId)) {
-            attribute(attributesBuilder, "zos.smf.id", ZOS_SMF_ID);
-        }
-
-        Optional.ofNullable(zosAttributes.get(ZOS_JOB_NAME))
-            .map(String::valueOf)
-            .filter(StringUtils::isNotBlank)
-            .ifPresent(zosJobName -> attributesBuilder.put(ZosOpenTelemetryAttributes.OTEL_ZOS_JOBNAME, zosJobName));
-
-        Optional.ofNullable(zosAttributes.get(ZOS_USER_ID))
-            .map(String::valueOf)
-            .filter(StringUtils::isNotBlank)
-            .ifPresent(zosUserId -> attributesBuilder.put(ZosOpenTelemetryAttributes.OTEL_ZOS_USERID, zosUserId));
-
-        return attributesBuilder.build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected String generateServiceName() {
-        var zosAttributes = zosSystemInformation.get();
-        var systemName = StringUtils.isBlank(apimlId) ? zosAttributes.get(ZOS_SYSPLEX) : apimlId;
-        return "apiml:" + systemName + ":" + port;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

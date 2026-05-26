@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaasclient.config;
 
 import lombok.Builder;
@@ -19,21 +18,33 @@ import lombok.experimental.Tolerate;
 public class ConfigProperties {
 
     private String apimlHost;
+
     private String apimlPort;
+
     private String apimlBaseUrl;
+
     private String keyStoreType;
+
     private String keyStorePath;
+
     private char[] keyStorePassword;
+
     private String trustStoreType;
+
     private String trustStorePath;
+
     private char[] trustStorePassword;
+
     private boolean httpOnly;
+
     private boolean nonStrictVerifySslCertificatesOfServices;
+
     @Builder.Default
     private String protocol = "TLS";
 
     @SuppressWarnings("squid:S1075")
     private static final String OLD_PATH_FORMAT = "/api/v1/gateway";
+
     @SuppressWarnings("squid:S1075")
     private static final String NEW_PATH_FORMAT = "/gateway/api/v1";
 
@@ -48,37 +59,10 @@ public class ConfigProperties {
     }
 
     public ConfigProperties withoutKeyStore() {
-        return ConfigProperties.builder()
-            .apimlHost(apimlHost)
-            .apimlPort(apimlPort)
-            .apimlBaseUrl(apimlBaseUrl)
-            .trustStoreType(trustStoreType)
-            .trustStorePath(trustStorePath)
-            .trustStorePassword(trustStorePassword)
-            .httpOnly(httpOnly)
-            .nonStrictVerifySslCertificatesOfServices(nonStrictVerifySslCertificatesOfServices)
-            .protocol(protocol)
-            .tokenPrefix(tokenPrefix)
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void setApimlBaseUrl(String baseUrl) {
-        // set default path if it is missing
-        if (baseUrl == null) {
-            baseUrl = "/gateway/api/v1/auth";
-        }
-
-        // if path does not start with / add it
-        if (!baseUrl.startsWith("/")) {
-            baseUrl = "/" + baseUrl;
-        }
-
-        // replace old path format with the new one
-        if (baseUrl.startsWith(OLD_PATH_FORMAT)) {
-            baseUrl = NEW_PATH_FORMAT + baseUrl.substring(OLD_PATH_FORMAT.length());
-        }
-
-        apimlBaseUrl = baseUrl;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,17 +7,16 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.services.apars;
 
 import org.springframework.http.ResponseEntity;
-
 import java.util.Optional;
 
 @SuppressWarnings("squid:S1452")
 public class NoApar implements Apar {
+
     @Override
     public Optional<ResponseEntity<?>> apply(Object... parameters) {
-        return (Optional<ResponseEntity<?>>) parameters[2];
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

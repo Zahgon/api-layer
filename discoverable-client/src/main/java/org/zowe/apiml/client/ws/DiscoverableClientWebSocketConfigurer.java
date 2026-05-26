@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.ws;
 
 import org.springframework.context.annotation.Bean;
@@ -27,25 +26,12 @@ public class DiscoverableClientWebSocketConfigurer implements WebSocketConfigure
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        String webSocketEndpoint = "/ws/uppercase";
-
-        logger.log("org.zowe.apiml.sampleservice.log.registeringWebSocket", webSocketEndpoint);
-
-        registry.addHandler(new WebSocketServerHandler(), webSocketEndpoint).setAllowedOrigins("*");
-
-        webSocketEndpoint = "/ws/header";
-        logger.log(MessageType.DEBUG, "Registering WebSocket handler to {}", webSocketEndpoint);
-
-        registry.addHandler(new HeaderSocketServerHandler(), webSocketEndpoint);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     // Configure buffer sizes for inbound messages
     @Bean
     public ServletServerContainerFactoryBean createWebSocketContainer() {
-        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxTextMessageBufferSize(3 * 1024 * 1024); // 3MB
-        container.setMaxBinaryMessageBufferSize(3 * 1024 * 1024); // 3MB
-        return container;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.refresh;
 
 import jakarta.servlet.ServletException;
@@ -23,9 +22,7 @@ import org.zowe.apiml.security.common.token.TokenAuthentication;
 import org.zowe.apiml.util.CookieUtil;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
 import org.zowe.apiml.zaas.security.service.TokenCreationService;
-
 import java.io.IOException;
-
 
 /**
  * Handler for refreshing the issued JWT token
@@ -37,31 +34,19 @@ import java.io.IOException;
 public class SuccessfulRefreshHandler implements AuthenticationSuccessHandler {
 
     private final AuthConfigurationProperties authConfigurationProperties;
+
     private final AuthenticationService authenticationService;
+
     private final TokenCreationService tokenCreationService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        if (authentication instanceof TokenAuthentication) {
-            TokenAuthentication tokenAuth = (TokenAuthentication) authentication;
-            authenticationService.invalidateJwtToken(tokenAuth.getCredentials(), true);
-
-            String jwtToken = tokenCreationService.createJwtTokenWithoutCredentials(tokenAuth.getPrincipal());
-            setCookie(jwtToken, response);
-        }
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void setCookie(String token, HttpServletResponse response) {
         AuthConfigurationProperties.CookieProperties cp = authConfigurationProperties.getCookieProperties();
-        String cookieHeader = new CookieUtil.CookieHeaderBuilder(cp.getCookieName(), token)
-            .path(cp.getCookiePath())
-            .sameSite(cp.getCookieSameSite().getValue())
-            .maxAge(cp.getCookieMaxAge())
-            .httpOnly(true)
-            .secure(cp.isCookieSecure())
-            .build();
-
+        String cookieHeader = new CookieUtil.CookieHeaderBuilder(cp.getCookieName(), token).path(cp.getCookiePath()).sameSite(cp.getCookieSameSite().getValue()).maxAge(cp.getCookieMaxAge()).httpOnly(true).secure(cp.isCookieSecure()).build();
         response.addHeader("Set-Cookie", cookieHeader);
     }
 }

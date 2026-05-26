@@ -7,18 +7,17 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.login;
 
 /**
  * Represents supported login providers
  */
 public enum LoginProvider {
-    ZOSMF("zosmf","zosmfAuthenticationProvider"),
-    SAF("saf","zosAuthenticationProvider"),
-    DUMMY("dummy", "dummyAuthenticationProvider");
+
+    ZOSMF("zosmf", "zosmfAuthenticationProvider"), SAF("saf", "zosAuthenticationProvider"), DUMMY("dummy", "dummyAuthenticationProvider");
 
     private final String value;
+
     private final String authProviderBeanName;
 
     LoginProvider(String value, String authProviderBeanName) {
@@ -27,25 +26,19 @@ public enum LoginProvider {
     }
 
     public String getValue() {
-        return value;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getAuthProviderBeanName() {
-        return authProviderBeanName;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String toString() {
-        return this.getValue();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static LoginProvider getLoginProvider(String value) {
-        for (LoginProvider provider : values()) {
-            if (provider.getValue().equalsIgnoreCase(value)) {
-                return provider;
-            }
-        }
-
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

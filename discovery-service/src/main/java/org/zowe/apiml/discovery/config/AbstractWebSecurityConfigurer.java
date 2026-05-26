@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.config;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,10 +18,6 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 public abstract class AbstractWebSecurityConfigurer {
 
     protected HttpSecurity baseConfigure(HttpSecurity http) throws Exception {
-        return http.csrf(CsrfConfigurer::disable)    // NOSONAR
-            .headers(httpSecurityHeadersConfigurer ->
-                httpSecurityHeadersConfigurer.httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable)
-                    .xssProtection(xssProtection -> xssProtection.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)))
-            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

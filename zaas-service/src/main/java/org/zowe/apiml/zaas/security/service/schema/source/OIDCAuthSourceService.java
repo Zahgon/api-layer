@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,12 +26,10 @@ import org.zowe.apiml.security.common.token.*;
 import org.zowe.apiml.zaas.security.mapping.AuthenticationMapper;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
 import org.zowe.apiml.zaas.security.service.TokenCreationService;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-
 import static org.zowe.apiml.security.common.util.JwtUtils.getFieldValuesFromToken;
 
 @Slf4j
@@ -40,14 +37,19 @@ import static org.zowe.apiml.security.common.util.JwtUtils.getFieldValuesFromTok
 @RequiredArgsConstructor
 @ConditionalOnProperty(value = "apiml.security.oidc.enabled", havingValue = "true")
 public class OIDCAuthSourceService extends TokenAuthSourceService implements InitializingBean {
+
     @InjectApimlLogger
     protected final ApimlLogger logger = ApimlLogger.empty();
 
     @Qualifier("oidcMapper")
     private final AuthenticationMapper mapper;
+
     private final AuthenticationService authenticationService;
+
     private final OIDCProvider oidcProvider;
+
     private final TokenCreationService tokenService;
+
     private final RauditxService rauditxService;
 
     @Value("${apiml.security.rauditx.onOidcUserIsMapped:false}")
@@ -58,51 +60,32 @@ public class OIDCAuthSourceService extends TokenAuthSourceService implements Ini
 
     @Value("${apiml.security.oidc.userIdField:sub}")
     protected String userIdFieldPathProperty;
+
     private List<String> userIdFieldPath;
 
     @Override
     public void afterPropertiesSet() {
-        userIdFieldPath = Arrays.asList(userIdFieldPathProperty.trim().split("\\."));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected ApimlLogger getLogger() {
-        return logger;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Function<String, AuthSource> getMapper() {
-        return OIDCAuthSource::new;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Optional<String> getToken(HttpServletRequest request) {
-        Optional<String> tokenOptional = authenticationService.getJwtTokenFromRequest(request);
-        if (tokenOptional.isPresent()) {
-            AuthSource.Origin origin = authenticationService.getTokenOrigin(tokenOptional.get());
-            if (AuthSource.Origin.OIDC == origin) {
-                return tokenOptional;
-            }
-        }
-        return Optional.empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean isValid(AuthSource authSource) {
-        if (authSource instanceof OIDCAuthSource oidcAuthSource) {
-            String token = oidcAuthSource.getRawSource();
-            if (StringUtils.isNotBlank(token)) {
-                logger.log(MessageType.DEBUG, "Validating OIDC token.");
-                if (oidcProvider.isValid(token)) {
-                    logger.log(MessageType.DEBUG, "OIDC token is valid, set the distributed id to the auth source.");
-                    return extractUserId(oidcAuthSource);
-                }
-                logger.log(MessageType.DEBUG, "OIDC token is not valid or the validation failed.");
-            }
-            logger.log(MessageType.DEBUG, "Invalid auth source type provided.");
-        }
-        logger.log(MessageType.DEBUG, "Authentication source is invalid.");
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean extractUserId(OIDCAuthSource authSource) {
@@ -119,13 +102,7 @@ public class OIDCAuthSourceService extends TokenAuthSourceService implements Ini
 
     @Override
     public AuthSource.Parsed parse(AuthSource authSource) {
-        if (authSource instanceof OIDCAuthSource oidcAuthSource) {
-            if (isValid(oidcAuthSource)) {
-                return parseOIDCToken(oidcAuthSource, mapper);
-            }
-            throw new TokenNotValidException("OIDC token is not valid.");
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -137,7 +114,6 @@ public class OIDCAuthSourceService extends TokenAuthSourceService implements Ini
      */
     private AuthSource.Parsed parseOIDCToken(OIDCAuthSource oidcAuthSource, AuthenticationMapper mapper) {
         String token = oidcAuthSource.getRawSource();
-
         logger.log(MessageType.DEBUG, "Calling identity mapper to retrieve mainframe user id.");
         String mappedUser = mapper.mapToMainframeUserId(oidcAuthSource);
         if (StringUtils.isEmpty(mappedUser)) {
@@ -145,15 +121,9 @@ public class OIDCAuthSourceService extends TokenAuthSourceService implements Ini
             throw new NoMainframeIdentityException("No mainframe identity found.", token, true);
         } else {
             if (rauditxOnOidcUserIsMapped) {
-                var rauditx = rauditxService.builder()
-                    .authentication()
-                    .alwaysLogSuccesses()
-                    .userId(mappedUser)
-                    .messageSegment("The OIDC token was mapped to the user account")
-                    .success();
+                var rauditx = rauditxService.builder().authentication().alwaysLogSuccesses().userId(mappedUser).messageSegment("The OIDC token was mapped to the user account").success();
                 try {
-                    getFieldValuesFromToken(token, oidcSourceUserPaths)
-                        .forEach(rauditx::sourceUserId);
+                    getFieldValuesFromToken(token, oidcSourceUserPaths).forEach(rauditx::sourceUserId);
                 } catch (Exception e) {
                     log.debug("Cannot obtain source users from the OIDC token", e);
                 }
@@ -162,7 +132,6 @@ public class OIDCAuthSourceService extends TokenAuthSourceService implements Ini
         }
         logger.log(MessageType.DEBUG, "Parsing OIDC token.");
         QueryResponse response = authenticationService.parseJwtToken(token).getQueryResponse();
-
         AuthSource.Origin origin = AuthSource.Origin.valueByTokenSource(response.getSource());
         return new ParsedTokenAuthSource(mappedUser, response.getCreation(), response.getExpiration(), origin);
     }
@@ -170,17 +139,11 @@ public class OIDCAuthSourceService extends TokenAuthSourceService implements Ini
     //this method should be removed from the unrelated auth sources
     @Override
     public String getLtpaToken(AuthSource authSource) {
-        String zosmfToken = getJWT(authSource);
-        AuthSource.Origin origin = authenticationService.getTokenOrigin(zosmfToken);
-        if (AuthSource.Origin.ZOWE.equals(origin)) {
-            zosmfToken = authenticationService.getLtpaToken(zosmfToken);
-        }
-        return zosmfToken;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getJWT(AuthSource authSource) {
-        AuthSource.Parsed parsed = parse(authSource);
-        return tokenService.createJwtTokenWithoutCredentials(parsed.getUserId());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

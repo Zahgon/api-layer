@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zfile;
 
 @SuppressWarnings("squid:S1130")
@@ -21,61 +20,61 @@ public class ZFileDummyImpl implements ZFile {
 
     @Override
     public void close() throws ZFileException, RcException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void delrec() throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean locate(byte[] key, int options) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean locate(byte[] key, int offset, int length, int options) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean locate(long recordNumberOrRBA, int options) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int read(byte[] buf) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int read(byte[] buf, int offset, int len) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int update(byte[] buf) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int update(byte[] buf, int offset, int length) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void write(byte[] buf) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void write(byte[] buf, int offset, int len) throws ZFileException {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getActualFilename() {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.cache;
 
 import java.lang.reflect.Method;
@@ -20,8 +19,6 @@ public class CompositeKeyGeneratorWithoutLast extends CompositeKeyGenerator {
 
     @Override
     public Object generate(Object target, Method method, Object... params) {
-        if (params.length == 0) throw new IllegalArgumentException("At least one argument with value is required");
-        return super.generate(target, method, Arrays.copyOf(params, params.length - 1));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

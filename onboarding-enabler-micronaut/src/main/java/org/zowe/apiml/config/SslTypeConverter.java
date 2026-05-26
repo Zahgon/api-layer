@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +14,6 @@ import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.TypeConverter;
 import jakarta.inject.Singleton;
 import org.zowe.apiml.eurekaservice.client.config.Ssl;
-
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
@@ -34,7 +32,6 @@ public class SslTypeConverter implements TypeConverter<LinkedHashMap<?, ?>, Ssl>
 
     @Override
     public Optional<Ssl> convert(LinkedHashMap<?, ?> object, Class<Ssl> targetType, ConversionContext context) {
-        return Optional.of(mapper.convertValue(object, Ssl.class));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

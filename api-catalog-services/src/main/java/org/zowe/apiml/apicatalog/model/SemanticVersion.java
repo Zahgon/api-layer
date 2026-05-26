@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.model;
 
 import lombok.EqualsAndHashCode;
@@ -29,15 +28,6 @@ public class SemanticVersion implements Comparable<SemanticVersion> {
 
     @Override
     public int compareTo(@NonNull SemanticVersion another) {
-        final int maxLength = Math.max(numbers.length, another.numbers.length);
-        for (int i = 0; i < maxLength; i++) {
-            final int left = i < numbers.length ? numbers[i] : 0;
-            final int right = i < another.numbers.length ? another.numbers[i] : 0;
-            if (left != right) {
-                return left < right ? -1 : 1;
-            }
-        }
-        return 0;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

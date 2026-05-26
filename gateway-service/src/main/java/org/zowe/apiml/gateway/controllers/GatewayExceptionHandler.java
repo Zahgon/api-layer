@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,9 +42,7 @@ import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.error.ServiceNotAccessibleException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import javax.net.ssl.SSLException;
-
 import static org.apache.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -55,11 +52,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class GatewayExceptionHandler {
 
     private static final String WWW_AUTHENTICATE = "WWW-Authenticate";
+
     private static String WWW_AUTHENTICATE_FORMAT = "Basic realm=\"%s\"";
+
     private static final String DEFAULT_REALM = "Realm";
 
     private final ObjectMapper mapper;
+
     private final MessageService messageService;
+
     private final LocaleContextResolver localeContextResolver;
 
     @InjectApimlLogger
@@ -71,124 +72,86 @@ public class GatewayExceptionHandler {
     }
 
     public Mono<Void> setBodyResponse(ServerWebExchange exchange, int responseCode, String messageCode, Object... args) {
-        var sessionManager = new DefaultWebSessionManager();
-        var serverCodecConfigurer = ServerCodecConfigurer.create();
-
-        var serverWebExchange = new DefaultServerWebExchange(exchange.getRequest(), exchange.getResponse(), sessionManager, serverCodecConfigurer, localeContextResolver);
-        try {
-            serverWebExchange.getResponse().setRawStatusCode(responseCode);
-            serverWebExchange.getResponse().getHeaders().add(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        } catch (UnsupportedOperationException e) {
-            log.debug("Cannot update response", e);
-        }
-
-        Message message = messageService.createMessage(messageCode, args);
-        try {
-            DataBuffer buffer = serverWebExchange.getResponse().bufferFactory().wrap(mapper.writeValueAsBytes(message.mapToView()));
-            return serverWebExchange.getResponse().writeWith(Flux.just(buffer));
-        } catch (JsonProcessingException e) {
-            apimlLog.log("org.zowe.apiml.security.errorWrittingResponse", e.getMessage());
-            return Mono.error(e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void setWwwAuthenticateResponse(ServerWebExchange exchange) {
-        exchange.getResponse().getHeaders().add(WWW_AUTHENTICATE, createHeaderValue(DEFAULT_REALM));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(WebClientResponseException.BadRequest.class)
     public Mono<Void> handleBadRequestException(ServerWebExchange exchange, WebClientResponseException.BadRequest ex) {
-        log.debug("Invalid request structure on {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_BAD_REQUEST, "org.zowe.apiml.common.badRequest");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(ForbidCharacterException.class)
     public Mono<Void> handleForbidCharacterException(ServerWebExchange exchange, ForbidCharacterException ex) {
-        log.debug("Forbidden character in the URI {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_BAD_REQUEST, "org.zowe.apiml.gateway.requestContainEncodedCharacter");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(ForbidSlashException.class)
     public Mono<Void> handleForbidSlashException(ServerWebExchange exchange, ForbidSlashException ex) {
-        log.debug("Forbidden slash in the URI {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_BAD_REQUEST, "org.zowe.apiml.gateway.requestContainEncodedSlash");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({AuthenticationException.class, WebClientResponseException.Unauthorized.class})
+    @ExceptionHandler({ AuthenticationException.class, WebClientResponseException.Unauthorized.class })
     public Mono<Void> handleAuthenticationException(ServerWebExchange exchange, Exception ex) {
-        log.debug("Unauthorized access on {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        setWwwAuthenticateResponse(exchange);
-        return setBodyResponse(exchange, SC_UNAUTHORIZED, "org.zowe.apiml.common.unauthorized");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({AccessDeniedException.class, WebClientResponseException.Forbidden.class})
+    @ExceptionHandler({ AccessDeniedException.class, WebClientResponseException.Forbidden.class })
     public Mono<Void> handleAccessDeniedException(ServerWebExchange exchange, Exception ex) {
-        log.debug("Unauthenticated access on {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_FORBIDDEN, "org.zowe.apiml.security.forbidden", exchange.getRequest().getURI());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({NoResourceFoundException.class, WebClientResponseException.NotFound.class})
+    @ExceptionHandler({ NoResourceFoundException.class, WebClientResponseException.NotFound.class })
     public Mono<Void> handleNoResourceFoundException(ServerWebExchange exchange, Exception ex) {
-        log.debug("Resource {} not found: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_NOT_FOUND, "org.zowe.apiml.common.notFound");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({MethodNotAllowedException.class, WebClientResponseException.MethodNotAllowed.class})
+    @ExceptionHandler({ MethodNotAllowedException.class, WebClientResponseException.MethodNotAllowed.class })
     public Mono<Void> handleMethodNotAllowedException(ServerWebExchange exchange, Exception ex) {
-        log.debug("Method not allowed on {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_METHOD_NOT_ALLOWED, "org.zowe.apiml.common.methodNotAllowed");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({HttpMediaTypeException.class, WebClientResponseException.UnsupportedMediaType.class})
+    @ExceptionHandler({ HttpMediaTypeException.class, WebClientResponseException.UnsupportedMediaType.class })
     public Mono<Void> handleHttpMediaTypeException(ServerWebExchange exchange, Exception ex) {
-        log.debug("Invalid media type on {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_UNSUPPORTED_MEDIA_TYPE, "org.zowe.apiml.common.unsupportedMediaType");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(SSLException.class)
     public Mono<Void> handleSslException(ServerWebExchange exchange, SSLException ex) {
-        log.debug("SSL exception on " + exchange.getRequest().getURI(), ex);
-        return setBodyResponse(exchange, SC_INTERNAL_SERVER_ERROR, "org.zowe.apiml.common.tlsError", exchange.getRequest().getURI(), ex.getMessage());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({ Exception.class })
     public Mono<Void> handleInternalError(ServerWebExchange exchange, Exception ex) {
-        log.debug("Unhandled internal error on {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_INTERNAL_SERVER_ERROR, "org.zowe.apiml.common.internalServerError");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({MetadataValidationException.class})
+    @ExceptionHandler({ MetadataValidationException.class })
     public Mono<Void> handleMetadataValidationException(ServerWebExchange exchange, Exception ex) {
-        log.warn("Service provided invalid metadata {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_BAD_REQUEST, "org.zowe.apiml.gateway.verifier.nonConformant", ex.getMessage());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({ResponseStatusException.class})
+    @ExceptionHandler({ ResponseStatusException.class })
     public Mono<Void> handleStatusError(ServerWebExchange exchange, ResponseStatusException ex) {
-        log.debug("Unexpected response status on {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, ex.getStatusCode().value(), "org.zowe.apiml.gateway.responseStatusError");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @ExceptionHandler({ServiceNotAccessibleException.class, WebClientResponseException.ServiceUnavailable.class})
+    @ExceptionHandler({ ServiceNotAccessibleException.class, WebClientResponseException.ServiceUnavailable.class })
     public Mono<Void> handleServiceNotAccessibleException(ServerWebExchange exchange, Exception ex) {
-        log.debug("A service is not available at the moment to finish request {}: {}", exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_SERVICE_UNAVAILABLE, "org.zowe.apiml.common.serviceUnavailable", exchange.getRequest().getPath());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(ZaasInternalErrorException.class)
     public Mono<Void> handleZaasInternalErrorException(ServerWebExchange exchange, ZaasInternalErrorException ex) {
-        log.debug("The ZAAS instance {} return internal server error for request {}: {}", ex.getInstanceId(), exchange.getRequest().getURI(), ex.getMessage());
-        return setBodyResponse(exchange, SC_INTERNAL_SERVER_ERROR, "org.zowe.apiml.gateway.zaas.internalServerError", ex.getInstanceId());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(ServerWebInputException.class)
     public Mono<ResponseEntity<ErrorInfo>> handleDeserialization(ServerWebInputException ex) {
-        Throwable rootCause = getRootCause(ex);
-        return Mono.just(ResponseEntity
-            .status(SC_BAD_REQUEST)
-            .body(new ErrorInfo(
-                "Failed to deserialize the request body",
-                ex.getMessage() + " | Root cause: " + rootCause.getMessage())));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Throwable getRootCause(Throwable ex) {
@@ -202,8 +165,9 @@ public class GatewayExceptionHandler {
     @Data
     @AllArgsConstructor
     static class ErrorInfo {
+
         private String error;
+
         private String exception;
     }
-
 }

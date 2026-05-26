@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.loadbalancer;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +14,6 @@ import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.zowe.apiml.gateway.caching.LoadBalancerCache;
-
 import java.time.Clock;
 
 /**
@@ -31,13 +29,7 @@ public class CustomLoadBalancerConfiguration {
      * @return the configured ServiceInstanceListSupplier
      */
     @Bean
-    public ServiceInstanceListSupplier stickySessionServiceInstanceListSupplier(
-        ConfigurableApplicationContext context, LoadBalancerCache cache,
-        @Value("${instance.metadata.apiml.lb.cacheRecordExpirationTimeInHours:8}") int expirationTime) {
-        return new DeterministicRoutingListSupplierBuilder(ServiceInstanceListSupplier.builder()
-            .withDiscoveryClient())
-            .withStickySessionRouting(cache, expirationTime, Clock.systemUTC())
-            .build(context);
+    public ServiceInstanceListSupplier stickySessionServiceInstanceListSupplier(ConfigurableApplicationContext context, LoadBalancerCache cache, @Value("${instance.metadata.apiml.lb.cacheRecordExpirationTimeInHours:8}") int expirationTime) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

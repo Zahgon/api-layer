@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zss.api;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,9 @@ public class OIDCController {
     private final OIDCProvider provider;
 
     private boolean isCustomResponseRequired = false;
+
     private MapperResponse customResponse;
+
     private HttpStatus customHttpStatus;
 
     /**
@@ -41,16 +42,8 @@ public class OIDCController {
      * - 201 - Valid mapper response that will get validated afterwards by the OIDC Auth Source.
      */
     @PostMapping(value = "/certificate/dn")
-    public ResponseEntity<MapperResponse> mockDistributedIdentityMapping(
-        @RequestBody OIDCRequest oidcRequest) {
-
-        if (isCustomResponseRequired) {
-            isCustomResponseRequired = false;
-            return new ResponseEntity<>(customResponse, customHttpStatus);
-        }
-
-        MapperResponse mapperResponse = provider.mapUserIdentity(oidcRequest);
-        return new ResponseEntity<>(mapperResponse, HttpStatus.CREATED);
+    public ResponseEntity<MapperResponse> mockDistributedIdentityMapping(@RequestBody OIDCRequest oidcRequest) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -61,13 +54,6 @@ public class OIDCController {
      */
     @PostMapping(value = "/certificate/dn/mock-response")
     public ResponseEntity<String> setResponse(@RequestBody ZssResponse zssResponse) {
-        isCustomResponseRequired = true;
-        customHttpStatus = provider.setCustomStatus(zssResponse.getStatusCode());
-        if (customHttpStatus.equals(HttpStatus.OK)) {
-            customResponse = provider.setCustomResponse(zssResponse.getZssError());
-        } else {
-            customResponse = null;
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body("Mocked response has been set");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

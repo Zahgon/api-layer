@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,7 +20,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,9 +61,13 @@ public class ApiInfo {
     private String apiId;
 
     private String gatewayUrl;
+
     private String version;
+
     private String swaggerUrl;
+
     private String graphqlUrl;
+
     private String documentationUrl;
 
     @Builder.Default
@@ -76,26 +78,19 @@ public class ApiInfo {
     private boolean isDefaultApi = false;
 
     public void addCodeSnippet(CodeSnippet newCodeSnippet) {
-        this.codeSnippet.add(newCodeSnippet);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @JsonIgnore
     public int getMajorVersion() {
-        if (version == null) {
-            return -1;
-        }
-
-        String versionWithoutId = version.replace(apiId + " ", "");
-        String[] versionFields = versionWithoutId.split("[^0-9a-zA-Z]");
-        String majorVersionStr = versionFields[0].replaceAll("\\D", "");
-        return majorVersionStr.isEmpty() ? -1 : Integer.parseInt(majorVersionStr);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static class StringToBooleanDeserializer extends JsonDeserializer<Boolean> {
 
         @Override
         public Boolean deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-            return Boolean.parseBoolean(p.getText());
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 }

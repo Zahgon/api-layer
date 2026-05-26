@@ -7,22 +7,21 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.conformance;
 
 import org.zowe.apiml.product.instance.ServiceAddress;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import static org.apache.commons.lang3.math.NumberUtils.isCreatable;
 
 public abstract class AbstractSwaggerValidator {
 
     protected final Map<String, String> metadata;
+
     protected final ServiceAddress gatewayServiceAddress;
+
     protected final String serviceId;
 
     protected AbstractSwaggerValidator(Map<String, String> metadata, ServiceAddress gatewayServiceAddress, String serviceId) {
@@ -45,45 +44,11 @@ public abstract class AbstractSwaggerValidator {
      * Returns list of issues with the endpoint URLs, mainly regarding the versioning part of conformance criteria
      */
     public List<String> getProblemsWithEndpointUrls() {
-        Set<Endpoint> endpoints = getAllEndpoints();
-
-        ArrayList<String> result = new ArrayList<>();
-
-        boolean isVersionedApi = !searchMetadata(metadata, "apiml", "apiInfo", "version").isEmpty();
-
-        for (Endpoint endpoint : endpoints) {
-            if (endpoint.getHttpMethods().isEmpty()) {
-                result.add("Endpoint at " + result + " does not have a specified Http method in Swagger");
-            }
-            if (!endpoint.getUrl().contains("/api/")) {
-                result.add("REST endpoint at " + result + " is not routed according to item 8 of the conformance criteria, missing /api/");
-                continue;
-            }
-            if (isVersionedApi) {
-                int start = endpoint.getUrl().indexOf("/api/") + 5; //this is where the version starts
-                String version;
-                try {
-                    version = endpoint.getUrl().substring(start);
-                    version = version.substring(0, version.indexOf("/"));
-                } catch (IndexOutOfBoundsException e) {
-                    version = "";
-                }
-
-                if (!(version.startsWith("v") && isCreatable(version.substring(1)))) {
-                    result.add("REST endpoint at " + result + " is not versioned according to item 8 of the conformance criteria");
-                }
-            }
-        }
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String searchMetadata(Map<String, String> metadata, String... partsOfKey) {
-        for (Map.Entry<String, String> metadataEntry : metadata.entrySet()) {
-            if (containsAll(metadataEntry.getKey(), partsOfKey)) {
-                return metadataEntry.getValue();
-            }
-        }
-        return "";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean containsAll(String main, String... keywords) {
@@ -94,5 +59,4 @@ public abstract class AbstractSwaggerValidator {
         }
         return true;
     }
-
 }

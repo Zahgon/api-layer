@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.message.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,15 +28,22 @@ import org.zowe.apiml.message.core.MessageType;
 public class ApiMessage {
 
     private MessageType messageType;
-    private String messageNumber;
-    private String messageContent;
-    private String messageAction;
-    private String messageReason;
-    private String messageKey;
-    private String messageInstanceId;
-    private String messageComponent;
-    private String messageSource;
 
+    private String messageNumber;
+
+    private String messageContent;
+
+    private String messageAction;
+
+    private String messageReason;
+
+    private String messageKey;
+
+    private String messageInstanceId;
+
+    private String messageComponent;
+
+    private String messageSource;
 
     public ApiMessage(String messageKey, MessageType messageType, String messageNumber, String messageContent, String messageAction, String messageReason) {
         this.messageKey = messageKey;
@@ -52,7 +58,7 @@ public class ApiMessage {
      * The severity of a problem. This field is required.
      */
     public MessageType getMessageType() {
-        return messageType;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -63,7 +69,7 @@ public class ApiMessage {
      * Example: "PFI0031"
      */
     public String getMessageNumber() {
-        return messageNumber;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -71,7 +77,7 @@ public class ApiMessage {
      * and ending with a full stop (.).
      */
     public String getMessageContent() {
-        return messageContent;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -79,7 +85,7 @@ public class ApiMessage {
      * This field is optional.
      */
     public String getMessageAction() {
-        return messageAction;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -87,7 +93,7 @@ public class ApiMessage {
      * This field is optional.
      */
     public String getMessageReason() {
-        return messageReason;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -96,7 +102,7 @@ public class ApiMessage {
      * The purpose of this field is to enable UI to show a meaningful and localized error message.
      */
     public String getMessageKey() {
-        return messageKey;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -107,7 +113,7 @@ public class ApiMessage {
      * Example: "123e4567-e89b-12d3-a456-426655440000"
      */
     public String getMessageInstanceId() {
-        return messageInstanceId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -117,7 +123,7 @@ public class ApiMessage {
      * Example: org.zowe.apiml.product.package
      */
     public String getMessageComponent() {
-        return messageComponent;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -127,6 +133,6 @@ public class ApiMessage {
      * Example: apiml-discovery-service, ca31:12345
      */
     public String getMessageSource() {
-        return messageSource;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

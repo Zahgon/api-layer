@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,12 +28,10 @@ import org.zowe.apiml.security.common.login.LoginFilter;
 import org.zowe.apiml.security.common.login.LoginRequest;
 import org.zowe.apiml.security.common.token.QueryResponse;
 import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-
 import static org.apache.hc.core5.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.hc.core5.http.HttpStatus.SC_NO_CONTENT;
 
@@ -45,70 +42,27 @@ import static org.apache.hc.core5.http.HttpStatus.SC_NO_CONTENT;
 public class TokenController {
 
     private final ObjectMapper mapper;
+
     private final GatewaySecurity gatewaySecurity;
+
     private final AuthConfigurationProperties authConfigurationProperties;
 
     private AuthConfigurationProperties.CookieProperties cp;
+
     private int cookieMaxAge = -1;
 
     @PostConstruct
     void initConstants() {
-        cp = authConfigurationProperties.getCookieProperties();
-        if (cp.getCookieMaxAge() != null) {
-            cookieMaxAge = cp.getCookieMaxAge();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(value = "/login")
-    public Mono<Object> login(
-        @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String requestHeader,
-        ServerWebExchange exchange
-    ) {
-        return DataBufferUtils.join(exchange.getRequest().getBody())
-            .<LoginRequest>handle((buffer, sink) -> {
-                try (InputStream is = buffer.asInputStream()) {
-                    sink.next(mapper.readValue(is, LoginRequest.class));
-                } catch (IOException e) {
-                    sink.error(new AuthenticationCredentialsNotFoundException("Login object has wrong format.", e));
-                } finally {
-                    DataBufferUtils.release(buffer);
-                }
-            })
-            .switchIfEmpty(Mono.fromSupplier(() -> LoginFilter
-                .getCredentialFromAuthorizationHeader(Optional.ofNullable(requestHeader))
-                .orElse( null)
-            ))
-            .switchIfEmpty(Mono.error(() -> WebClientResponseException.create(SC_BAD_REQUEST, "bad request", exchange.getRequest().getHeaders(), new byte[0], StandardCharsets.UTF_8)))
-            .flatMap(login ->
-                gatewaySecurity.login(login.getUsername(), login.getPassword(), null).map(token -> {
-                    exchange.getResponse().addCookie(ResponseCookie.from(cp.getCookieName(), token)
-                        .path(cp.getCookiePath())
-                        .sameSite(cp.getCookieSameSite().getValue())
-                        .maxAge(cookieMaxAge)
-                        .httpOnly(true)
-                        .secure(cp.isCookieSecure())
-                        .build()
-                    );
-                    exchange.getResponse().setRawStatusCode(SC_NO_CONTENT);
-                    return Mono.empty();
-                }).orElse(Mono.error(() -> new InsufficientAuthenticationException("No credentials provided.")))
-            );
+    public Mono<Object> login(@RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String requestHeader, ServerWebExchange exchange) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/query")
-    public Mono<QueryResponse> login(
-        ServerWebExchange exchange
-    ) {
-        return Optional.ofNullable(exchange.getRequest().getHeaders().getFirst(org.springframework.http.HttpHeaders.AUTHORIZATION))
-            .filter(header -> header.startsWith("Bearer "))
-            .map(header -> header.substring("Bearer ".length()))
-            .map(String::trim)
-            .or(() -> Optional.ofNullable(exchange.getRequest().getCookies().getFirst(cp.getCookieName()))
-                .map(HttpCookie::getValue)
-            )
-            .map(gatewaySecurity::query)
-            .map(Mono::just)
-            .orElse(Mono.error(() -> new InsufficientAuthenticationException("No credentials provided.")));
+    public Mono<QueryResponse> login(ServerWebExchange exchange) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

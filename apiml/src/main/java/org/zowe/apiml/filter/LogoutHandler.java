@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl;
@@ -28,7 +27,6 @@ import org.zowe.apiml.security.common.token.TokenNotValidException;
 import org.zowe.apiml.util.HttpUtils;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
 import reactor.core.publisher.Mono;
-
 import static org.zowe.apiml.constants.ApimlConstants.BEARER_AUTHENTICATION_PREFIX;
 import static org.zowe.apiml.security.SecurityUtils.COOKIE_AUTH_NAME;
 
@@ -37,30 +35,31 @@ import static org.zowe.apiml.security.SecurityUtils.COOKIE_AUTH_NAME;
 public class LogoutHandler implements ServerLogoutHandler {
 
     private final AuthenticationService authenticationService;
+
     private final FailedAuthenticationWebHandler failure;
+
     private final PeerAwareInstanceRegistryImpl peerAwareInstanceRegistry;
+
     private final HttpUtils httpUtils;
+
     private final ApplicationContext applicationContext;
 
     private boolean distribute;
 
     @PostConstruct
     void init() {
-        distribute = !applicationContext.containsBean("infinispanConfig");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Mono<Void> logout(WebFilterExchange exchange, Authentication authentication) {
-        return httpUtils.getTokenFromRequest(exchange.getExchange()).flatMap(token -> invalidateJwtToken(token, exchange));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Mono<Void> invalidateJwtToken(String token, WebFilterExchange exchange) {
         if (exchange.getExchange().getRequest().getCookies().getFirst(COOKIE_AUTH_NAME) != null) {
-            exchange.getExchange().getResponse().addCookie(
-                httpUtils.createResponseCookieRemoval()
-            );
+            exchange.getExchange().getResponse().addCookie(httpUtils.createResponseCookieRemoval());
         }
-
         if (authenticationService.isInvalidated(token)) {
             return failure.onAuthenticationFailure(exchange, new TokenNotValidException("The token you are trying to logout is not valid"));
         } else {
@@ -82,10 +81,6 @@ public class LogoutHandler implements ServerLogoutHandler {
     }
 
     public static Mono<String> getBearerTokenFromHeaderReactive(ServerWebExchange exchange) {
-        return Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
-            .filter(authHeader -> authHeader.toLowerCase().startsWith((BEARER_AUTHENTICATION_PREFIX + " ").toLowerCase()))
-            .map(authHeader -> authHeader.substring((BEARER_AUTHENTICATION_PREFIX + " ").length()).trim())
-            .filter(token -> !token.isBlank());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

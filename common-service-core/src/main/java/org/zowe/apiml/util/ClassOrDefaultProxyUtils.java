@@ -7,13 +7,11 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
 import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,7 +48,6 @@ import java.util.function.Supplier;
  *      ((ClassOrDefaultProxyUtils.ClassOrDefaultProxyState) i).isUsingBaseImplementation() +
  *      "instanceof");
  * }
- *
  */
 @Slf4j
 public final class ClassOrDefaultProxyUtils {
@@ -68,33 +65,7 @@ public final class ClassOrDefaultProxyUtils {
      * @return Proxy object implementing interfaceClass and ClassOrDefaultProxyState
      */
     public static <T> T createProxy(Class<T> interfaceClass, String implementationClassName, Supplier<? extends T> defaultImplementation, ExceptionMapping<? extends Exception>... exceptionMappings) {
-        Class<?> implementationClazz = null;
-        try {
-            implementationClazz = Class.forName(implementationClassName);
-        } catch (ClassNotFoundException e) {
-            log.warn("Implementation {} is not available, it will continue with default one {} : " + e.getLocalizedMessage(),
-                    implementationClassName, defaultImplementation);
-        }
-
-        if (implementationClazz != null) {
-            // First attempt to proxy instantiable class
-            try {
-                return createProxyByConstructor(interfaceClass, implementationClazz, defaultImplementation, new Class[]{}, new Object[]{}, exceptionMappings);
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                log.debug("Implementation {} is not available with constructor signature {}, it will continue with default one {} : " + e.getLocalizedMessage(),
-                        implementationClassName, new Class[]{}, defaultImplementation);
-            }
-
-            // second try to proxy static library class
-            try {
-                return makeProxy(interfaceClass, implementationClazz, true, exceptionMappings);
-            } catch (Exception e) {
-                log.warn("Implementation {} cannot be proxied by {}, it will continue with default one {} : " + e.getLocalizedMessage(),
-                        implementationClassName, interfaceClass, defaultImplementation);
-            }
-        }
-
-        return makeProxy(interfaceClass, defaultImplementation.get(), false, exceptionMappings);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -109,11 +80,8 @@ public final class ClassOrDefaultProxyUtils {
      * @param exceptionMappings handlers to map exception to custom class
      * @return Proxy object implementing interfaceClass and ClassOrDefaultProxyState
      */
-    public static <T> T createProxyByConstructor(Class<T> interfaceClass, String implementationClassName, Supplier<? extends T> defaultImplementation, Class[] constructorSignature, Object[] constructorParams, ExceptionMapping<? extends Exception>... exceptionMappings)
-        throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        ObjectUtil.requireNotEmpty(implementationClassName, "implementationClassName can't be empty");
-        final Class<?> implementationClazz = Class.forName(implementationClassName);
-        return createProxyByConstructor(interfaceClass, implementationClazz, defaultImplementation, constructorSignature, constructorParams, exceptionMappings);
+    public static <T> T createProxyByConstructor(Class<T> interfaceClass, String implementationClassName, Supplier<? extends T> defaultImplementation, Class[] constructorSignature, Object[] constructorParams, ExceptionMapping<? extends Exception>... exceptionMappings) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -128,23 +96,12 @@ public final class ClassOrDefaultProxyUtils {
      * @param exceptionMappings handlers to map exception to custom class
      * @return Proxy object implementing interfaceClass and ClassOrDefaultProxyState
      */
-    public static <T> T createProxyByConstructor(Class<T> interfaceClass, Class<?> implementationClazz, Supplier<? extends T> defaultImplementation, Class[] constructorSignature, Object[] constructorParams, ExceptionMapping<? extends Exception> ... exceptionMappings)
-        throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        ObjectUtil.requireNotNull(interfaceClass, "interfaceClass can't be null");
-        ObjectUtil.requireNotNull(implementationClazz, "implementationClassName can't be null");
-        ObjectUtil.requireNotNull(defaultImplementation, "defaultImplementation can't be null");
-        ObjectUtil.requireNotNull(constructorSignature, "constructorSignature can't be null");
-        ObjectUtil.requireNotNull(constructorParams, "constructorParams can't be null");
-
-        final Object implementation = implementationClazz.getDeclaredConstructor(constructorSignature).newInstance(constructorParams);
-        return makeProxy(interfaceClass, implementation, true, exceptionMappings);
+    public static <T> T createProxyByConstructor(Class<T> interfaceClass, Class<?> implementationClazz, Supplier<? extends T> defaultImplementation, Class[] constructorSignature, Object[] constructorParams, ExceptionMapping<? extends Exception>... exceptionMappings) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    private static <T> T makeProxy(Class<T> interfaceClass, Object implementation, boolean usingBaseImplementation, ExceptionMapping<? extends Exception> ... exceptionMappings) {
-        return (T) Proxy.newProxyInstance(
-            ClassOrDefaultProxyUtils.class.getClassLoader(),
-            new Class<?>[] {interfaceClass, ClassOrDefaultProxyUtils.ClassOrDefaultProxyState.class},
-            new MethodInvocationHandler(implementation, interfaceClass, usingBaseImplementation, exceptionMappings));
+    private static <T> T makeProxy(Class<T> interfaceClass, Object implementation, boolean usingBaseImplementation, ExceptionMapping<? extends Exception>... exceptionMappings) {
+        return (T) Proxy.newProxyInstance(ClassOrDefaultProxyUtils.class.getClassLoader(), new Class<?>[] { interfaceClass, ClassOrDefaultProxyUtils.ClassOrDefaultProxyState.class }, new MethodInvocationHandler(implementation, interfaceClass, usingBaseImplementation, exceptionMappings));
     }
 
     /**
@@ -153,17 +110,14 @@ public final class ClassOrDefaultProxyUtils {
     public interface ClassOrDefaultProxyState {
 
         /**
-         *
          * @return class which is now proxied. It could be one of implementationClassName or defaultImplementation
          */
         Class<?> getImplementationClass();
 
         /**
-         *
          * @return true if proxy use the original class, false if is using default (dummy) class
          */
         boolean isUsingBaseImplementation();
-
     }
 
     /**
@@ -174,16 +128,18 @@ public final class ClassOrDefaultProxyUtils {
         private final Map<Method, EndPoint> mapping = new HashMap<>();
 
         private final boolean usingBaseImplementation;
+
         private final Object implementation;
+
         private final Class<?> interfaceClass;
+
         private final ExceptionMapping<? extends Exception>[] exceptionMappings;
 
-        public MethodInvocationHandler(Object implementation, Class<?> interfaceClass, boolean usingBaseImplementation, ExceptionMapping<? extends Exception> ... exceptionMappings) {
+        public MethodInvocationHandler(Object implementation, Class<?> interfaceClass, boolean usingBaseImplementation, ExceptionMapping<? extends Exception>... exceptionMappings) {
             this.usingBaseImplementation = usingBaseImplementation;
             this.implementation = implementation;
             this.interfaceClass = interfaceClass;
             this.exceptionMappings = exceptionMappings;
-
             if (this.usingBaseImplementation) {
                 for (ExceptionMapping<? extends Exception> exceptionMapping : exceptionMappings) {
                     if (!exceptionMapping.isInitialized()) {
@@ -191,7 +147,6 @@ public final class ClassOrDefaultProxyUtils {
                     }
                 }
             }
-
             this.initMapping();
         }
 
@@ -214,7 +169,6 @@ public final class ClassOrDefaultProxyUtils {
 
         private void fetchAllInterfaces(Class<?> interfaceClass, List<Class<?>> list) {
             list.add(interfaceClass);
-
             for (final Class<?> superInterface : interfaceClass.getInterfaces()) {
                 fetchAllInterfaces(superInterface, list);
             }
@@ -238,12 +192,11 @@ public final class ClassOrDefaultProxyUtils {
         private void mapTargetMethods(Map<String, EndPoint> byName) {
             // To using static methods is provided Class instead of implementation
             final Class<?> implementationClass = (implementation instanceof Class) ? (Class<?>) implementation : implementation.getClass();
-
             for (Class<?> partInterfaceClass : fetchAllInterfaces(interfaceClass)) {
                 for (final Method caller : partInterfaceClass.getDeclaredMethods()) {
                     // ignore methods of frameworks created during execution
-                    if (caller.isSynthetic()) continue;
-
+                    if (caller.isSynthetic())
+                        continue;
                     // try to find by name - avoid to multiple implementation for same method name, ie. getImplementationClass (proxy vs. implementation)
                     final EndPoint oldEndPoint = byName.get(ObjectUtil.getMethodIdentifier(caller));
                     if (oldEndPoint != null) {
@@ -265,43 +218,25 @@ public final class ClassOrDefaultProxyUtils {
 
         private void initMapping() {
             final Map<String, EndPoint> byName;
-
             // first check the state interface. It has higher priority, could rewrite previous mapping
             byName = getDeclaredMethodMapping();
-
             // second map methods of target
             mapTargetMethods(byName);
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            final EndPoint endPoint = mapping.get(method);
-
-            if (endPoint == null) {
-                throw new ExceptionMappingError(String.format("Cannot found method %s", method));
-            }
-
-            try {
-                return endPoint.invoke(args);
-            } catch (InvocationTargetException ite) {
-                // thrown exception in proxied object
-                Throwable t = ite.getCause();
-                // if there is a mapping of exceptions, apply it to use custom Exception
-                for (ExceptionMapping<?> em : exceptionMappings) {
-                    em.apply(t);
-                }
-                throw t;
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public Class<?> getImplementationClass() {
-            return implementation.getClass();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public boolean isUsingBaseImplementation() {
-            return usingBaseImplementation;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -312,14 +247,13 @@ public final class ClassOrDefaultProxyUtils {
         public static final class EndPoint {
 
             private final Object target;
+
             private final Method method;
 
             public Object invoke(Object[] args) throws InvocationTargetException, IllegalAccessException {
-                return method.invoke(target, args);
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
-
         }
-
     }
 
     /**
@@ -341,7 +275,6 @@ public final class ClassOrDefaultProxyUtils {
          * @throws T Type of mapped exception to throw in case of mapping is right to type of t
          */
         void apply(Throwable t) throws T;
-
     }
 
     /**
@@ -357,6 +290,7 @@ public final class ClassOrDefaultProxyUtils {
     public static class ByMethodName<T extends Exception> implements ExceptionMapping<T> {
 
         private final String sourceExceptionClassName;
+
         private final Function<Throwable, T> mappingFunction;
 
         /**
@@ -365,7 +299,7 @@ public final class ClassOrDefaultProxyUtils {
          * @param targetExceptionClass Type of exception to be thrown in case of successful mapping
          * @param methodNames names of getter without arguments in sources exception, which results will be use as constructor parameters
          */
-        public ByMethodName(String sourceExceptionClassName, Class<T> targetExceptionClass, String...methodNames) {
+        public ByMethodName(String sourceExceptionClassName, Class<T> targetExceptionClass, String... methodNames) {
             this.sourceExceptionClassName = sourceExceptionClassName;
             this.mappingFunction = getMappingFunction(sourceExceptionClassName, targetExceptionClass, methodNames);
         }
@@ -377,8 +311,8 @@ public final class ClassOrDefaultProxyUtils {
          * @return found method with name methodName and no arguments or null
          */
         private Method findMethod(Class<?> clazz, String methodName) {
-            if (clazz == Object.class) return null;
-
+            if (clazz == Object.class)
+                return null;
             try {
                 return clazz.getDeclaredMethod(methodName);
             } catch (NoSuchMethodException e) {
@@ -394,7 +328,7 @@ public final class ClassOrDefaultProxyUtils {
          * @param methodNames names of methods without argument on source exception to get values into constructor to create target exception
          * @return function to mapping of exception
          */
-        private Function<Throwable, T> getMappingFunction(String sourceExceptionClassName, Class<T> targetExceptionClass, String...methodNames ) {
+        private Function<Throwable, T> getMappingFunction(String sourceExceptionClassName, Class<T> targetExceptionClass, String... methodNames) {
             // find source exception
             final Class<Throwable> eClass;
             try {
@@ -403,7 +337,6 @@ public final class ClassOrDefaultProxyUtils {
                 log.debug("Exception {} is not available, it will not be mapped into {} : " + e, sourceExceptionClassName, targetExceptionClass);
                 return null;
             }
-
             // find arguments of constructor and methods by names, methods should be without any arguments
             final List<Class<?>> argClasses = new LinkedList<>();
             final List<Function<Throwable, Object>> mapFunctions = new LinkedList<>();
@@ -421,7 +354,6 @@ public final class ClassOrDefaultProxyUtils {
                     }
                 });
             }
-
             // find the constructor and store functions to invoke then
             try {
                 return getMappingFunction(targetExceptionClass.getConstructor(argClasses.toArray(new Class[0])), mapFunctions);
@@ -439,9 +371,7 @@ public final class ClassOrDefaultProxyUtils {
         private Function<Throwable, T> getMappingFunction(Constructor<T> constructor, List<Function<Throwable, Object>> mapFunctions) {
             return x -> {
                 try {
-                    return constructor.newInstance(
-                        mapFunctions.stream().map(y -> y.apply(x)).toArray()
-                    );
+                    return constructor.newInstance(mapFunctions.stream().map(y -> y.apply(x)).toArray());
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     throw new ExceptionMappingError("Cannot construct exception " + constructor.getDeclaringClass(), e);
                 }
@@ -450,7 +380,7 @@ public final class ClassOrDefaultProxyUtils {
 
         @Override
         public boolean isInitialized() {
-            return mappingFunction != null;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -464,16 +394,12 @@ public final class ClassOrDefaultProxyUtils {
 
         @Override
         public void apply(Throwable t) throws T {
-            if (!isMatching(t)) return;
-
-           throw mappingFunction.apply(t);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public String toString() {
-            return "{ExceptionMapping [sourceExceptionClassName = " + sourceExceptionClassName + "]}";
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

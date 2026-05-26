@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.zowe.apiml.client.services.AparBasedService;
-
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -24,13 +22,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @SuppressWarnings("squid:S1452")
 public class InfoController {
+
     private final AparBasedService info;
 
     @GetMapping(value = "/zosmf/info", produces = "application/json; charset=utf-8")
-    public ResponseEntity<?> info(
-        HttpServletResponse response,
-        @RequestHeader Map<String, String> headers
-    ) {
-        return info.process("information", "get", response, headers);
+    public ResponseEntity<?> info(HttpServletResponse response, @RequestHeader Map<String, String> headers) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

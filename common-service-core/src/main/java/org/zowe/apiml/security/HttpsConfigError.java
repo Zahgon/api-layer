@@ -7,18 +7,26 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security;
 
 public class HttpsConfigError extends RuntimeException {
+
     private static final long serialVersionUID = -4219571432637725973L;
 
     public enum ErrorCode {
-        UNKNOWN_ERROR, HTTP_CLIENT_INITIALIZATION_FAILED, KEYSTORE_NOT_DEFINED, KEYSTORE_PASSWORD_NOT_DEFINED,
-        TRUSTSTORE_PASSWORD_NOT_DEFINED, SSL_CONTEXT_INITIALIZATION_FAILED, TRUSTSTORE_NOT_DEFINED, WRONG_KEY_ALIAS
+
+        UNKNOWN_ERROR,
+        HTTP_CLIENT_INITIALIZATION_FAILED,
+        KEYSTORE_NOT_DEFINED,
+        KEYSTORE_PASSWORD_NOT_DEFINED,
+        TRUSTSTORE_PASSWORD_NOT_DEFINED,
+        SSL_CONTEXT_INITIALIZATION_FAILED,
+        TRUSTSTORE_NOT_DEFINED,
+        WRONG_KEY_ALIAS
     }
 
     private final ErrorCode code;
+
     private final transient HttpsConfig config;
 
     public HttpsConfigError(ErrorCode code, HttpsConfig config) {
@@ -52,10 +60,10 @@ public class HttpsConfigError extends RuntimeException {
     }
 
     public ErrorCode getCode() {
-        return this.code;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public HttpsConfig getConfig() {
-        return this.config;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

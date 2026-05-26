@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.version;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -30,15 +28,17 @@ import java.nio.file.Files;
  * Class for retrieving information about Zowe version from Zowe's manifest.json
  * and information about API ML version from build-info.properties and git.properties
  */
-
 @Slf4j
 @Service
 public class VersionService {
+
     private final VersionInfo version;
+
     private final BuildInfo buildInfo;
 
     @Value("${apiml.zoweManifest:#{null}}")
     private String zoweManifest;
+
     @Value("${apiml.zoweManifestEncoding:IBM1047}")
     private String zoweManifestEncoding;
 
@@ -57,10 +57,7 @@ public class VersionService {
      * @return filled VersionInfo object
      */
     public VersionInfo getVersion() {
-        if (version.getApiml() == null) {
-            updateVersionInfo();
-        }
-        return version;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -68,10 +65,7 @@ public class VersionService {
      * and git.properties files
      */
     public void updateVersionInfo() {
-        if (StringUtils.isNotEmpty(zoweManifest)) {
-            version.setZowe(getZoweVersion(zoweManifest));
-        }
-        version.setApiml(getApimlVersion());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**

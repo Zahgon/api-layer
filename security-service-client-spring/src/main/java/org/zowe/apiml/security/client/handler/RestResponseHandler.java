@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.client.handler;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,43 +34,11 @@ import org.zowe.apiml.security.common.token.TokenNotValidException;
 public class RestResponseHandler {
 
     public void handleErrorType(HttpResponse response, ErrorType errorType, Object... logParameters) {
-        switch (response.getCode()) {
-            case 401:
-                if (errorType != null) {
-                    if (errorType.equals(ErrorType.BAD_CREDENTIALS)) {
-                        throw new BadCredentialsException(errorType.getDefaultMessage());
-                    } else if (errorType.equals(ErrorType.TOKEN_NOT_VALID)) {
-                        throw new TokenNotValidException(errorType.getDefaultMessage());
-                    } else if (errorType.equals(ErrorType.TOKEN_NOT_PROVIDED)) {
-                        throw new TokenNotProvidedException(errorType.getDefaultMessage());
-                    } else if (errorType.equals(ErrorType.INVALID_TOKEN_TYPE)) {
-                        throw new InvalidTokenTypeException(errorType.getDefaultMessage());
-                    } else if (errorType.equals(ErrorType.USER_SUSPENDED)) {
-                        throw new ZosAuthenticationException(PlatformReturned.builder().errno(163).errnoMsg("org.zowe.apiml.security.platform.errno.EMVSSAFEXTRERR").build());
-                    } else if (errorType.equals(ErrorType.NEW_PASSWORD_INVALID)) {
-                        throw new ZosAuthenticationException(PlatformReturned.builder().errno(169).errnoMsg("org.zowe.apiml.security.platform.errno.EMVSPASSWORD").build());
-                    } else if (errorType.equals(ErrorType.PASSWORD_EXPIRED)) {
-                        throw new ZosAuthenticationException(PlatformReturned.builder().errno(168).errnoMsg("org.zowe.apiml.security.platform.errno.EMVSEXPIRE").build());
-                    } else if (errorType.equals(ErrorType.IDENTITY_MAPPING_FAILED)) {
-                        throw new NoMainframeIdentityException(errorType.getDefaultMessage());
-                    }
-                }
-                throw new BadCredentialsException(ErrorType.BAD_CREDENTIALS.getDefaultMessage());
-            case 400:
-                throw new AuthenticationCredentialsNotFoundException(ErrorType.AUTH_CREDENTIALS_NOT_FOUND.getDefaultMessage());
-            case 405:
-                throw new AuthMethodNotSupportedException(ErrorType.METHOD_NOT_ALLOWED.getDefaultMessage());
-            case 500:
-            case 503:
-                throw new ServiceNotAccessibleException(ErrorType.SERVICE_UNAVAILABLE.getDefaultMessage());
-            default:
-                addDebugMessage(null, ErrorType.AUTH_GENERAL.getDefaultMessage(), logParameters);
-                throw new AuthenticationServiceException(ErrorType.AUTH_GENERAL.getDefaultMessage());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    public void handleException(Exception exception) { //TODO: maybe revert
-        throw new GatewayNotAvailableException(ErrorType.GATEWAY_NOT_AVAILABLE.getDefaultMessage(), exception);
+    public void handleException(Exception exception) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void addDebugMessage(Exception exception, String genericLogErrorMessage, Object... logParameters) {

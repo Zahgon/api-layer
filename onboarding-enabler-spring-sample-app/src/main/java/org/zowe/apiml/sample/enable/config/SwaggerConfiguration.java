@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.sample.enable.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -30,10 +29,6 @@ public class SwaggerConfiguration {
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI().info(new Info()
-            .title(apiTitle)
-            .description(apiDescription)
-            .version(apiVersion)
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

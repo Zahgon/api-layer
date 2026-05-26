@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import org.springframework.http.HttpMethod;
@@ -29,7 +28,6 @@ import org.zowe.apiml.security.common.token.TokenNotValidException;
 import org.zowe.apiml.security.common.token.X509AuthenticationToken;
 import org.zowe.apiml.util.HttpUtils;
 import reactor.core.publisher.Mono;
-
 import java.util.Objects;
 
 /**
@@ -39,17 +37,16 @@ import java.util.Objects;
 public class QueryWebFilter implements WebFilter {
 
     private final ServerAuthenticationFailureHandler failureHandler;
+
     private final HttpMethod httpMethod;
+
     private final boolean protectedByCertificate;
+
     private final ReactiveAuthenticationManager authenticationService;
+
     private final HttpUtils httpUtils;
 
-    public QueryWebFilter(
-        ServerAuthenticationFailureHandler failureHandler,
-        HttpMethod httpMethod,
-        boolean protectedByCertificate,
-        ReactiveAuthenticationManager authenticationService,
-        HttpUtils httpUtils) {
+    public QueryWebFilter(ServerAuthenticationFailureHandler failureHandler, HttpMethod httpMethod, boolean protectedByCertificate, ReactiveAuthenticationManager authenticationService, HttpUtils httpUtils) {
         this.failureHandler = Objects.requireNonNull(failureHandler, "failureHandler cannot be null");
         this.httpMethod = Objects.requireNonNull(httpMethod, "httpMethod cannot be null");
         this.protectedByCertificate = protectedByCertificate;
@@ -59,52 +56,17 @@ public class QueryWebFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        if (!exchange.getRequest().getMethod().equals(this.httpMethod)) {
-            AuthMethodNotSupportedException ex = new AuthMethodNotSupportedException(
-                exchange.getRequest().getMethod().name());
-            return this.failureHandler.onAuthenticationFailure(
-                new WebFilterExchange(exchange, chain), ex);
-        }
-
-        Mono<Void> authFlow = attemptAuthentication(exchange)
-            .flatMap(authResult -> chain.filter(exchange)
-                .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authResult)))
-            .onErrorResume(AuthenticationException.class, failed ->
-                this.failureHandler.onAuthenticationFailure(new WebFilterExchange(exchange, chain), failed));
-
-        if (protectedByCertificate) {
-            return authFlow;
-        }
-
-        return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .filter(Authentication::isAuthenticated)
-            .flatMap(auth -> chain.filter(exchange))
-            .switchIfEmpty(authFlow);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Mono<Authentication> attemptAuthentication(ServerWebExchange exchange) {
         Mono<Void> certificateCheckMono = Mono.empty();
-
         if (protectedByCertificate) {
-            certificateCheckMono = ReactiveSecurityContextHolder.getContext()
-                .map(SecurityContext::getAuthentication)
-                .filter(Authentication::isAuthenticated)
-                .filter(X509AuthenticationToken.class::isInstance)
-                .switchIfEmpty(Mono.error(new InvalidCertificateException("Invalid or missing certificate authentication.")))
-                .then();
+            certificateCheckMono = ReactiveSecurityContextHolder.getContext().map(SecurityContext::getAuthentication).filter(Authentication::isAuthenticated).filter(X509AuthenticationToken.class::isInstance).switchIfEmpty(Mono.error(new InvalidCertificateException("Invalid or missing certificate authentication."))).then();
         }
-
-        return certificateCheckMono
-            .then(httpUtils.getTokenFromRequest(exchange))
-                .switchIfEmpty(Mono.error(new TokenNotProvidedException("Authorization token not provided.")))
-                .flatMap(tokenValue -> {
-                    var tokenAuthRequest = new TokenAuthentication(tokenValue, TokenAuthentication.Type.JWT);
-                    return this.authenticationService.authenticate(tokenAuthRequest)
-                        .filter(Authentication::isAuthenticated)
-                        .switchIfEmpty(Mono.error(new TokenNotValidException("JWT Token is not authenticated")));
-                });
-
+        return certificateCheckMono.then(httpUtils.getTokenFromRequest(exchange)).switchIfEmpty(Mono.error(new TokenNotProvidedException("Authorization token not provided."))).flatMap(tokenValue -> {
+            var tokenAuthRequest = new TokenAuthentication(tokenValue, TokenAuthentication.Type.JWT);
+            return this.authenticationService.authenticate(tokenAuthRequest).filter(Authentication::isAuthenticated).switchIfEmpty(Mono.error(new TokenNotValidException("JWT Token is not authenticated")));
+        });
     }
-
 }

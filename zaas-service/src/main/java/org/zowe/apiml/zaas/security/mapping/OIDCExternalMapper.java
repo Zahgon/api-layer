@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.mapping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,33 +29,12 @@ public class OIDCExternalMapper extends ExternalMapper implements Authentication
 
     OIDCMapperHelper mapperHelper;
 
-    public OIDCExternalMapper(@Value("${apiml.security.oidc.identityMapperUrl:}") String mapperUrl,
-                              @Value("${apiml.security.oidc.identityMapperUser:}") String mapperUser,
-                              @Qualifier("secureHttpClientWithoutKeystore") CloseableHttpClient secureHttpClientWithoutKeystore,
-                              TokenCreationService tokenCreationService,
-                              AuthConfigurationProperties authConfigurationProperties,
-                              OIDCMapperHelper mapperHelper) {
+    public OIDCExternalMapper(@Value("${apiml.security.oidc.identityMapperUrl:}") String mapperUrl, @Value("${apiml.security.oidc.identityMapperUser:}") String mapperUser, @Qualifier("secureHttpClientWithoutKeystore") CloseableHttpClient secureHttpClientWithoutKeystore, TokenCreationService tokenCreationService, AuthConfigurationProperties authConfigurationProperties, OIDCMapperHelper mapperHelper) {
         super(mapperUrl, mapperUser, secureHttpClientWithoutKeystore, tokenCreationService, authConfigurationProperties);
         this.mapperHelper = mapperHelper;
     }
 
     public String mapToMainframeUserId(AuthSource authSource) {
-        return mapperHelper.mapToMainframeUserId(authSource, distributedId -> {
-            OIDCRequest oidcRequest = new OIDCRequest(distributedId, mapperHelper.registry);
-            try {
-                StringEntity payload = new StringEntity(objectMapper.writeValueAsString(oidcRequest));
-                MapperResponse mapperResponse = callExternalMapper(payload);
-
-                if (mapperResponse != null && mapperResponse.isOIDCResultValid()) {
-                    String userId = mapperResponse.getUserId().trim();
-                    return StringUtils.isNotEmpty(userId) ? userId : null;
-                }
-            } catch (JsonProcessingException e) {
-                apimlLog.log("org.zowe.apiml.security.common.OIDCMappingError",
-                    "Unable to generate JSON payload for identity mapping request",
-                    e.getMessage());
-            }
-            return null;
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

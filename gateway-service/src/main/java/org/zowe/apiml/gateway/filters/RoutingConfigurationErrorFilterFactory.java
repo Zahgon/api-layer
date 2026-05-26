@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import lombok.Data;
@@ -21,7 +20,6 @@ import org.zowe.apiml.gateway.service.InstanceInfoService;
 import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.product.opentelemetry.OtelRequestContext;
 import reactor.core.publisher.Mono;
-
 import java.util.function.Function;
 
 @Service
@@ -33,30 +31,22 @@ public class RoutingConfigurationErrorFilterFactory extends AbstractAuthSchemeFa
 
     @Override
     protected AuthenticationScheme getAuthenticationScheme() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Function<RequestCredentials, Mono<AuthorizationResponse<Object>>> getAuthorizationResponseTransformer(ServerWebExchange exchange) {
-        throw new IllegalStateException("not implemented");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Mono<Void> processResponse(ServerWebExchange clientCallBuilder, GatewayFilterChain chain, AuthorizationResponse<Object> response) {
-        throw new IllegalStateException("not implemented");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public GatewayFilter apply(Config config) {
-        var authenticationScheme = AuthenticationScheme.fromString(config.getAuthenticationScheme());
-
-        return ((exchange, chain) -> {
-            OtelRequestContext.of(exchange).authMethod(authenticationScheme);
-
-            super.cleanHeadersOnAuthFail(exchange, config.getMessage());
-
-            return chain.filter(exchange);
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
@@ -64,8 +54,7 @@ public class RoutingConfigurationErrorFilterFactory extends AbstractAuthSchemeFa
     public static class Config extends AbstractAuthSchemeFactory.AbstractConfig {
 
         private String authenticationScheme;
+
         private String message;
-
     }
-
 }

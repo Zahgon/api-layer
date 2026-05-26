@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.auth.saf;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.client.RestTemplate;
 import org.zowe.apiml.security.common.config.AuthConfigurationProperties;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
-
 import java.util.Collections;
 
 @RequiredArgsConstructor
@@ -37,7 +35,6 @@ public class SafResourceAccessEndpoint implements SafResourceAccessVerifying {
     private final AuthConfigurationProperties authConfigurationProperties;
 
     private <T> HttpEntity<T> createHttpEntity(Authentication authentication) {
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -50,25 +47,7 @@ public class SafResourceAccessEndpoint implements SafResourceAccessVerifying {
 
     @Override
     public boolean hasSafResourceAccess(Authentication authentication, String resourceClass, String resourceName, String accessLevel) {
-        if (!StringUtils.equalsIgnoreCase("ZOWE", resourceClass)) {
-            throw new UnsupportedResourceClassException(resourceClass, "The SAF provider `endpoint` supports only resource class 'ZOWE', but current one is '" + resourceClass + "'");
-        }
-
-        try {
-            HttpEntity<HttpHeaders> httpEntity = createHttpEntity(authentication);
-            ResponseEntity<Response> responseEntity = restTemplate.exchange(
-                    endpointUrl + URL_VARIABLE_SUFFIX, HttpMethod.GET, httpEntity, Response.class, resourceName, accessLevel
-            );
-            Response response = responseEntity.getBody();
-            if (response != null && response.isError()) {
-                throw new EndpointImproperlyConfigureException("Endpoint " + endpointUrl + " is not properly configured: " + response.getMessage(), endpointUrl);
-            }
-            return response != null && !response.isError() && response.isAuthorized();
-        } catch (EndpointImproperlyConfigureException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new EndpointImproperlyConfigureException("Endpoint " + endpointUrl + " is not properly configured.", endpointUrl, e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
@@ -77,9 +56,9 @@ public class SafResourceAccessEndpoint implements SafResourceAccessVerifying {
     public static class Response {
 
         private boolean authorized;
+
         private boolean error;
+
         private String message;
-
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.eureka.client;
 
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl;
@@ -16,6 +15,7 @@ import com.netflix.eureka.resources.ASGResource;
 public abstract class AsgReplicationTask extends ReplicationTask {
 
     private final String asgName;
+
     private final ASGResource.ASGStatus newStatus;
 
     AsgReplicationTask(String peerNodeName, PeerAwareInstanceRegistryImpl.Action action, String asgName, ASGResource.ASGStatus newStatus) {
@@ -26,14 +26,14 @@ public abstract class AsgReplicationTask extends ReplicationTask {
 
     @Override
     public String getTaskName() {
-        return asgName + ':' + action + '@' + peerNodeName;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getAsgName() {
-        return asgName;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public ASGResource.ASGStatus getNewStatus() {
-        return newStatus;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

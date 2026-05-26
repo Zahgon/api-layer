@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.config;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zowe.apiml.security.common.config.HandlerInitializer;
 import org.zowe.apiml.security.common.content.BasicContentFilter;
-
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -49,6 +47,7 @@ import java.util.Collections;
 @Profile("!https & !attlsServer")
 @ConditionalOnMissingBean(name = "modulithConfig")
 public class HttpWebSecurityConfig extends AbstractWebSecurityConfigurer {
+
     private static final String DISCOVERY_REALM = "API Mediation Discovery Service realm";
 
     @Value("${apiml.discovery.userid:eureka}")
@@ -62,85 +61,26 @@ public class HttpWebSecurityConfig extends AbstractWebSecurityConfigurer {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        // we cannot use `auth.inMemoryAuthentication()` because it does not support char array
-        auth.authenticationProvider(new AuthenticationProvider() {
-            private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
-
-            @Override
-            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-                if (
-                    StringUtils.equals(eurekaUserid, String.valueOf(authentication.getPrincipal())) &&
-                        authentication.getCredentials() != null
-                ) {
-                    char[] credentials;
-                    if (authentication.getCredentials() instanceof char[]) {
-                        credentials = (char[]) authentication.getCredentials();
-                    } else {
-                        credentials = String.valueOf(authentication.getCredentials()).toCharArray();
-                    }
-
-                    if (Arrays.equals(eurekaPassword, credentials)) {
-                        UsernamePasswordAuthenticationToken result = UsernamePasswordAuthenticationToken.authenticated(
-                            authentication.getPrincipal(),
-                            authentication.getCredentials(),
-                            Collections.singleton(new SimpleGrantedAuthority("EUREKA"))
-                        );
-                        result.setDetails(authentication.getDetails());
-                        return result;
-                    }
-                }
-
-                throw new BadCredentialsException(this.messages
-                    .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
-
-            }
-
-            @Override
-            public boolean supports(Class<?> authentication) {
-                return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
-            }
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private final HandlerInitializer handlerInitializer;
 
     @Bean
     public WebSecurityCustomizer httpWebSecurityCustomizer() {
-        String[] noSecurityAntMatchers = {
-            "/favicon.ico",
-            "/eureka/css/**",
-            "/eureka/js/**",
-            "/eureka/fonts/**",
-            "/eureka/images/**"
-        };
-        return web -> web.ignoring().requestMatchers(noSecurityAntMatchers);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public SecurityFilterChain httpFilterChain(HttpSecurity http) throws Exception {
-
-        if (!isHealthEndpointProtected) {
-            http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/application/health").permitAll());
-        }
-
-        baseConfigure(http)
-            .httpBasic(s -> s.realmName(DISCOVERY_REALM))
-
-            .authorizeHttpRequests(
-                s -> s.requestMatchers("/application/info").permitAll()
-                      .requestMatchers("/**").authenticated()
-            );
-
-        return http.with(new CustomSecurityFilters(), t -> { })
-                   .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private class CustomSecurityFilters extends AbstractHttpConfigurer<CustomSecurityFilters, HttpSecurity> {
+
         @Override
         public void configure(HttpSecurity http) {
-            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-            http.addFilterBefore(basicFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         private BasicContentFilter basicFilter(AuthenticationManager authenticationManager) {

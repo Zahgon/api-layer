@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.opentelemetry;
 
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
-
 import java.util.ArrayList;
 
 /**
@@ -27,25 +25,18 @@ public class OpenTelemetryImportSelector implements ImportSelector, EnvironmentA
 
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
-        var imports = new ArrayList<>();
-
-        if (isOtelEnabled()) {
-            imports.add("io.opentelemetry.instrumentation.spring.autoconfigure.OpenTelemetryAutoConfiguration");
-        }
-        return imports.toArray(new String[0]);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean isOtelEnabled() {
         if (environment == null) {
             return false;
         }
-
         return !Boolean.parseBoolean(environment.getProperty("otel.sdk.disabled", "true"));
     }
 
     @Override
     public void setEnvironment(Environment environment) {
-        this.environment = environment;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

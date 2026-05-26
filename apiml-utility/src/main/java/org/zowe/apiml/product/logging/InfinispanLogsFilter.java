@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.logging;
 
 import ch.qos.logback.classic.Level;
@@ -32,12 +31,19 @@ import java.util.regex.Pattern;
 public class InfinispanLogsFilter extends TurboFilter {
 
     private static final String APIML_MARKER = "APIML-LOGGER";
+
     private static final String TARGET_LOGGER = "org.infinispan.persistence.sifs.FileProvider";
+
     private static final String ROOT_LOGGER = "org.infinispan.persistence.sifs";
+
     private static final org.slf4j.Logger customLogger = LoggerFactory.getLogger(TARGET_LOGGER);
+
     private static final org.slf4j.Logger rootLogger = LoggerFactory.getLogger(ROOT_LOGGER);
+
     protected static Message customMessage;
+
     private static final Pattern LOG_PATTERN = Pattern.compile("File \\d{1,5} was not found");
+
     private static final String MAPPED_MESSAGE;
 
     static {
@@ -49,26 +55,10 @@ public class InfinispanLogsFilter extends TurboFilter {
         } catch (Exception e) {
             throw new IllegalStateException("Could not load caching log messages", e);
         }
-
     }
 
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-        if (marker != null && APIML_MARKER.equals(marker.getName())) {
-            return FilterReply.NEUTRAL;
-        }
-        if (format != null && logger.getName().equals(TARGET_LOGGER)) {
-            if (LOG_PATTERN.matcher(format).matches()) {
-                Marker bypassMarker = MarkerFactory.getMarker(APIML_MARKER);
-                String enhancedMessage = MAPPED_MESSAGE + " Exception: " + format;
-                customLogger.error(bypassMarker, enhancedMessage, t);
-
-                return FilterReply.DENY;
-            } else if (!rootLogger.isEnabledForLevel(org.slf4j.event.Level.intToLevel(Level.toLocationAwareLoggerInteger(level)))) {
-                return FilterReply.DENY;
-            }
-
-        }
-        return FilterReply.NEUTRAL;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

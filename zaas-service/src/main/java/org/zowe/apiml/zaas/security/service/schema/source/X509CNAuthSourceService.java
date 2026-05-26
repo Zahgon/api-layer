@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +14,9 @@ import org.zowe.apiml.zaas.security.mapping.X509CommonNameUserMapper;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
 import org.zowe.apiml.zaas.security.service.TokenCreationService;
 import org.zowe.apiml.message.core.MessageType;
-
 import jakarta.servlet.http.HttpServletRequest;
-
 import java.security.cert.X509Certificate;
 import java.util.Optional;
-
 import static org.zowe.apiml.security.common.filter.CategorizeCertsFilter.ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE;
 import static org.zowe.apiml.security.common.filter.CategorizeCertsFilter.ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE;
 
@@ -30,6 +26,7 @@ import static org.zowe.apiml.security.common.filter.CategorizeCertsFilter.ATTR_N
  */
 @Slf4j
 public class X509CNAuthSourceService extends X509AuthSourceService {
+
     public X509CNAuthSourceService(X509CommonNameUserMapper mapper, TokenCreationService tokenService, AuthenticationService authenticationService) {
         super(mapper, tokenService, authenticationService);
     }
@@ -46,14 +43,6 @@ public class X509CNAuthSourceService extends X509AuthSourceService {
      */
     @Override
     public Optional<AuthSource> getAuthSourceFromRequest(HttpServletRequest request) {
-        logger.log(MessageType.DEBUG, "Getting X509 client certificate from custom attribute '" + ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE + "'.");
-        X509Certificate clientCert = super.getCertificateFromRequest(request, ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE);
-        if (clientCert == null) {
-            logger.log(MessageType.DEBUG, "Getting X509 client certificate from standard attribute '" + ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE + "'.");
-            clientCert = super.getCertificateFromRequest(request, ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE);
-        }
-        clientCert = isValid(clientCert) ? clientCert : null;
-        return clientCert == null ? Optional.empty() : Optional.of(new X509AuthSource(clientCert));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,10 +18,8 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.zowe.apiml.security.common.config.AuthConfigurationProperties;
 import reactor.core.publisher.Mono;
-
 import java.net.HttpCookie;
 import java.util.Collection;
-
 import static org.apache.hc.core5.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.hc.core5.http.HttpStatus.SC_UNAUTHORIZED;
 
@@ -37,45 +34,19 @@ public class BasicAuthProvider extends AbstractAuthProviderFilter<ClientResponse
     }
 
     public String getEndpointPath() {
-        return "/zaas/api/v1/auth/login";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Mono<ClientResponse.Headers> processResponse(WebClient.RequestHeadersSpec<?> rhs) {
-        return rhs
-            .exchangeToMono(clientResp -> switch (clientResp.statusCode().value()) {
-                case SC_UNAUTHORIZED: case SC_NO_CONTENT:
-                    yield Mono.just(clientResp.headers());
-                default:
-                    yield Mono.empty();
-            });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected WebClient.RequestHeadersSpec<WebClient.RequestBodySpec> createRequest(ServiceInstance instance, String headerValue) {
-        return webClient.post()
-            .uri(getEndpointUrl(instance))
-            .headers(httpHeaders -> httpHeaders.set(HttpHeaders.AUTHORIZATION, headerValue));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Mono<String> getToken(String authHeader) {
-        String cookieName = authConfigurationProperties.getCookieProperties().getCookieName();
-
-        return getZaasInstances()
-            .collectList()
-            .flatMap(instances ->
-                invoke(
-                    instances,
-                    instance -> createRequest(instance, authHeader)
-                )
-            )
-            .map(headers -> headers.header(HttpHeaders.SET_COOKIE).stream()
-                .map(HttpCookie::parse)
-                .flatMap(Collection::stream)
-                .filter(cookie -> StringUtils.equals(cookieName, cookie.getName()))
-                .findFirst()
-                .map(HttpCookie::getValue).orElse("")
-            );
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

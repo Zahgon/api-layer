@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.inmemory.config;
 
 import lombok.RequiredArgsConstructor;
@@ -22,13 +21,12 @@ import org.zowe.apiml.message.log.ApimlLogger;
 @Configuration
 @RequiredArgsConstructor
 public class InMemoryConfiguration {
+
     private final InMemoryConfig inMemoryConfig;
 
     @ConditionalOnProperty(name = "caching.storage.mode", havingValue = "inMemory", matchIfMissing = true)
     @Bean
     public Storage inMemory(MessageService messageService) {
-        ApimlLogger.of(InMemoryConfig.class, messageService).log("org.zowe.apiml.cache.usingInMemory");
-
-        return new InMemoryStorage(inMemoryConfig, messageService);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

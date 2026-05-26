@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import lombok.Data;
@@ -20,7 +19,6 @@ import org.zowe.apiml.gateway.service.InstanceInfoService;
 import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.zaas.ZaasTokenResponse;
 import reactor.core.publisher.Mono;
-
 import java.util.function.Function;
 
 @Service
@@ -35,29 +33,28 @@ public class SafIdtFilterFactory extends AbstractTokenFilterFactory<SafIdtFilter
 
     @Override
     protected AuthenticationScheme getAuthenticationScheme() {
-        return AuthenticationScheme.SAF_IDT;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Function<RequestCredentials, Mono<AuthorizationResponse<ZaasTokenResponse>>> getAuthorizationResponseTransformer(ServerWebExchange exchange) {
-        return requestCredentials -> zaasSchemeTransform.safIdt(requestCredentials, exchange);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public GatewayFilter apply(Config config) {
-        return createGatewayFilter(config);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected RequestCredentials.RequestCredentialsBuilder createRequestCredentials(ServerWebExchange exchange, Config config) {
-        return super.createRequestCredentials(exchange, config)
-            .applId(config.getApplicationName());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class Config extends AbstractTokenFilterFactory.Config {
+
         private String applicationName;
     }
-
 }

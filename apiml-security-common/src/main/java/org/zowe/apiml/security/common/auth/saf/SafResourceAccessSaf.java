@@ -7,13 +7,11 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.auth.saf;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
@@ -22,10 +20,13 @@ import java.lang.reflect.Method;
 public class SafResourceAccessSaf implements SafResourceAccessVerifying {
 
     private static final String PLATFORM_ACCESS_CONTROL_CLASS_NAME = "com.ibm.os390.security.PlatformAccessControl";
+
     private static final String PLATFORM_PLATFORM_CLASS_NAME = "com.ibm.os390.security.PlatformReturned";
+
     private static final String CHECK_PERMISSION_METHOD_NAME = "checkPermission";
 
     private PlatformReturnedHelper<Object> platformReturnedHelper;
+
     private MethodHandle checkPermission;
 
     public SafResourceAccessSaf() throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException, IllegalAccessException {
@@ -33,16 +34,15 @@ public class SafResourceAccessSaf implements SafResourceAccessVerifying {
     }
 
     protected Class<?> getPlatformClass() throws ClassNotFoundException {
-        return Class.forName(PLATFORM_ACCESS_CONTROL_CLASS_NAME);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected Class<?> getPlatformReturnedClass() throws ClassNotFoundException {
-        return Class.forName(PLATFORM_PLATFORM_CLASS_NAME);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected MethodHandle getCheckPermissionMethodHandle(Class<?> clazz) throws IllegalAccessException, NoSuchMethodException {
-        Method method = clazz.getDeclaredMethod(CHECK_PERMISSION_METHOD_NAME, String.class, String.class, String.class, int.class);
-        return MethodHandles.lookup().unreflect(method);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void init() throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException {
@@ -54,7 +54,6 @@ public class SafResourceAccessSaf implements SafResourceAccessVerifying {
         if (returned == null) {
             return true;
         }
-
         String message;
         PlatformAckErrno errno = PlatformAckErrno.valueOfErrno(returned.getErrno());
         PlatformErrno2 errno2 = PlatformErrno2.valueOfErrno(returned.getErrno2());
@@ -63,16 +62,15 @@ public class SafResourceAccessSaf implements SafResourceAccessVerifying {
             log.error("Platform access control failed: {}", returned);
         } else {
             message = "Platform access control failed: " + errno2.explanation;
-            switch (errno2) {
+            switch(errno2) {
                 case JRSAFResourceUndefined:
                     return !resourceHasToExist;
                 case JRSAFNoUser:
-                    // When the user is not defined RACF returns JRSAFNoUser but TSS returns JRSAFResourceUndefined.
+                // When the user is not defined RACF returns JRSAFNoUser but TSS returns JRSAFResourceUndefined.
                 case JRNoResourceAccess:
                     return false;
                 default:
-                    log.error("Platform access control failed: {} {} {} {}",
-                        errno.shortErrorName, errno2.shortErrorName, errno2.explanation, returned);
+                    log.error("Platform access control failed: {} {} {} {}", errno.shortErrorName, errno2.shortErrorName, errno2.explanation, returned);
             }
         }
         throw new AccessControlError(returned, message + ": " + returned.toString());
@@ -96,14 +94,6 @@ public class SafResourceAccessSaf implements SafResourceAccessVerifying {
 
     @Override
     public boolean hasSafResourceAccess(Authentication authentication, String resourceClass, String resourceName, String accessLevel) {
-        String userid = authentication.getName();
-        if (StringUtils.isEmpty(userid) || userid.length() > 8) {
-            log.debug("UserId {} is not valid for SAF permissions check", userid);
-            return false;
-        }
-        AccessLevel level = AccessLevel.valueOf(accessLevel);
-        log.debug("Evaluating access of user {} to resource {} in class {} level {}", userid, resourceClass, resourceName, level);
-        return checkPermission(userid, resourceClass, resourceName, level.getValue(), true);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -49,11 +48,9 @@ import org.zowe.apiml.util.EurekaUtils;
 import org.zowe.apiml.zaas.controllers.AuthController;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSource;
 import org.zowe.apiml.zaas.security.service.zosmf.ZosmfService;
-
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-
 import static org.zowe.apiml.security.common.util.JwtUtils.getJwtClaims;
 import static org.zowe.apiml.security.common.util.JwtUtils.handleJwtParserException;
 import static org.zowe.apiml.zaas.security.service.zosmf.ZosmfService.TokenType.JWT;
@@ -70,33 +67,46 @@ import static org.zowe.apiml.zaas.security.service.zosmf.ZosmfService.TokenType.
 public class AuthenticationService {
 
     public static final String LTPA_CLAIM_NAME = "ltpa";
+
     private static final String DOMAIN_CLAIM_NAME = "dom";
+
     private static final String AUTH_PROV_CLAIM = "auth.prov";
+
     private static final String SCOPES = "scopes";
+
     private static final String CACHE_VALIDATED_JWT_TOKENS = "validatedJwtTokens";
+
     private static final String CACHE_INVALIDATED_JWT_TOKENS = "invalidatedJwtTokens";
 
     private final ApplicationContext applicationContext;
+
     private final AuthConfigurationProperties authConfigurationProperties;
+
     private final JwtSecurity jwtSecurityInitializer;
+
     private final ZosmfService zosmfService;
+
     private final EurekaClient eurekaClient;
+
     private final RestTemplate restTemplate;
+
     private final CacheManager cacheManager;
+
     private final CacheUtils cacheUtils;
+
     private boolean isModulithMode;
+
     private final AtomicReference<Cache> validatedJwtTokensCache = new AtomicReference<>();
+
     private final AtomicReference<Cache> invalidatedJwtTokensCache = new AtomicReference<>();
 
     @PostConstruct
     public void afterPropertiesSet() {
-        isModulithMode = applicationContext.containsBean("modulithConfig");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Cache getCacheLazy(AtomicReference<Cache> holder, String cacheName) {
-        return holder.updateAndGet(prev ->
-            prev == null ? cacheManager.getCache(cacheName) : prev
-        );
+        return holder.updateAndGet(prev -> prev == null ? cacheManager.getCache(cacheName) : prev);
     }
 
     private Optional<Cache> getValidatedJwtTokensCache() {
@@ -117,30 +127,18 @@ public class AuthenticationService {
      * @return the JWT token
      */
     public String createJwtToken(@NonNull String username, String domain, String ltpaToken) {
-        long now = System.currentTimeMillis();
-        long expiration = calculateExpiration(now, username);
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(DOMAIN_CLAIM_NAME, domain);
-        claims.put(LTPA_CLAIM_NAME, ltpaToken);
-        String issuer = authConfigurationProperties.getTokenProperties().getIssuer();
-        return createJWT(username, issuer, claims, now, expiration);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String createLongLivedJwtToken(@NonNull String username, int daysToLive, Set<String> scopes) {
-        long now = System.currentTimeMillis();
-        long expiration = now + (daysToLive * 86_400_000L);
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(AUTH_PROV_CLAIM, authConfigurationProperties.getTokenProperties().getIssuer());
-        claims.put(SCOPES, scopes);
-        String issuer = QueryResponse.Source.ZOWE_PAT.value;
-        return createJWT(username, issuer, claims, now, expiration);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String createJWT(String username, String issuer, Map<String, Object> claims, long issuedAt, long expiration) {
         try {
             var newClaims = new JwtClaims();
-
-            newClaims.setIssuer(issuer);  // who creates the token and signs it
+            // who creates the token and signs it
+            newClaims.setIssuer(issuer);
             newClaims.setExpirationTime(NumericDate.fromMilliseconds(expiration));
             newClaims.setGeneratedJwtId();
             newClaims.setIssuedAt(NumericDate.fromMilliseconds(issuedAt));
@@ -148,10 +146,7 @@ public class AuthenticationService {
             if (claims != null) {
                 claims.forEach(newClaims::setClaim);
             }
-
-            var kid = jwtSecurityInitializer.getJwkPublicKey()
-                .orElseThrow(() -> new IllegalStateException("Unable to get JWK.")).getKeyId();
-
+            var kid = jwtSecurityInitializer.getJwkPublicKey().orElseThrow(() -> new IllegalStateException("Unable to get JWK.")).getKeyId();
             var jws = new JsonWebSignature();
             jws.setPayload(newClaims.toJson());
             jws.setKeyIdHeaderValue(kid);
@@ -168,11 +163,9 @@ public class AuthenticationService {
     }
 
     @SuppressWarnings("java:S5659")
-    // It is checking the signature securely - https://github.com/zowe/api-layer/issues/3191
-    public QueryResponse parseJwtWithSignature(String jwt) {
-        var tokenAuthentication = new TokenAuthentication(jwt);
-        validateLocalJwtToken(tokenAuthentication);
-        return tokenAuthentication.getQueryResponse();
+    public // It is checking the signature securely - https://github.com/zowe/api-layer/issues/3191
+    QueryResponse parseJwtWithSignature(String jwt) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -186,26 +179,15 @@ public class AuthenticationService {
      * @return state of invalidate (true - token was invalidated)
      */
     public Boolean invalidateJwtToken(String jwtToken, boolean distribute) {
-        log.debug("Invalidating JWT: ...{}", StringUtils.right(jwtToken, 15));
-        if (jwtToken != null && isInvalidated(jwtToken)) {
-            return Boolean.TRUE;
-        }
-
-        Application app = isModulithMode
-            ? eurekaClient.getApplication(CoreService.GATEWAY.getServiceId())
-            : eurekaClient.getApplication(CoreService.ZAAS.getServiceId());
-
-        return doInvalidateAndUpdateCaches(jwtToken, distribute, app);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Boolean doInvalidateAndUpdateCaches(String jwtToken, boolean distribute, Application app) {
         Boolean result = doInvalidate(jwtToken, distribute, app);
-
         if (Boolean.TRUE.equals(result) && jwtToken != null) {
             evictValidationCache(jwtToken);
             putInvalidatedCache(jwtToken);
         }
-
         return result;
     }
 
@@ -217,13 +199,13 @@ public class AuthenticationService {
                 return Boolean.FALSE;
             }
         }
-
         final QueryResponse queryResponse = parseJwtToken(jwtToken).getQueryResponse();
         try {
-            switch (queryResponse.getSource()) {
+            switch(queryResponse.getSource()) {
                 case ZOWE:
                     final String ltpaToken = getLtpaToken(jwtToken);
-                    if (ltpaToken != null) zosmfService.invalidate(LTPA, ltpaToken);
+                    if (ltpaToken != null)
+                        zosmfService.invalidate(LTPA, ltpaToken);
                     break;
                 case ZOSMF:
                     zosmfService.invalidate(JWT, jwtToken);
@@ -236,7 +218,6 @@ public class AuthenticationService {
                 throw e;
             }
         }
-
         return Boolean.TRUE;
     }
 
@@ -264,11 +245,7 @@ public class AuthenticationService {
      * @return state of invalidate (true - token was invalidated)
      */
     public Boolean invalidateJwtTokenGateway(String jwtToken, boolean distribute, Application app) {
-        if (jwtToken != null && isInvalidated(jwtToken)) {
-            return Boolean.TRUE;
-        }
-
-        return doInvalidateAndUpdateCaches(jwtToken, distribute, app);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -279,22 +256,19 @@ public class AuthenticationService {
      * @return
      */
     protected String getInvalidateUrl(InstanceInfo instanceInfo, String jwtToken) {
-        return EurekaUtils.getUrl(instanceInfo) + AuthController.CONTROLLER_PATH + "/invalidate/" + jwtToken;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean invalidateTokenOnAnotherInstance(String jwtToken, Application application) {
         if (application == null) {
             return Boolean.FALSE;
         }
-
         final String myInstanceId = eurekaClient.getApplicationInfoManager().getInfo().getInstanceId();
         boolean returnValue = Boolean.TRUE;
-
         for (final InstanceInfo instanceInfo : application.getInstances()) {
             if (StringUtils.equals(myInstanceId, instanceInfo.getInstanceId())) {
                 continue;
             }
-
             final String url = getInvalidateUrl(instanceInfo, jwtToken);
             try {
                 restTemplate.delete(url);
@@ -302,9 +276,7 @@ public class AuthenticationService {
                 log.debug("Problem invalidating token on another instance url {}", url, e);
                 returnValue = Boolean.FALSE;
             }
-
         }
-
         return returnValue;
     }
 
@@ -315,13 +287,7 @@ public class AuthenticationService {
      * @return true - token is invalidated, otherwise token is still valid
      */
     public boolean isInvalidated(String jwtToken) {
-        boolean result = getInvalidatedJwtTokensCache()
-            .map(cache -> cache.get(jwtToken))
-            .map(wrapper -> Boolean.TRUE.equals(wrapper.get()))
-            .orElse(false);
-
-        log.debug("Token invalidation check for ...{}: {}", StringUtils.right(jwtToken, 15), result);
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void validateLocalJwtToken(TokenAuthentication tokenAuthentication) {
@@ -360,38 +326,7 @@ public class AuthenticationService {
      * @return true if token is still valid, otherwise false
      */
     public TokenAuthentication validateJwtToken(String jwtToken) {
-        if (jwtToken == null) {
-            throw new TokenNotValidException("Token is null");
-        }
-
-        log.debug("Validating JWT: ...{}", StringUtils.right(jwtToken, 15));
-        if (isInvalidated(jwtToken)) {
-            throw new TokenNotValidException("Token ...%s was invalidated.".formatted(StringUtils.right(jwtToken, 15)));
-        }
-
-        var tokenAuthentication = getValidatedJwtTokensCache()
-            .map(wrapper -> wrapper.get(jwtToken))
-            .map(Cache.ValueWrapper::get)
-            .map(TokenAuthentication.class::cast)
-            .orElse(null);
-        if (tokenAuthentication != null) {
-            log.debug("JWT ...{} found in the cache. Is authenticated: {}", StringUtils.right(jwtToken, 15), tokenAuthentication.isAuthenticated());
-            if (tokenAuthentication.isExpired()) {
-                throw new TokenExpireException("Token ...%s expired on %s".formatted(StringUtils.right(jwtToken, 15), tokenAuthentication.getExpiration()));
-            }
-            return tokenAuthentication;
-        }
-
-        tokenAuthentication = new TokenAuthentication(jwtToken);
-        switch (tokenAuthentication.getSource()) {
-            case ZOWE -> validateLocalJwtToken(tokenAuthentication);
-            case ZOSMF -> zosmfService.validate(jwtToken);
-            default -> throw new TokenNotValidException("Unknown token type.");
-        }
-        tokenAuthentication.setAuthenticated(true);
-        putValidationCache(jwtToken, tokenAuthentication);
-        log.debug("JWT token ...{} is valid", StringUtils.right(jwtToken, 15));
-        return tokenAuthentication;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -403,13 +338,7 @@ public class AuthenticationService {
      * @return authenticated {@link TokenAuthentication} using information about invalidating of token
      */
     public TokenAuthentication createTokenAuthentication(String user, String jwtToken) {
-        boolean notInvalidated = !isInvalidated(jwtToken);
-        final TokenAuthentication out = new TokenAuthentication(user, jwtToken, TokenAuthentication.Type.JWT);
-        out.setAuthenticated(notInvalidated);
-
-        putValidationCache(jwtToken, out);
-
-        return out;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -423,21 +352,7 @@ public class AuthenticationService {
      * @return true if all token were sent, otherwise false
      */
     public boolean distributeInvalidate(String toInstanceId) {
-        var zaas = eurekaClient.getApplication(CoreService.ZAAS.getServiceId());
-
-        if (zaas == null) return false;
-
-        final InstanceInfo instanceInfo = zaas.getByInstanceId(toInstanceId);
-        if (instanceInfo == null) return false;
-
-        var url = EurekaUtils.getUrl(instanceInfo) + AuthController.CONTROLLER_PATH + "/invalidate/{}";
-
-        final Collection<String> invalidated = cacheUtils.getAllRecords(cacheManager, CACHE_INVALIDATED_JWT_TOKENS);
-        for (final String invalidatedToken : invalidated) {
-            restTemplate.delete(url, invalidatedToken);
-        }
-
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -449,11 +364,7 @@ public class AuthenticationService {
      * @throws TokenNotValidException if the token is not valid
      */
     public TokenAuthentication validateJwtToken(TokenAuthentication token) {
-        if (token == null) {
-            throw new TokenNotValidException("Null token.");
-        }
-
-        return validateJwtToken(token.getCredentials());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -464,8 +375,7 @@ public class AuthenticationService {
      * @return the query response
      */
     public TokenAuthentication parseJwtToken(String jwtToken) {
-        log.debug("Parsing JWT: ...{}", StringUtils.right(jwtToken, 15));
-        return new TokenAuthentication(jwtToken);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -475,9 +385,7 @@ public class AuthenticationService {
      * @return AuthSource.Origin value based on the iss token claim.
      */
     public AuthSource.Origin getTokenOrigin(String jwtToken) {
-        var claims = getJwtClaims(jwtToken);
-        QueryResponse.Source source = QueryResponse.Source.valueByIssuer(claims.getIssuer());
-        return AuthSource.Origin.valueByTokenSource(source);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -488,13 +396,7 @@ public class AuthenticationService {
      * @return LTPA token extracted from JWT
      */
     public String getLtpaTokenWithValidation(String jwtToken) {
-        try {
-            var tokenAuthentication = new TokenAuthentication(jwtToken);
-            validateLocalJwtToken(tokenAuthentication);
-            return tokenAuthentication.getClaimAsString(LTPA_CLAIM_NAME);
-        } catch (ParseException e) {
-            throw new TokenNotValidException(e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -505,13 +407,7 @@ public class AuthenticationService {
      * @throws TokenNotValidException if the JWT token is not valid
      */
     public String getLtpaToken(String jwtToken) {
-        var claims = getJwtClaims(jwtToken);
-
-        try {
-            return claims.getClaimAsString(LTPA_CLAIM_NAME);
-        } catch (ParseException e) {
-            throw new TokenNotValidException(e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -525,15 +421,11 @@ public class AuthenticationService {
      * @return the JWT token
      */
     public Optional<String> getJwtTokenFromRequest(@NonNull HttpServletRequest request) {
-        Optional<String> fromCookie = getTokenFromCookie(request, authConfigurationProperties.getCookieProperties().getCookieName());
-        return fromCookie.isPresent() ?
-            fromCookie : extractJwtTokenFromAuthorizationHeader(request.getHeader(HttpHeaders.AUTHORIZATION));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Optional<String> getPATFromRequest(@NonNull HttpServletRequest request) {
-        Optional<String> fromCookie = getTokenFromCookie(request, authConfigurationProperties.getCookieProperties().getCookieNamePAT());
-        return fromCookie.isPresent() ?
-            fromCookie : getAccessTokenFromHeader(request.getHeader(ApimlConstants.PAT_HEADER_NAME));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Optional<String> getAccessTokenFromHeader(String header) {
@@ -542,12 +434,9 @@ public class AuthenticationService {
 
     private Optional<String> getTokenFromCookie(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) return Optional.empty();
-        return Arrays.stream(cookies)
-            .filter(cookie -> cookie.getName().equals(cookieName))
-            .filter(cookie -> !cookie.getValue().isEmpty())
-            .findFirst()
-            .map(Cookie::getValue);
+        if (cookies == null)
+            return Optional.empty();
+        return Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieName)).filter(cookie -> !cookie.getValue().isEmpty()).findFirst().map(Cookie::getValue);
     }
 
     /**
@@ -562,10 +451,8 @@ public class AuthenticationService {
             if (header.isEmpty()) {
                 return Optional.empty();
             }
-
             return Optional.of(header);
         }
-
         return Optional.empty();
     }
 
@@ -578,14 +465,10 @@ public class AuthenticationService {
      */
     private long calculateExpiration(long now, String username) {
         long expiration = now + (authConfigurationProperties.getTokenProperties().getExpirationInSeconds() * 1000L);
-
         // calculate time for short TTL user
-        if (authConfigurationProperties.getTokenProperties().getShortTtlUsername() != null
-            && username.equals(authConfigurationProperties.getTokenProperties().getShortTtlUsername())) {
+        if (authConfigurationProperties.getTokenProperties().getShortTtlUsername() != null && username.equals(authConfigurationProperties.getTokenProperties().getShortTtlUsername())) {
             expiration = now + (authConfigurationProperties.getTokenProperties().getShortTtlExpirationInSeconds() * 1000);
         }
-
         return expiration;
     }
-
 }

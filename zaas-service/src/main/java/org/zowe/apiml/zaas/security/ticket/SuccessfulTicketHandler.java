@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.ticket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +26,6 @@ import org.zowe.apiml.passticket.*;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
 import org.zowe.apiml.ticket.TicketRequest;
 import org.zowe.apiml.ticket.TicketResponse;
-
 import java.io.IOException;
 
 /**
@@ -37,8 +35,11 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class SuccessfulTicketHandler implements AuthenticationSuccessHandler {
+
     private final ObjectMapper mapper;
+
     private final PassTicketService passTicketService;
+
     private final MessageService messageService;
 
     /**
@@ -51,53 +52,19 @@ public class SuccessfulTicketHandler implements AuthenticationSuccessHandler {
     @SneakyThrows
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-        try {
-            response.setStatus(HttpStatus.OK.value());
-            mapper.writeValue(response.getWriter(), getTicketResponse(request, authentication));
-        } catch (ApplicationNameNotProvidedException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.ticket.invalidApplicationName").mapToView();
-            mapper.writeValue(response.getWriter(), messageView);
-        } catch (IRRPassTicketGenerationException e) {
-            response.setStatus(e.getHttpStatus());
-            ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.ticket.generateFailed",
-                e.getErrorCode().getMessage()).mapToView();
-            mapper.writeValue(response.getWriter(), messageView);
-            log.debug("The generation of the PassTicket failed. Please supply a valid user and application name, and check that corresponding permissions have been set up.", e);
-        } catch (UsernameNotProvidedException e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            ApiMessageView messageView = messageService.createMessage("org.zowe.apiml.security.ticket.generateFailed",
-                e.getMessage()).mapToView();
-            mapper.writeValue(response.getWriter(), messageView);
-            log.debug("The generation of the PassTicket failed.", e);
-    }
-
-        response.getWriter().flush();
-        if (!response.isCommitted()) {
-            throw new IOException("Authentication response has not been committed.");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private TicketResponse getTicketResponse(HttpServletRequest request, Authentication authentication) throws PassTicketException {
         TokenAuthentication tokenAuthentication = (TokenAuthentication) authentication;
         String userId = tokenAuthentication.getPrincipal();
-
         String applicationName;
         try {
             applicationName = mapper.readValue(request.getInputStream(), TicketRequest.class).getApplicationName();
         } catch (IOException e) {
             throw new ApplicationNameNotProvidedException("Ticket object has wrong format.");
         }
-
         String ticket = passTicketService.generate(userId, applicationName);
-
-        return TicketResponse.builder()
-            .token(tokenAuthentication.getCredentials())
-            .userId(userId)
-            .applicationName(applicationName)
-            .ticket(ticket)
-            .build();
+        return TicketResponse.builder().token(tokenAuthentication.getCredentials()).userId(userId).applicationName(applicationName).ticket(ticket).build();
     }
 }

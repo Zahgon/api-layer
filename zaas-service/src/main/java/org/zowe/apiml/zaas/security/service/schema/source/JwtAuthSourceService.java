@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -22,7 +20,6 @@ import org.zowe.apiml.message.core.MessageType;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.token.QueryResponse;
-
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.function.Function;
@@ -35,6 +32,7 @@ import java.util.function.Function;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @RequiredArgsConstructor
 public class JwtAuthSourceService extends TokenAuthSourceService {
+
     @InjectApimlLogger
     protected final ApimlLogger logger = ApimlLogger.empty();
 
@@ -42,24 +40,17 @@ public class JwtAuthSourceService extends TokenAuthSourceService {
 
     @Override
     protected ApimlLogger getLogger() {
-        return logger;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Function<String, AuthSource> getMapper() {
-        return JwtAuthSource::new;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Optional<String> getToken(HttpServletRequest request) {
-        Optional<String> tokenOptional = authenticationService.getJwtTokenFromRequest(request);
-        if (tokenOptional.isPresent()) {
-            AuthSource.Origin origin = authenticationService.getTokenOrigin(tokenOptional.get());
-            if (Origin.ZOSMF == origin || Origin.ZOWE == origin) {
-                return tokenOptional;
-            }
-        }
-        return Optional.empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -69,12 +60,7 @@ public class JwtAuthSourceService extends TokenAuthSourceService {
      * @return true if token is valid, false otherwise
      */
     public boolean isValid(AuthSource authSource) {
-        if (authSource instanceof JwtAuthSource) {
-            String jwtToken = ((JwtAuthSource) authSource).getRawSource();
-            logger.log(MessageType.DEBUG, "Validating JWT token.");
-            return jwtToken != null && authenticationService.validateJwtToken(jwtToken).isAuthenticated();
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -84,14 +70,7 @@ public class JwtAuthSourceService extends TokenAuthSourceService {
      * @return authentication source in parsed form
      */
     public AuthSource.Parsed parse(AuthSource authSource) {
-        if (authSource instanceof JwtAuthSource) {
-            String jwtToken = ((JwtAuthSource) authSource).getRawSource();
-            logger.log(MessageType.DEBUG, "Parsing JWT token.");
-            QueryResponse queryResponse = jwtToken == null ? null : authenticationService.parseJwtToken(jwtToken).getQueryResponse();
-            return queryResponse == null ? null : new ParsedTokenAuthSource(queryResponse.getUserId(), queryResponse.getCreation(), queryResponse.getExpiration(),
-                Origin.valueByTokenSource(queryResponse.getSource()));
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -101,15 +80,11 @@ public class JwtAuthSourceService extends TokenAuthSourceService {
      * @return LTPA token
      */
     public String getLtpaToken(AuthSource authSource) {
-        if (authSource instanceof JwtAuthSource) {
-            String jwtToken = ((JwtAuthSource) authSource).getRawSource();
-            return jwtToken == null ? null : authenticationService.getLtpaTokenWithValidation(jwtToken);
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getJWT(AuthSource authSource) {
-        return ((JwtAuthSource) authSource).getRawSource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.services;
 
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -22,16 +21,11 @@ public class ServerInfoConfig {
 
     @Bean
     public EurekaMetadataParser getEurekaMetadataParser() {
-        return new EurekaMetadataParser();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
-    public ServicesInfoService servicesInfoService(
-        DiscoveryClient discoveryClient,
-        EurekaMetadataParser eurekaMetadataParser,
-        GatewayClient gatewayClient
-    ) {
-        return new ServicesInfoService(discoveryClient, eurekaMetadataParser, gatewayClient, new TransformService(gatewayClient));
+    public ServicesInfoService servicesInfoService(DiscoveryClient discoveryClient, EurekaMetadataParser eurekaMetadataParser, GatewayClient gatewayClient) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

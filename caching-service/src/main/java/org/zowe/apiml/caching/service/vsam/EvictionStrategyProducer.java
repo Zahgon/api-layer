@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.vsam;
 
 import lombok.RequiredArgsConstructor;
@@ -23,21 +22,16 @@ import org.zowe.apiml.message.log.ApimlLogger;
 @RequiredArgsConstructor
 @Service
 public class EvictionStrategyProducer {
+
     private final GeneralConfig generalConfig;
+
     private final VsamConfig vsamConfig;
+
     private final MessageService messageService;
 
     private RejectStrategy rejectStrategy;
 
     EvictionStrategy evictionStrategy(VsamFile vsamFile) {
-        if (generalConfig.getEvictionStrategy().equals(Strategies.REJECT.getKey())) {
-            if (rejectStrategy == null) {
-                rejectStrategy = new RejectStrategy(ApimlLogger.of(RejectStrategy.class, messageService));
-            }
-
-            return rejectStrategy;
-        } else {
-            return new RemoveOldestStrategy(vsamConfig, vsamFile);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

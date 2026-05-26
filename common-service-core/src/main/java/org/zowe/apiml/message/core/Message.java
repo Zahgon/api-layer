@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.message.core;
 
 import lombok.ToString;
@@ -16,7 +15,6 @@ import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.message.template.MessageTemplate;
 import org.zowe.apiml.util.ObjectUtil;
 import org.apache.commons.text.StringEscapeUtils;
-
 import java.util.Collections;
 import java.util.IllegalFormatConversionException;
 import java.util.MissingFormatArgumentException;
@@ -26,19 +24,20 @@ import java.util.MissingFormatArgumentException;
  */
 @ToString
 public final class Message {
+
     public static final String INVALID_KEY_MESSAGE = "org.zowe.apiml.common.invalidMessageKey";
-    public static final String INVALID_KEY_MESSAGE_TEXT = "Internal error: Invalid message key '%s' provided. " +
-        "No default message found. Please contact support of further assistance.";
+
+    public static final String INVALID_KEY_MESSAGE_TEXT = "Internal error: Invalid message key '%s' provided. " + "No default message found. Please contact support of further assistance.";
+
     public static final String INVALID_MESSAGE_TEXT_FORMAT = "org.zowe.apiml.common.invalidMessageTextFormat";
 
     private final String requestedKey;
+
     private final MessageTemplate messageTemplate;
+
     private final Object[] messageParameters;
 
-
-    private Message(String requestedKey,
-                    MessageTemplate messageTemplate,
-                    Object[] messageParameters) {
+    private Message(String requestedKey, MessageTemplate messageTemplate, Object[] messageParameters) {
         this.requestedKey = requestedKey;
         this.messageTemplate = messageTemplate;
         this.messageParameters = messageParameters;
@@ -52,18 +51,8 @@ public final class Message {
      * @param messageParameters the object containing the message parameters.
      * @return {@link Message}
      */
-    public static Message of(String requestedKey,
-                             MessageTemplate messageTemplate,
-                             Object[] messageParameters) {
-
-        ObjectUtil.requireNotNull(requestedKey, "requestedKey can't be null");
-        ObjectUtil.requireNotNull(messageTemplate, "messageTemplate can't be null");
-        ObjectUtil.requireNotNull(messageParameters, "messageParameters can't be null");
-
-        messageParameters = validateParameters(messageTemplate.getKey(), requestedKey, messageParameters);
-        validateMessageTextFormat(messageTemplate.getText(), messageParameters);
-
-        return new Message(requestedKey, messageTemplate, messageParameters);
+    public static Message of(String requestedKey, MessageTemplate messageTemplate, Object[] messageParameters) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -74,8 +63,7 @@ public final class Message {
      * @return {@link Message}
      */
     public static Message invalidKeyMessage(String requestedKey) {
-        return new Message(requestedKey, new MessageTemplate(Message.INVALID_KEY_MESSAGE, "ZWEAM102",
-            MessageType.ERROR, Message.INVALID_KEY_MESSAGE_TEXT), new Object[]{requestedKey});
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -101,7 +89,7 @@ public final class Message {
      */
     private static Object[] validateParameters(String messageKey, String requestedKey, Object... parameters) {
         if (messageKey.equals(Message.INVALID_KEY_MESSAGE)) {
-            return new Object[]{requestedKey};
+            return new Object[] { requestedKey };
         } else {
             return parameters;
         }
@@ -113,19 +101,14 @@ public final class Message {
      * @return escaped characters in the converted text using HTML entities
      */
     public String getConvertedText() {
-        String convertedText = validateMessageTextFormat(messageTemplate.getText(), messageParameters);
-        convertedText = StringEscapeUtils.escapeHtml4(convertedText);
-        return convertedText;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return a message in the format that can be printed to console as a single line or displayed to the user
      */
     public String mapToReadableText() {
-        return String.format("%s%s %s",
-            messageTemplate.getNumber(),
-            messageTemplate.getType().toChar(),
-            getConvertedText());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -134,7 +117,7 @@ public final class Message {
      * @return {@link ApiMessageView}
      */
     public ApiMessageView mapToView() {
-        return new ApiMessageView(Collections.singletonList(mapToApiMessage()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -143,13 +126,7 @@ public final class Message {
      * @return {@link ApiMessage}
      */
     public ApiMessage mapToApiMessage() {
-        return new ApiMessage(
-            requestedKey,
-            messageTemplate.getType(),
-            messageTemplate.getNumber() + messageTemplate.getType().toChar(),
-            getConvertedText(),
-            messageTemplate.getAction(),
-            messageTemplate.getReason());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -158,13 +135,13 @@ public final class Message {
      * @return a String
      */
     public String mapToLogMessage() {
-        return mapToReadableText();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return a message template
      */
     public MessageTemplate getMessageTemplate() {
-        return messageTemplate;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

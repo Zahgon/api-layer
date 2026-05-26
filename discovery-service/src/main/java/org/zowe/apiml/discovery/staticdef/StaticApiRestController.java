@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.staticdef;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zowe.apiml.product.discovery.StaticRegistrationResult;
-
 import java.util.List;
 
 @RestController
@@ -26,15 +24,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @ConditionalOnMissingBean(name = "modulithConfig")
 public class StaticApiRestController {
+
     private final StaticServicesRegistrationService registrationService;
 
     @GetMapping(produces = "application/json")
     public List<InstanceInfo> list() {
-        return registrationService.getStaticInstances();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(produces = "application/json")
     public StaticRegistrationResult reload() {
-        return registrationService.reloadServices();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

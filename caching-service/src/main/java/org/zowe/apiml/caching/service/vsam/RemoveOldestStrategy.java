@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.vsam;
 
 import lombok.RequiredArgsConstructor;
@@ -16,21 +15,20 @@ import org.zowe.apiml.caching.service.EvictionStrategy;
 import org.zowe.apiml.caching.service.vsam.config.VsamConfig;
 import org.zowe.apiml.zfile.ZFileConstants;
 import org.zowe.apiml.zfile.ZFileException;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
-
 
 @RequiredArgsConstructor
 @Slf4j
 public class RemoveOldestStrategy implements EvictionStrategy {
+
     private final VsamConfig vsamConfig;
 
     private final VsamFile file;
 
     @Override
     public void evict(String key) {
-        removeOldestRecord();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void removeOldestRecord() {
@@ -48,7 +46,6 @@ public class RemoveOldestStrategy implements EvictionStrategy {
                 }
                 long oldestCreated = Long.parseLong(oldest.getKeyValue().getCreated());
                 long currentCreated = Long.parseLong(current.getKeyValue().getCreated());
-
                 if (oldestCreated > currentCreated) {
                     oldest = current;
                 }

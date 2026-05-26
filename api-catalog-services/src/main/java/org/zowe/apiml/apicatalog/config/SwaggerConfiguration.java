@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -25,34 +24,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnMissingBean(name = "modulithConfig")
-@OpenAPIDefinition(
-    security = {
-        @SecurityRequirement(name = "LoginBasicAuth"),
-        @SecurityRequirement(name = "Bearer"),
-        @SecurityRequirement(name = "CookieAuth")
-    },
-    info = @io.swagger.v3.oas.annotations.info.Info(title = "API Catalog", description = """
-        REST API for the API Catalog, which is a component of the API Mediation Layer.
-        Use this API to perform tasks such as retrieve the catalog containers with the Open API documentation.
-        """)
-)
-@io.swagger.v3.oas.annotations.security.SecurityScheme(
-    name = "LoginBasicAuth",
-    type = SecuritySchemeType.HTTP,
-    scheme = "basic"
-)
-@io.swagger.v3.oas.annotations.security.SecurityScheme(
-    name = "Bearer",
-    type = SecuritySchemeType.HTTP,
-    scheme = "bearer",
-    bearerFormat = "JWT"
-)
-@io.swagger.v3.oas.annotations.security.SecurityScheme(
-    name = "CookieAuth",
-    type = SecuritySchemeType.APIKEY,
-    in = SecuritySchemeIn.COOKIE,
-    paramName = "apimlAuthenticationToken"
-)
+@OpenAPIDefinition(security = { @SecurityRequirement(name = "LoginBasicAuth"), @SecurityRequirement(name = "Bearer"), @SecurityRequirement(name = "CookieAuth") }, info = @io.swagger.v3.oas.annotations.info.Info(title = "API Catalog", description = """
+    REST API for the API Catalog, which is a component of the API Mediation Layer.
+    Use this API to perform tasks such as retrieve the catalog containers with the Open API documentation.
+    """))
+@io.swagger.v3.oas.annotations.security.SecurityScheme(name = "LoginBasicAuth", type = SecuritySchemeType.HTTP, scheme = "basic")
+@io.swagger.v3.oas.annotations.security.SecurityScheme(name = "Bearer", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")
+@io.swagger.v3.oas.annotations.security.SecurityScheme(name = "CookieAuth", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.COOKIE, paramName = "apimlAuthenticationToken")
 public class SwaggerConfiguration {
 
     @Value("${apiml.service.apiDoc.title}")
@@ -66,16 +44,6 @@ public class SwaggerConfiguration {
 
     @Bean
     public OpenAPI openApi() {
-        return new OpenAPI()
-            .info(new Info()
-                .title(apiTitle)
-                .description(apiDescription)
-                .version(apiVersion)
-            )
-            .components(new Components()
-                .addSecuritySchemes("BasicAuthorization", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic"))
-                .addSecuritySchemes("CookieAuth", new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name("apimlAuthenticationToken"))
-            );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

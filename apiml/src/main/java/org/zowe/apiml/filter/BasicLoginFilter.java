@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,6 @@ import org.zowe.apiml.security.common.login.LoginFilter;
 import org.zowe.apiml.security.common.login.LoginRequest;
 import org.zowe.apiml.zaas.security.config.CompoundAuthProvider;
 import reactor.core.publisher.Mono;
-
 import java.util.Optional;
 
 /**
@@ -62,6 +60,7 @@ import java.util.Optional;
 public class BasicLoginFilter implements WebFilter {
 
     private final ReactiveAuthenticationManagerAdapter authenticationManager;
+
     private final FailedAuthenticationWebHandler failedAuthenticationWebHandler;
 
     public BasicLoginFilter(CompoundAuthProvider compoundAuthProvider, FailedAuthenticationWebHandler failedAuthenticationWebHandler) {
@@ -72,26 +71,7 @@ public class BasicLoginFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        var hasBody = Optional.ofNullable(exchange.getAttribute(CachedBodyFilter.CACHED_BODY_ATTR)).isPresent();
-        exchange.getAttributes().put(X509AuthFilter.SKIP_X509_AUTH_ATTR, hasBody);
-        return extractBasicAuth(exchange)
-            .map(this::useCredentials)
-            .switchIfEmpty(Mono.<AbstractAuthenticationToken>defer(() -> chain.filter(exchange).then(Mono.empty())))
-            .flatMap(credentials -> {
-                var otelContext = OtelRequestContext.of(exchange);
-                otelContext.authSourceType(OtelRequestContext.BASIC_AUTH_TYPE);
-                return authenticationManager.authenticate(credentials)
-                    .flatMap(authentication -> chain.filter(exchange)
-                        .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication)));
-            })
-            .onErrorResume(AuthenticationException.class, ex -> failedAuthenticationWebHandler.onAuthenticationFailure(new WebFilterExchange(exchange.mutate().response(new ServerHttpResponseDecorator(exchange.getResponse()) {
-
-                @Override
-                public HttpHeaders getHeaders() {
-                    return new HttpHeaders(exchange.getResponse().getHeaders());
-                }
-
-            }).build(), chain), ex));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private AbstractAuthenticationToken useCredentials(LoginRequest credentials) {
@@ -100,22 +80,17 @@ public class BasicLoginFilter implements WebFilter {
 
     private Mono<LoginRequest> extractBasicAuth(ServerWebExchange exchange) {
         var authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null) return Mono.empty();
-        if (!authHeader.toLowerCase().startsWith("basic ")) return Mono.empty();
-
-        return Mono.fromCallable(() ->
-            LoginFilter.getCredentialFromAuthorizationHeader(Optional.of(authHeader))
-                .filter(this::credentialsAvailable)
-                .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("Username or password not provided."))
-        ).onErrorResume(e -> {
+        if (authHeader == null)
+            return Mono.empty();
+        if (!authHeader.toLowerCase().startsWith("basic "))
+            return Mono.empty();
+        return Mono.fromCallable(() -> LoginFilter.getCredentialFromAuthorizationHeader(Optional.of(authHeader)).filter(this::credentialsAvailable).orElseThrow(() -> new AuthenticationCredentialsNotFoundException("Username or password not provided."))).onErrorResume(e -> {
             log.debug("Failed to decode Basic Auth header: {}", e.getMessage());
             return Mono.error(new AuthenticationCredentialsNotFoundException("Invalid basic authentication header", e));
         });
     }
 
     private boolean credentialsAvailable(LoginRequest credentials) {
-        return credentials.getUsername() != null && !credentials.getUsername().isBlank()
-            && credentials.getPassword() != null && credentials.getPassword().length > 0;
+        return credentials.getUsername() != null && !credentials.getUsername().isBlank() && credentials.getPassword() != null && credentials.getPassword().length > 0;
     }
-
 }

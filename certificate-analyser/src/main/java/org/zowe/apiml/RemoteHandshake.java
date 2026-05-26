@@ -7,17 +7,18 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@SuppressWarnings("squid:S106") //ignoring the System.out System.err warinings
+//ignoring the System.out System.err warinings
+@SuppressWarnings("squid:S106")
 public class RemoteHandshake implements Verifier {
 
     private SSLContextHolder sslContextHolder;
+
     private HttpClient httpClient;
 
     public RemoteHandshake(SSLContextHolder sslContextHolder, HttpClient httpClient) {
@@ -27,25 +28,6 @@ public class RemoteHandshake implements Verifier {
 
     @Override
     public boolean verify() {
-        String serviceAddress = sslContextHolder.getStores().getConf().getRemoteUrl();
-        String trustStore = sslContextHolder.getStores().getConf().getTrustStore();
-
-        try {
-            URL url = new URL(serviceAddress);
-            System.out.println("Start of the remote SSL handshake.");
-            httpClient.executeCall(url);
-            System.out.println("Handshake was successful. Service \"" + serviceAddress + "\" is trusted by truststore \"" + trustStore
-                + "\".");
-            return true;
-        } catch (MalformedURLException e) {
-            System.out.println("Incorrect url \"" + serviceAddress + "\". Error message: " + e.getMessage());
-        } catch (SSLHandshakeException e) {
-            System.out.println("SSL Handshake failed for address \"" + serviceAddress +
-                "\". Cause of error: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Failed when calling url: \"" + serviceAddress + "\" Error message: " + e.getMessage());
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 /*
  * Copyright 2013-2024 the original author or authors.
  *
@@ -23,7 +22,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.zowe.apiml;
 
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -82,7 +80,6 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -99,8 +96,7 @@ import java.util.regex.Pattern;
  */
 @Configuration(proxyBeanMethods = false)
 @Import(EurekaServerInitializerConfiguration.class)
-@EnableConfigurationProperties({EurekaDashboardProperties.class, InstanceRegistryProperties.class,
-    EurekaProperties.class})
+@EnableConfigurationProperties({ EurekaDashboardProperties.class, InstanceRegistryProperties.class, EurekaProperties.class })
 @PropertySource("classpath:/eureka/server.properties")
 public class EurekaConfiguration implements WebMvcConfigurer {
 
@@ -109,7 +105,7 @@ public class EurekaConfiguration implements WebMvcConfigurer {
     /**
      * List of packages containing Jersey resources required by the Eureka server.
      */
-    private static final String[] EUREKA_PACKAGES = new String[]{"com.netflix.discovery", "com.netflix.eureka"};
+    private static final String[] EUREKA_PACKAGES = new String[] { "com.netflix.discovery", "com.netflix.eureka" };
 
     /**
      * Static content pattern for dashboard elements (images, css, etc...).
@@ -138,7 +134,7 @@ public class EurekaConfiguration implements WebMvcConfigurer {
 
     @Bean
     HasFeatures eurekaServerFeature() {
-        return HasFeatures.namedFeature("Eureka Server", EurekaServerAutoConfiguration.class);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static {
@@ -148,76 +144,71 @@ public class EurekaConfiguration implements WebMvcConfigurer {
 
     @Bean
     ServerCodecs serverCodecs() {
-        return new CloudServerCodecs(this.eurekaServerConfig);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     @Bean
     @ConditionalOnMissingBean
     ReplicationClientAdditionalFilters replicationClientAdditionalFilters() {
-        return new ReplicationClientAdditionalFilters(Collections.emptySet());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @ConditionalOnMissingBean(TransportClientFactories.class)
     Jersey3TransportClientFactories jersey3TransportClientFactories() {
-        return Jersey3TransportClientFactories.getInstance();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @ConditionalOnMissingBean(EurekaServerHttpClientFactory.class)
     Jersey3EurekaServerHttpClientFactory jersey3EurekaServerHttpClientFactory() {
-        return new Jersey3EurekaServerHttpClientFactory();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     ApplicationsResource applicationsResource() {
-        return new ApplicationsResource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     VIPResource vipResource() {
-        return new VIPResource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     ServerInfoResource serverInfoResource() {
-        return new ServerInfoResource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     SecureVIPResource secureVIPResource() {
-        return new SecureVIPResource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     InstancesResource instancesResource() {
-        return new InstancesResource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     ASGResource asgResource() {
-        return new ASGResource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     PeerReplicationResource peerReplicationResource() {
-        return new PeerReplicationResource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @ConditionalOnMissingBean
-    EurekaServerContext eurekaServerContext(ServerCodecs serverCodecs, PeerAwareInstanceRegistry registry,
-                                            PeerEurekaNodes peerEurekaNodes) {
-        return new DefaultEurekaServerContext(this.eurekaServerConfig, serverCodecs, registry, peerEurekaNodes,
-            this.applicationInfoManager);
+    EurekaServerContext eurekaServerContext(ServerCodecs serverCodecs, PeerAwareInstanceRegistry registry, PeerEurekaNodes peerEurekaNodes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
-    EurekaServerBootstrap eurekaServerBootstrap(PeerAwareInstanceRegistry registry,
-                                                EurekaServerContext serverContext) {
-        return new EurekaServerBootstrap(this.applicationInfoManager, this.eurekaClientConfig, this.eurekaServerConfig,
-            registry, serverContext);
+    EurekaServerBootstrap eurekaServerBootstrap(PeerAwareInstanceRegistry registry, EurekaServerContext serverContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -228,71 +219,12 @@ public class EurekaConfiguration implements WebMvcConfigurer {
      */
     @Bean
     FilterRegistrationBean<?> jerseyFilterRegistration(ResourceConfig eurekaJerseyApp) {
-        FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<>();
-        ServletContainer servletContainer = new ServletContainer(eurekaJerseyApp);
-        bean.setFilter(servletContainer);
-        bean.setOrder(Ordered.LOWEST_PRECEDENCE);
-        bean.setUrlPatterns(Collections.singletonList(EurekaConstants.DEFAULT_PREFIX + "/*"));
-
-        return bean;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
-    FilterRegistrationBean<?> eurekaVersionFilterRegistration(ServerProperties serverProperties,
-                                                              Environment env) {
-        final String contextPath = serverProperties.getServlet().getContextPath();
-        String regex = EurekaConstants.DEFAULT_PREFIX + STATIC_CONTENT_PATTERN;
-        if (StringUtils.hasText(contextPath)) {
-            regex = contextPath + regex;
-        }
-        String debugResponseHeader = env.getProperty("eureka.server.version.filter.debug.response-header");
-        boolean addDebugResponseHeader = StringUtils.hasText(debugResponseHeader);
-        Pattern staticPattern = Pattern.compile(regex);
-        FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<>();
-        bean.setFilter(new OncePerRequestFilter() {
-            @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                            FilterChain filterChain) throws ServletException, IOException {
-                HttpServletRequest req = request;
-                String requestURI = request.getRequestURI();
-                if (!requestURI.startsWith(EurekaConstants.DEFAULT_PREFIX + "/v2")
-                    // don't forward static requests (images, js, etc...) to /v2
-                    && !staticPattern.matcher(requestURI).matches()) {
-
-                    String prefix = EurekaConstants.DEFAULT_PREFIX;
-                    if (StringUtils.hasText(contextPath)) {
-                        prefix = contextPath + prefix;
-                    }
-                    String updatedPath = EurekaConstants.DEFAULT_PREFIX + "/v2" + requestURI.substring(prefix.length());
-                    if (StringUtils.hasText(contextPath)) {
-                        updatedPath = contextPath + updatedPath;
-                    }
-                    final String computedPath = updatedPath;
-                    // only used if a special debug property is set, so in prod this is
-                    // always skipped.
-                    if (addDebugResponseHeader) {
-                        response.addHeader(debugResponseHeader, computedPath);
-                    }
-                    HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(request) {
-                        @Override
-                        public String getRequestURI() {
-                            return computedPath;
-                        }
-
-                        @Override
-                        public String getServletPath() {
-                            return computedPath;
-                        }
-                    };
-                    req = wrapper;
-                }
-                filterChain.doFilter(req, response);
-            }
-        });
-        bean.setOrder(0);
-        bean.setUrlPatterns(Collections.singletonList(EurekaConstants.DEFAULT_PREFIX + "/*"));
-
-        return bean;
+    FilterRegistrationBean<?> eurekaVersionFilterRegistration(ServerProperties serverProperties, Environment env) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -304,66 +236,14 @@ public class EurekaConfiguration implements WebMvcConfigurer {
      * @return created {@link Application} object
      */
     @Bean
-    ResourceConfig jerseyApplication(Environment environment, ResourceLoader resourceLoader,
-                                     BeanFactory beanFactory) {
-
-        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false,
-            environment);
-
-        // Filter to include only classes that have a particular annotation.
-        //
-        provider.addIncludeFilter(new AnnotationTypeFilter(Path.class));
-        provider.addIncludeFilter(new AnnotationTypeFilter(Provider.class));
-
-        // Find classes in Eureka packages (or subpackages)
-        //
-        Set<Class<?>> classes = new HashSet<>();
-        for (String basePackage : EUREKA_PACKAGES) {
-            Set<BeanDefinition> beans = provider.findCandidateComponents(basePackage);
-            for (BeanDefinition bd : beans) {
-                Class<?> cls = ClassUtils.resolveClassName(bd.getBeanClassName(), resourceLoader.getClassLoader());
-                classes.add(cls);
-            }
-        }
-
-        // https://javaee.github.io/hk2/spring-bridge
-
-        // Construct the Jersey ResourceConfig
-        ResourceConfig rc = new ResourceConfig(classes).property(
-            // Skip static content used by the webapp
-            ServletProperties.FILTER_STATIC_CONTENT_REGEX, EurekaConstants.DEFAULT_PREFIX + STATIC_CONTENT_PATTERN);
-
-        rc.register(new ContainerLifecycleListener() {
-            @Override
-            public void onStartup(Container container) {
-                ServiceLocator serviceLocator = container.getApplicationHandler()
-                    .getInjectionManager()
-                    .getInstance(ServiceLocator.class);
-                SpringBridge.getSpringBridge().initializeSpringBridge(serviceLocator);
-                serviceLocator.getService(SpringIntoHK2Bridge.class).bridgeSpringBeanFactory(beanFactory);
-            }
-
-            @Override
-            public void onReload(Container container) {
-
-            }
-
-            @Override
-            public void onShutdown(Container container) {
-
-            }
-        });
-
-        return rc;
+    ResourceConfig jerseyApplication(Environment environment, ResourceLoader resourceLoader, BeanFactory beanFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @ConditionalOnBean(name = "httpTraceFilter")
     FilterRegistrationBean<?> traceFilterRegistration(@Qualifier("httpTraceFilter") Filter filter) {
-        FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<>();
-        bean.setFilter(filter);
-        bean.setOrder(Ordered.LOWEST_PRECEDENCE - 10);
-        return bean;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Configuration(proxyBeanMethods = false)
@@ -372,21 +252,14 @@ public class EurekaConfiguration implements WebMvcConfigurer {
         @Bean
         @ConditionalOnMissingBean
         EurekaServerConfig eurekaServerConfig(EurekaClientConfig clientConfig) {
-            EurekaServerConfigBean server = new EurekaServerConfigBean();
-            if (clientConfig.shouldRegisterWithEureka()) {
-                // Set a sensible default if we are supposed to replicate
-                server.setRegistrySyncRetries(5);
-            }
-            return server;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
 
     class CloudServerCodecs extends DefaultServerCodecs {
 
         CloudServerCodecs(EurekaServerConfig serverConfig) {
-            super(getFullJson(serverConfig), CodecWrappers.getCodec(CodecWrappers.JacksonJsonMini.class),
-                getFullXml(serverConfig), CodecWrappers.getCodec(CodecWrappers.JacksonXmlMini.class));
+            super(getFullJson(serverConfig), CodecWrappers.getCodec(CodecWrappers.JacksonJsonMini.class), getFullXml(serverConfig), CodecWrappers.getCodec(CodecWrappers.JacksonXmlMini.class));
         }
 
         private static CodecWrapper getFullJson(EurekaServerConfig serverConfig) {
@@ -398,6 +271,5 @@ public class EurekaConfiguration implements WebMvcConfigurer {
             CodecWrapper codec = CodecWrappers.getCodec(serverConfig.getXmlCodecName());
             return codec == null ? CodecWrappers.getCodec(CodecWrappers.XStreamXml.class) : codec;
         }
-
     }
 }

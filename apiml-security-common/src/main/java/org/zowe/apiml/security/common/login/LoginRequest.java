@@ -7,16 +7,13 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
-
 import java.util.Arrays;
-
 import static org.zowe.apiml.security.SecurityUtils.readPassword;
 
 /**
@@ -28,7 +25,9 @@ import static org.zowe.apiml.security.SecurityUtils.readPassword;
 public class LoginRequest {
 
     private String username;
+
     private char[] password;
+
     private char[] newPassword;
 
     public LoginRequest(String username, char[] password) {
@@ -37,32 +36,14 @@ public class LoginRequest {
     }
 
     public static char[] getPassword(Authentication authentication) {
-        if (authentication.getCredentials() instanceof LoginRequest) {
-            LoginRequest loginRequest = (LoginRequest) authentication.getCredentials();
-            return readPassword(loginRequest.getPassword());
-        }
-
-        return readPassword(authentication.getCredentials());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static char[] getNewPassword(Authentication authentication) {
-        if (authentication.getCredentials() instanceof LoginRequest) {
-            LoginRequest loginRequest = (LoginRequest) authentication.getCredentials();
-            return readPassword(loginRequest.getNewPassword());
-        }
-        return new char[0];
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void evictSensitiveData() {
-        if (this.password != null) {
-            Arrays.fill(this.password, (char) 0);
-            this.password = null;
-        }
-
-        if (this.newPassword != null) {
-            Arrays.fill(this.newPassword, (char) 0);
-            this.newPassword = null;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

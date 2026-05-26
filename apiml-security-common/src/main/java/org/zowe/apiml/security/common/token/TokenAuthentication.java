@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.token;
 
 import com.nimbusds.jwt.*;
@@ -18,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.zowe.apiml.security.common.util.JwtUtils;
 import org.zowe.apiml.security.common.login.LoginFilter;
-
 import java.io.Serial;
 import java.text.ParseException;
 import java.util.*;
@@ -35,25 +33,29 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
     private static final long serialVersionUID = 82346593850419807L;
 
     private static final String DOMAIN_CLAIM_NAME = "dom";
+
     private static final String SCOPES = "scopes";
 
     private final String userId;
+
     @Getter
     private final JWT jwt;
+
     private final JWTClaimsSet claims;
+
     @Getter
     private final QueryResponse queryResponse;
+
     @Getter
     private final Type type;
 
     public enum Type {
-        JWT,
-        OIDC
+
+        JWT, OIDC
     }
 
     public TokenAuthentication(String userId, String tokenString, Type type) {
         super(Collections.emptyList());
-
         try {
             this.userId = userId;
             this.jwt = JWTParser.parse(tokenString);
@@ -74,37 +76,32 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
     }
 
     public static TokenAuthentication createAuthenticated(String tokenString, Type type) {
-        var tokenAuthentication = new TokenAuthentication(tokenString, type);
-        tokenAuthentication.setAuthenticated(true);
-        return tokenAuthentication;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static TokenAuthentication createAuthenticated(String userId, String token, Type type) {
-        var tokenAuthentication = new TokenAuthentication(userId, token, type);
-        tokenAuthentication.setAuthenticated(true);
-        return tokenAuthentication;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @SuppressWarnings("squid:S3655")
     public static TokenAuthentication createAuthenticatedFromHeader(String token, String authHeader) {
-        var loginRequest = LoginFilter.getCredentialFromAuthorizationHeader(Optional.of(authHeader));
-        return createAuthenticated(loginRequest.get().getUsername(), token, Type.JWT);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean isExpired() {
-        return queryResponse.isExpired();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Date getExpiration() {
-        return queryResponse.getExpiration();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public QueryResponse.Source getSource() {
-        return queryResponse.getSource();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getClaimAsString(String claimName) throws ParseException {
-        return claims.getClaimAsString(claimName);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -113,7 +110,7 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
     @Override
     @EqualsAndHashCode.Include
     public String getCredentials() {
-        return jwt.getParsedString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -121,21 +118,12 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
      */
     @Override
     public String getPrincipal() {
-        if (type == Type.OIDC) {
-            return userId;
-        }
-
-        return queryResponse.getUserId();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setAuthenticated(boolean authenticated) {
-        if (authenticated && isExpired()) {
-            throw new TokenExpireException(
-                "Unable to set authentication as true because the token ...%s expired on %s"
-                    .formatted(StringUtils.right(jwt.getParsedString(), 15), getExpiration()));
-        }
-        super.setAuthenticated(authenticated);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private QueryResponse parseQueryResponse(JWTClaimsSet claims) {
@@ -145,15 +133,7 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
             scopes = (List<String>) scopesObject;
         }
         try {
-            return new QueryResponse(
-                claims.getClaimAsString(DOMAIN_CLAIM_NAME),
-                claims.getSubject(),
-                claims.getIssueTime(),
-                claims.getExpirationTime(),
-                claims.getIssuer(),
-                scopes,
-                QueryResponse.Source.valueByIssuer(claims.getIssuer())
-            );
+            return new QueryResponse(claims.getClaimAsString(DOMAIN_CLAIM_NAME), claims.getSubject(), claims.getIssueTime(), claims.getExpirationTime(), claims.getIssuer(), scopes, QueryResponse.Source.valueByIssuer(claims.getIssuer()));
         } catch (ParseException e) {
             throw new TokenNotValidException(e.getMessage(), e);
         }

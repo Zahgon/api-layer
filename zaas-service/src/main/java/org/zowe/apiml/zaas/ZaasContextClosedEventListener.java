@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ public class ZaasContextClosedEventListener implements ApplicationListener<Conte
 
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
-        zaasStartupListener.onContextClosed();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

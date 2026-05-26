@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -18,12 +17,10 @@ import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
 
 @Configuration
 public class MessageConfiguration {
+
     @Bean
     @ConditionalOnMissingBean(name = "modulithConfig")
     public MessageService messageService() {
-        MessageService messageService = YamlMessageServiceInstance.getInstance();
-        messageService.loadMessages("/utility-log-messages.yml");
-        messageService.loadMessages("/caching-log-messages.yml");
-        return messageService;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

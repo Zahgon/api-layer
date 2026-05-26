@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.web;
 
 import lombok.experimental.Delegate;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.zowe.apiml.exception.AttlsHandlerException;
 import org.zowe.commons.attls.ContextIsNotInitializedException;
 import org.zowe.commons.attls.InboundAttls;
-
 import java.io.FileDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -52,25 +50,12 @@ public class ApimlTomcatCustomizer implements TomcatConnectorCustomizer, Initial
 
     @Override
     public void afterPropertiesSet() {
-        log.debug("AT-TLS mode is enabled");
-        InboundAttls.setAlwaysLoadCertificate(true);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void customize(Connector connector) {
-        Http11NioProtocol protocolHandler = (Http11NioProtocol) connector.getProtocolHandler();
-        try {
-            Field handlerField = AbstractProtocol.class.getDeclaredField("handler");
-            handlerField.setAccessible(true);
-            AbstractEndpoint.Handler<Object> handler = (AbstractEndpoint.Handler<Object>) handlerField.get(protocolHandler);
-            handler = new ApimlAttlsHandler<>(handler);
-            Method method = AbstractProtocol.class.getDeclaredMethod("getEndpoint");
-            method.setAccessible(true);
-            AbstractEndpoint<Object, Object> abstractEndpoint = (AbstractEndpoint<Object, Object>) method.invoke(protocolHandler);
-            abstractEndpoint.setHandler(handler);
-        } catch (Exception e) {
-            throw new AttlsHandlerException("Not able to add handler.", e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -84,24 +69,23 @@ public class ApimlTomcatCustomizer implements TomcatConnectorCustomizer, Initial
 
         // this field cannot be final for testing purpose, but using is the same as final
         @SuppressWarnings("squid:S3008")
-        private static  /*final*/ Field ASYNCHRONOUS_SOCKET_CHANNEL_FD ;
-        private static   Field FILE_DESCRIPTOR_FD;
+        private static Field /*final*/
+        ASYNCHRONOUS_SOCKET_CHANNEL_FD;
 
-        private static  Method SOCKET_CHANNEL_GET_FDVAL_METHOD;
+        private static Field FILE_DESCRIPTOR_FD;
+
+        private static Method SOCKET_CHANNEL_GET_FDVAL_METHOD;
 
         public ApimlAttlsHandler(AbstractEndpoint.Handler<S> handler) {
             this.handler = handler;
             try {
                 Class<?> nioClazz = Class.forName("sun.nio.ch.SocketChannelImpl");
-
                 SOCKET_CHANNEL_GET_FDVAL_METHOD = nioClazz.getMethod("getFDVal");
                 SOCKET_CHANNEL_GET_FDVAL_METHOD.setAccessible(true);
-
                 // obtain field to get file descriptor if NIO2 is using
                 Class<?> nio2Clazz = Class.forName("sun.nio.ch.AsynchronousSocketChannelImpl");
                 ASYNCHRONOUS_SOCKET_CHANNEL_FD = nio2Clazz.getDeclaredField("fd");
                 ASYNCHRONOUS_SOCKET_CHANNEL_FD.setAccessible(true);
-
                 // obtain fd field in FileDescriptor class
                 FILE_DESCRIPTOR_FD = FileDescriptor.class.getDeclaredField("fd");
                 FILE_DESCRIPTOR_FD.setAccessible(true);
@@ -118,19 +102,7 @@ public class ApimlTomcatCustomizer implements TomcatConnectorCustomizer, Initial
          * @return new status of socket (see Tomcat implementation)
          */
         public SocketState process(SocketWrapperBase socketWrapperBase, SocketEvent status) {
-            final int fdVal = getFd(socketWrapperBase.getSocket());
-
-            InboundAttls.init(fdVal);
-            try {
-                return handler.process(socketWrapperBase, status);
-            } finally {
-                try {
-                    InboundAttls.clean();
-                } catch (ContextIsNotInitializedException e) {
-                    log.debug("Cannot clean AT-TLS context");
-                }
-                InboundAttls.dispose();
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         private int getFd(Object socket) {
@@ -139,41 +111,28 @@ public class ApimlTomcatCustomizer implements TomcatConnectorCustomizer, Initial
                     return getFd(nioChannel);
                 } else if (socket instanceof Nio2Channel nio2Channel) {
                     return getFdAsync(nio2Channel);
-                } else if (socket instanceof Long socketNioChannel) { // APR uses Long as socket to identify
+                } else if (socket instanceof Long socketNioChannel) {
+                    // APR uses Long as socket to identify
                     return socketNioChannel.intValue();
                 } else {
                     throw new IllegalStateException("Socket " + socket.getClass() + " is not supported for AT-TLS");
                 }
-            } catch (IllegalArgumentException | IllegalAccessException | IllegalStateException |
-                     InvocationTargetException e) {
+            } catch (IllegalArgumentException | IllegalAccessException | IllegalStateException | InvocationTargetException e) {
                 throw new IllegalStateException(INCOMPATIBLE_VERSION_MESSAGE + e.getMessage(), e);
             }
         }
 
         int getFd(NioChannel socket) throws InvocationTargetException, IllegalAccessException {
-            SocketChannel socketChannel = socket.getIOChannel();
-            if (socketChannel == null) {
-                throw new IllegalStateException("Socket channel is not initialized");
-            }
-            return (int) SOCKET_CHANNEL_GET_FDVAL_METHOD.invoke(socketChannel);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         int getFdAsync(Nio2Channel socket) throws IllegalAccessException {
-            AsynchronousSocketChannel asch = socket.getIOChannel();
-            if (asch == null) {
-                throw new IllegalStateException("Asynchronous socket channel is not initialized");
-            }
-            FileDescriptor fd = (FileDescriptor) ASYNCHRONOUS_SOCKET_CHANNEL_FD.get(asch);
-            if (fd == null) {
-                throw new IllegalStateException("File descriptor is not set in the asynchronous socket channel");
-            }
-            return FILE_DESCRIPTOR_FD.getInt(fd);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         interface Overridden {
+
             <S> SocketState process(SocketWrapperBase<S> socket, SocketEvent status);
         }
-
     }
-
 }

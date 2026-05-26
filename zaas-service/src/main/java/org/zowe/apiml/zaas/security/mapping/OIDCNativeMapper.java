@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.mapping;
 
 import lombok.RequiredArgsConstructor;
@@ -28,12 +27,6 @@ public class OIDCNativeMapper implements AuthenticationMapper {
 
     @Override
     public String mapToMainframeUserId(AuthSource authSource) {
-        return mapperHelper.mapToMainframeUserId(authSource, distributedId -> {
-            MapperResponse response = nativeMapper.getUserIDForDN(distributedId, mapperHelper.registry);
-            if (response.getRc() == 0 && StringUtils.isNotBlank(response.getUserId())) {
-                return response.getUserId();
-            }
-            return null;
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

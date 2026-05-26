@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas;
 
 import org.springframework.boot.SpringApplication;
@@ -24,35 +23,17 @@ import org.zowe.apiml.extension.ExtensionsLoader;
 import org.zowe.apiml.product.monitoring.LatencyUtilsConfigInitializer;
 import org.zowe.apiml.product.version.BuildInfo;
 import org.zowe.apiml.security.common.config.SafSecurityConfigurationProperties;
-
 import static org.zowe.apiml.extension.ZoweRuntimeEnvironment.defaultEnv;
 
 @EnableWebSecurity
-@SpringBootApplication(
-    exclude = {
-        OpenTelemetryAutoConfiguration.class,
-        OpenTelemetryLoggingAutoConfiguration.class
-    }
-)
+@SpringBootApplication(exclude = { OpenTelemetryAutoConfiguration.class, OpenTelemetryLoggingAutoConfiguration.class })
 @EnableDiscoveryClient
-@ComponentScan(
-    value = {
-        "org.zowe.apiml.zaas",
-        "org.zowe.apiml.product",
-        "org.zowe.apiml.security.common"
-    }
-)
+@ComponentScan(value = { "org.zowe.apiml.zaas", "org.zowe.apiml.product", "org.zowe.apiml.security.common" })
 @EnableConfigurationProperties(SafSecurityConfigurationProperties.class)
 @EnableWebMvc
 public class ZaasApplication {
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(ZaasApplication.class);
-        app.addInitializers(new LatencyUtilsConfigInitializer());
-        app.addListeners(new ExtensionsLoader(new ExtensionConfigReader(defaultEnv())));
-        app.setLogStartupInfo(false);
-        new BuildInfo().logBuildInfo();
-        app.run(args);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

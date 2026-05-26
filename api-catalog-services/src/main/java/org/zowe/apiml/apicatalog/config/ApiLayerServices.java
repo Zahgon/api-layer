@@ -7,15 +7,14 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.config;
-
 
 /**
  * Enum representing internal API Layer services
  * Used to identify services that are part of API Layer itself
  */
 public enum ApiLayerServices {
+
     DISCOVERY("discovery"),
     GATEWAY("gateway"),
     APIML("apiml"),
@@ -32,19 +31,10 @@ public enum ApiLayerServices {
     }
 
     public String getServiceId() {
-        return serviceId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static boolean isApiLayerService(String serviceId) {
-        if (serviceId == null || serviceId.trim().isEmpty()) {
-            return false;
-        }
-        String normalizedServiceId = serviceId.toLowerCase().trim();
-        for (ApiLayerServices service : ApiLayerServices.values()) {
-            if (service.serviceId.equals(normalizedServiceId)) {
-                return true;
-            }
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

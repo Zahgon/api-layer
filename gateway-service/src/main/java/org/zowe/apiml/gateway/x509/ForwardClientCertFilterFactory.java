@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.x509;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +16,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.zowe.apiml.constants.ApimlConstants;
 import org.zowe.apiml.security.common.util.X509Util;
-
 import java.security.cert.CertificateEncodingException;
-
 import static org.zowe.apiml.constants.ApimlConstants.HTTP_CLIENT_USE_CLIENT_CERTIFICATE;
 
 /**
@@ -46,27 +43,10 @@ public class ForwardClientCertFilterFactory extends AbstractGatewayFilterFactory
      */
     @Override
     public GatewayFilter apply(Config config) {
-        return ((exchange, chain) -> {
-            ServerHttpRequest request = exchange.getRequest().mutate().headers(headers -> {
-                headers.remove(CLIENT_CERT_HEADER);
-                try {
-                    final String encodedCert = X509Util.getEncodedClientCertificate(exchange.getRequest().getSslInfo());
-                    if (encodedCert != null) {
-                        exchange.getAttributes().put(HTTP_CLIENT_USE_CLIENT_CERTIFICATE, Boolean.TRUE);
-                        headers.add(CLIENT_CERT_HEADER, encodedCert);
-                        log.debug("Incoming client certificate {} has been added to the {} header.", encodedCert, CLIENT_CERT_HEADER);
-                    }
-                } catch (CertificateEncodingException e) {
-                    log.debug("Failed to encode the incoming client certificate. Error message: {}", e.getMessage());
-                    headers.add(ApimlConstants.AUTH_FAIL_HEADER, "Invalid client certificate in request. Error message: " + e.getMessage());
-                }
-            }).build();
-            return chain.filter(exchange.mutate().request(request).build());
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @SuppressWarnings("squid:S2094")
     public static class Config {
     }
-
 }

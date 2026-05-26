@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.event;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +26,6 @@ public class EventErrorHandler implements ErrorHandler {
 
     @Override
     public void handleError(Throwable t) {
-        log.error("Error occurred during processing an event", t);
-
-        if (t instanceof RuntimeException re) {
-            throw re;
-        }
-        throw new IllegalStateException(t);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

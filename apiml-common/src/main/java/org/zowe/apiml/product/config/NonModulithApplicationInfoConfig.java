@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -22,8 +21,6 @@ public class NonModulithApplicationInfoConfig {
 
     @Bean
     ApplicationInfo applicationInfo() {
-        return ApplicationInfo.builder()
-            .isModulith(false)
-            .authServiceId(CoreService.ZAAS.getServiceId()).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

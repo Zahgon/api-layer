@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client;
 
 import org.springframework.context.annotation.Import;
@@ -31,22 +30,17 @@ import org.zowe.apiml.product.web.TomcatKeyringFix;
 @EnableWebSocket
 @EnableApimlLogger
 @RequiredArgsConstructor
-@Import({TomcatKeyringFix.class, TomcatAcceptFixConfig.class, ApimlTomcatCustomizer.class})
+@Import({ TomcatKeyringFix.class, TomcatAcceptFixConfig.class, ApimlTomcatCustomizer.class })
 public class DiscoverableClientSampleApplication implements ApplicationListener<ApplicationReadyEvent> {
 
     private final ServiceStartupEventHandler handler;
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(DiscoverableClientSampleApplication.class);
-        app.addInitializers(new LatencyUtilsConfigInitializer());
-        app.setLogStartupInfo(false);
-        new BuildInfo().logBuildInfo();
-        app.run(args);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
-        handler.onServiceStartup("Discoverable Client Service",
-                ServiceStartupEventHandler.DEFAULT_DELAY_FACTOR);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

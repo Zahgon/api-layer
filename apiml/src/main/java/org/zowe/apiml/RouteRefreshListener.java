@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 /*
  * Copyright 2013-2020 the original author or authors.
  *
@@ -23,7 +22,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.zowe.apiml;
 
 import lombok.extern.slf4j.Slf4j;
@@ -55,28 +53,7 @@ public class RouteRefreshListener implements ApplicationListener<ApplicationEven
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof ContextRefreshedEvent) {
-            ContextRefreshedEvent refreshedEvent = (ContextRefreshedEvent) event;
-            boolean isManagementCtxt = WebServerApplicationContext
-                .hasServerNamespace(refreshedEvent.getApplicationContext(), "management");
-            boolean isLoadBalancerCtxt = refreshedEvent.getApplicationContext().getDisplayName() != null
-                    && refreshedEvent.getApplicationContext().getDisplayName().startsWith("LoadBalancerClientFactory-");
-
-            if (!isManagementCtxt && !isLoadBalancerCtxt) {
-                reset();
-            }
-        }
-        else if (event instanceof RefreshScopeRefreshedEvent || event instanceof InstanceRegisteredEvent || event instanceof EurekaInstanceRegisteredEvent) {
-            reset();
-        }
-        else if (event instanceof ParentHeartbeatEvent) {
-            ParentHeartbeatEvent e = (ParentHeartbeatEvent) event;
-            resetIfNeeded(e.getValue());
-        }
-        else if (event instanceof HeartbeatEvent) {
-            HeartbeatEvent e = (HeartbeatEvent) event;
-            resetIfNeeded(e.getValue());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void resetIfNeeded(Object value) {
@@ -88,5 +65,4 @@ public class RouteRefreshListener implements ApplicationListener<ApplicationEven
     private void reset() {
         this.publisher.publishEvent(new RefreshRoutesEvent(this));
     }
-
 }

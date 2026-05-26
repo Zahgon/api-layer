@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.services.versions;
 
 import lombok.ToString;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.zowe.apiml.client.services.MockZosmfException;
 import org.zowe.apiml.client.services.apars.Apar;
 import org.zowe.apiml.client.services.apars.PHBase;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,35 +24,25 @@ import java.util.Map;
 @Component
 @ToString
 public class Versions {
+
     private final AvailableApars availableApars;
+
     private final Map<String, List<Apar>> aparsAppliedForVersion = new HashMap<>();
 
     @Autowired
-    public Versions(@Value("${zosmf.username}") List<String> usernames, @Value("${zosmf.password}") List<String> passwords,
-                    @Value("${zosmf.jwtKeyStorePath}") String jwtKeyStorePath, @Value("${zosmf.timeout}") Integer timeout) {
+    public Versions(@Value("${zosmf.username}") List<String> usernames, @Value("${zosmf.password}") List<String> passwords, @Value("${zosmf.jwtKeyStorePath}") String jwtKeyStorePath, @Value("${zosmf.timeout}") Integer timeout) {
         this.availableApars = new AvailableApars(usernames, passwords, jwtKeyStorePath, timeout);
-
         ArrayList<Apar> baseApars = new ArrayList<>();
         baseApars.add(new PHBase(usernames, passwords));
-
         aparsAppliedForVersion.put("2.3", baseApars);
         aparsAppliedForVersion.put("2.4", baseApars);
     }
 
     public List<Apar> baselineForVersion(String version) {
-        List<Apar> appliedForVersion = aparsAppliedForVersion.get(version);
-
-        if (appliedForVersion == null) {
-            throw new MockZosmfException("Invalid version '" + version + "' given for baseline APARs");
-        }
-
-        // New list to avoid changes in aparsAppliedForVersion in case result is mutated
-        return new ArrayList<>(appliedForVersion);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public List<Apar> fullSetOfApplied(String baseVersion, List<String> appliedApars) {
-        List<Apar> baseline = baselineForVersion(baseVersion);
-        baseline.addAll(availableApars.getApars(appliedApars));
-        return baseline;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

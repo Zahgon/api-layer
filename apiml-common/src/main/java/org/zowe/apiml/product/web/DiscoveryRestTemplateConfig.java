@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.web;
 
 import org.apache.hc.client5.http.config.ConnectionConfig;
@@ -31,7 +30,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import java.util.concurrent.TimeUnit;
@@ -45,61 +43,33 @@ public class DiscoveryRestTemplateConfig {
     private boolean isClientAttlsEnabled;
 
     private static final int CONNECT_TIMEOUT = 180_000;
+
     private static final int REQUEST_TIMEOUT = 180_000;
+
     private static final int SOCKET_TIMEOUT = 180_000;
+
     private static final int IDLE_TIMEOUT = 60;
+
     private static final int MAX_CONNECTIONS_TOTAL = 100;
+
     private static final int MAX_CONNECTIONS_PER_ROUTE = 10;
 
     @Bean
     RestClientTransportClientFactories restTemplateTransportClientFactories(RestClientDiscoveryClientOptionalArgs restClientDiscoveryClientOptionalArgs) {
-        return new RestClientTransportClientFactories(restClientDiscoveryClientOptionalArgs);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
-    RestClientDiscoveryClientOptionalArgs defaultArgs(@Value("${eureka.client.serviceUrl.defaultZone}") String eurekaServerUrl,
-                                                      @Qualifier("secureSslContext") SSLContext secureSslContext,
-                                                      HostnameVerifier secureHostnameVerifier
-    ) {
-        RestClientDiscoveryClientOptionalArgs clientArgs = new RestClientDiscoveryClientOptionalArgs(getDefaultEurekaClientHttpRequestFactorySupplier(), RestClient::builder);
-
-        if (eurekaServerUrl.startsWith("http://")) {
-            if (!isClientAttlsEnabled) {
-                apimlLog.log("org.zowe.apiml.common.insecureHttpWarning");
-            }
-        } else {
-            clientArgs.setSSLContext(secureSslContext);
-            clientArgs.setHostnameVerifier(secureHostnameVerifier);
-        }
-
-        return clientArgs;
+    RestClientDiscoveryClientOptionalArgs defaultArgs(@Value("${eureka.client.serviceUrl.defaultZone}") String eurekaServerUrl, @Qualifier("secureSslContext") SSLContext secureSslContext, HostnameVerifier secureHostnameVerifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static EurekaClientHttpRequestFactorySupplier getDefaultEurekaClientHttpRequestFactorySupplier() {
-        return (sslContext, hostnameVerifier) -> {
-            var requestFactory = new HttpComponentsClientHttpRequestFactory();
-            var httpClientBuilder = HttpClients
-                .custom()
-                .evictExpiredConnections()
-                .evictIdleConnections(TimeValue.ofSeconds(IDLE_TIMEOUT))
-                .setConnectionManager(buildConnectionManager(sslContext, hostnameVerifier));
-            RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-
-            requestConfigBuilder.setConnectionRequestTimeout(
-                Timeout.of(REQUEST_TIMEOUT, TimeUnit.MILLISECONDS));
-
-            httpClientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
-
-            CloseableHttpClient httpClient = httpClientBuilder.build();
-
-            requestFactory.setHttpClient(httpClient);
-            return requestFactory;
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static HttpClientConnectionManager buildConnectionManager(SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-        PoolingHttpClientConnectionManagerBuilder connectionManagerBuilder = PoolingHttpClientConnectionManagerBuilder
-            .create();
+        PoolingHttpClientConnectionManagerBuilder connectionManagerBuilder = PoolingHttpClientConnectionManagerBuilder.create();
         DefaultClientTlsStrategy tlsStrategy;
         if (sslContext != null) {
             if (hostnameVerifier != null) {
@@ -109,17 +79,10 @@ public class DiscoveryRestTemplateConfig {
             }
             connectionManagerBuilder.setTlsSocketStrategy(tlsStrategy);
         }
-
         connectionManagerBuilder.setMaxConnTotal(MAX_CONNECTIONS_TOTAL);
         connectionManagerBuilder.setMaxConnPerRoute(MAX_CONNECTIONS_PER_ROUTE);
-        connectionManagerBuilder.setDefaultSocketConfig(SocketConfig.custom()
-            .setSoTimeout(Timeout.of(SOCKET_TIMEOUT, TimeUnit.MILLISECONDS))
-            .build());
-        connectionManagerBuilder.setDefaultConnectionConfig(ConnectionConfig.custom()
-            .setConnectTimeout(Timeout.of(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS))
-            .build());
+        connectionManagerBuilder.setDefaultSocketConfig(SocketConfig.custom().setSoTimeout(Timeout.of(SOCKET_TIMEOUT, TimeUnit.MILLISECONDS)).build());
+        connectionManagerBuilder.setDefaultConnectionConfig(ConnectionConfig.custom().setConnectTimeout(Timeout.of(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)).build());
         return connectionManagerBuilder.build();
     }
-
-
 }

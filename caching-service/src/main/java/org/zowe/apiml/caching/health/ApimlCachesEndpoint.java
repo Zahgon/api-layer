@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.health;
 
 import lombok.experimental.Delegate;
@@ -17,7 +16,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
 import java.util.Collections;
 import java.util.Map;
 
@@ -34,9 +32,6 @@ public class ApimlCachesEndpoint extends CachesEndpoint {
 
     @EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        var context = event.getApplicationContext();
-        Map<String, CacheManager> current = context.getBeansOfType(CacheManager.class);
-        this.cachesEndpoint = new CachesEndpoint(current);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

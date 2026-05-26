@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.opentelemetry;
 
 import io.opentelemetry.api.common.Attributes;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Nonnull;
 
 @ConditionalOnMissingBean(ApimlZosOpenTelemetryResourceProvider.class)
@@ -22,14 +20,13 @@ import javax.annotation.Nonnull;
 public class ApimlNonZosOpenTelemetryResourceProvider extends ApimlOpenTelemetryResourceProvider {
 
     @Override
-    protected @Nonnull Attributes internalCalculateAttributes() {
-        return Attributes.empty();
+    @Nonnull
+    protected Attributes internalCalculateAttributes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected String generateServiceName() {
-        var systemName = StringUtils.isBlank(apimlId) ? hostname : apimlId;
-        return "apiml:" + systemName + ":" + port;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

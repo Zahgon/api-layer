@@ -7,38 +7,33 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 public enum AuthenticationScheme {
+
     @JsonProperty("bypass")
     BYPASS("bypass"),
-
     @JsonProperty("zoweJwt")
     ZOWE_JWT("zoweJwt"),
-
     @JsonProperty("httpBasicPassTicket")
     HTTP_BASIC_PASSTICKET("httpBasicPassTicket"),
-
     @JsonProperty("zosmf")
     ZOSMF("zosmf"),
-
     @JsonProperty("x509")
     X509("x509"),
-
     @JsonProperty("safIdt")
     SAF_IDT("safIdt");
 
     public final String scheme;
 
     static final Map<String, AuthenticationScheme> STRING_TO_ENUM = new HashMap<>();
+
     static {
         for (AuthenticationScheme s : AuthenticationScheme.values()) {
             STRING_TO_ENUM.put(s.getScheme(), s);
@@ -51,11 +46,10 @@ public enum AuthenticationScheme {
 
     @Override
     public String toString() {
-        return scheme;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static AuthenticationScheme fromString(String scheme) {
-        return STRING_TO_ENUM.get(scheme);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

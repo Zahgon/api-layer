@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service.routing;
 
 import lombok.RequiredArgsConstructor;
@@ -20,11 +19,9 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.util.StringUtils;
 import org.zowe.apiml.product.routing.RoutedService;
-
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.APIML_ID;
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.SERVICE_EXTERNAL_URL;
 
@@ -36,6 +33,7 @@ import static org.zowe.apiml.constants.EurekaMetadataDefinition.SERVICE_EXTERNAL
 public abstract class RouteDefinitionProducer {
 
     protected final SimpleEvaluationContext evalCtxt = SimpleEvaluationContext.forReadOnlyDataBinding().withInstanceMethods().build();
+
     protected final Expression urlExpr;
 
     protected RouteDefinitionProducer(DiscoveryLocatorProperties properties) {
@@ -44,7 +42,7 @@ public abstract class RouteDefinitionProducer {
     }
 
     protected String evalHostname(ServiceInstance serviceInstance) {
-        return urlExpr.getValue(this.evalCtxt, serviceInstance, String.class);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -54,40 +52,15 @@ public abstract class RouteDefinitionProducer {
      * @return URL for loadbalancer (without path)
      */
     protected String getHostname(ServiceInstance serviceInstance) {
-        String output = null;
-        Map<String, String> metadata = serviceInstance.getMetadata();
-        if (metadata != null) {
-            output = metadata.get(SERVICE_EXTERNAL_URL);
-        }
-        if (output == null) {
-            output = evalHostname(serviceInstance);
-        }
-        return output;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected ServiceInstance getEvalServiceInstance(ServiceInstance serviceInstance) {
-        String serviceId = serviceInstance.getServiceId();
-
-        Map<String, String> metadata = serviceInstance.getMetadata();
-        if (metadata != null) {
-            String apimlId = metadata.get(APIML_ID);
-            if (StringUtils.hasText(apimlId)) {
-                serviceId = apimlId;
-            }
-        }
-
-        return new ServiceInstanceEval(serviceInstance, serviceId.toLowerCase());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected RouteDefinition buildRouteDefinition(ServiceInstance serviceInstance, String routeId) {
-        RouteDefinition routeDefinition = new RouteDefinition();
-        routeDefinition.setId(serviceInstance.getInstanceId() + ":" + routeId);
-        routeDefinition.setOrder(getOrder());
-        routeDefinition.setUri(URI.create(getHostname(serviceInstance)));
-
-        // add instance metadata
-        routeDefinition.setMetadata(new LinkedHashMap<>(serviceInstance.getMetadata()));
-        return routeDefinition;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -120,13 +93,7 @@ public abstract class RouteDefinitionProducer {
      * @return definition of routing rule
      */
     public RouteDefinition get(ServiceInstance serviceInstance, RoutedService routedService) {
-        serviceInstance = getEvalServiceInstance(serviceInstance);
-        RouteDefinition routeDefinition = buildRouteDefinition(serviceInstance, routedService.getSubServiceId());
-
-        setCondition(routeDefinition, serviceInstance, routedService);
-        setFilters(routeDefinition, serviceInstance, routedService);
-
-        return routeDefinition;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -138,17 +105,17 @@ public abstract class RouteDefinitionProducer {
 
         @Delegate(excludes = Overridden.class)
         private final ServiceInstance original;
+
         private final String evalServiceId;
 
         @Override
         public String getServiceId() {
-            return evalServiceId;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         private interface Overridden {
+
             String getServiceId();
         }
-
     }
-
 }

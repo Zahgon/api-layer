@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -19,7 +18,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -32,44 +30,37 @@ public class SwaggerConfig {
 
     @PostConstruct
     void initServletEndpointDocLocation() throws IOException {
-        servletEndpointDocLocation = new ClassPathResource("zaas-api-doc.json").getURI();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     OpenApiCustomizer servletEndpoints() {
-        return this::customizeSwagger;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void customizeSwagger(OpenAPI openApi) {
-            if (openApi != null) {
-                OpenAPI servletEndpoints = new OpenAPIV3Parser().read(servletEndpointDocLocation.toString());
-                if (servletEndpoints != null) {
-                    for (var entry : servletEndpoints.getPaths().entrySet()) {
-                        openApi.getPaths().addPathItem(entry.getKey(), entry.getValue());
-                    }
-                    openApi.getComponents().getSchemas().putAll(servletEndpoints.getComponents().getSchemas());
-                    if (openApi.getTags() == null) {
-                        openApi.setTags(new ArrayList<>());
-                    }
-                    openApi.getTags().addAll(servletEndpoints.getTags());
+        if (openApi != null) {
+            OpenAPI servletEndpoints = new OpenAPIV3Parser().read(servletEndpointDocLocation.toString());
+            if (servletEndpoints != null) {
+                for (var entry : servletEndpoints.getPaths().entrySet()) {
+                    openApi.getPaths().addPathItem(entry.getKey(), entry.getValue());
                 }
+                openApi.getComponents().getSchemas().putAll(servletEndpoints.getComponents().getSchemas());
+                if (openApi.getTags() == null) {
+                    openApi.setTags(new ArrayList<>());
+                }
+                openApi.getTags().addAll(servletEndpoints.getTags());
             }
+        }
     }
 
     @Bean
     GroupedOpenApi groupedOpenApiAuth() {
-        return GroupedOpenApi.builder()
-            .group("auth").pathsToMatch("/zaas/api/v1/auth/**")
-            .addOpenApiCustomizer(servletEndpoints())
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     GroupedOpenApi groupedOpenApiAll() {
-        return GroupedOpenApi.builder()
-            .group("v1").pathsToMatch("/**")
-                .addOpenApiCustomizer(servletEndpoints())
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

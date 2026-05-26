@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.handlers;
 
 import lombok.RequiredArgsConstructor;
@@ -24,16 +23,16 @@ import org.zowe.apiml.message.core.Message;
 import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.product.constants.CoreService;
 import reactor.core.publisher.Mono;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
  * This class creates responses for exceptional behavior of the StaticAPIRefreshController
  */
 @Order(0)
-@ControllerAdvice(assignableTypes = {StaticAPIRefreshController.class})
+@ControllerAdvice(assignableTypes = { StaticAPIRefreshController.class })
 @RequiredArgsConstructor
 public class StaticAPIRefreshControllerExceptionHandler {
+
     private final MessageService messageService;
 
     /**
@@ -44,12 +43,7 @@ public class StaticAPIRefreshControllerExceptionHandler {
      */
     @ExceptionHandler(ServiceNotFoundException.class)
     public Mono<ResponseEntity<ApiMessageView>> handleServiceNotFoundException(ServiceNotFoundException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.apicatalog.serviceNotFound", CoreService.DISCOVERY.getServiceId());
-
-        return Mono.just(ResponseEntity
-            .status(HttpStatus.SERVICE_UNAVAILABLE)
-            .contentType(APPLICATION_JSON)
-            .body(message.mapToView()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -60,12 +54,6 @@ public class StaticAPIRefreshControllerExceptionHandler {
      */
     @ExceptionHandler(RestClientException.class)
     public Mono<ResponseEntity<ApiMessageView>> handleServiceNotFoundException(RestClientException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.apicatalog.StaticApiRefreshFailed",
-            exception);
-
-        return Mono.just(ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(APPLICATION_JSON)
-            .body(message.mapToView()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

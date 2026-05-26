@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config;
 
 import lombok.Getter;
@@ -24,7 +23,6 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.util.pattern.PathPatternParser;
 import org.zowe.apiml.util.CorsUtils;
 import reactor.core.publisher.Mono;
-
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.APIML_ID;
 
 @Component
@@ -33,8 +31,11 @@ import static org.zowe.apiml.constants.EurekaMetadataDefinition.APIML_ID;
 public class ServiceCorsUpdater implements InitializingBean {
 
     private final CorsUtils corsUtils;
+
     private final ReactiveDiscoveryClient discoveryClient;
+
     private final RoutePredicateHandlerMapping handlerMapping;
+
     private final GlobalCorsProperties globalCorsProperties;
 
     @Getter
@@ -42,28 +43,11 @@ public class ServiceCorsUpdater implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource(new PathPatternParser());
-        urlBasedCorsConfigurationSource.setCorsConfigurations(globalCorsProperties.getCorsConfigurations());
-        corsUtils.registerDefaultCorsConfiguration(urlBasedCorsConfigurationSource::registerCorsConfiguration);
-        handlerMapping.setCorsConfigurationSource(urlBasedCorsConfigurationSource);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @EventListener(RefreshRoutesEvent.class)
     public Mono<Void> onRefreshRoutesEvent(RefreshRoutesEvent event) {
-        return discoveryClient.getServices()
-            .flatMap(discoveryClient::getInstances)
-            .map(instance -> {
-                    corsUtils.setCorsConfiguration(
-                        instance.getServiceId().toLowerCase(),
-                        instance.getMetadata(),
-                        (prefix, serviceId, config) -> {
-                            serviceId = instance.getMetadata().getOrDefault(APIML_ID, instance.getServiceId().toLowerCase());
-                            urlBasedCorsConfigurationSource.registerCorsConfiguration("/" + serviceId + "/**", config);
-                        }
-                );
-                return instance;
-            }).then();
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

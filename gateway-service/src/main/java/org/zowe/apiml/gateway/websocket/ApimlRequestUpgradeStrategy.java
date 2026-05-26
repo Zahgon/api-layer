@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.websocket;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,11 +29,9 @@ import org.springframework.web.reactive.socket.server.upgrade.StandardWebSocketU
 import org.springframework.web.server.ServerWebExchange;
 import org.zowe.apiml.gateway.config.ApimlServerEndpointConfig;
 import reactor.core.publisher.Mono;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import static reactor.core.publisher.Mono.*;
 
 @RequiredArgsConstructor
@@ -43,50 +40,12 @@ public class ApimlRequestUpgradeStrategy extends StandardWebSocketUpgradeStrateg
     private final HttpClientProperties httpClientProperties;
 
     @Override
-    protected void upgradeHttpToWebSocket(HttpServletRequest request, HttpServletResponse response,
-                                          ServerEndpointConfig endpointConfig, Map<String, String> pathParams) throws Exception {
-
-        getContainer(request).upgradeHttpToWebSocket(request, response, endpointConfig, pathParams);
+    protected void upgradeHttpToWebSocket(HttpServletRequest request, HttpServletResponse response, ServerEndpointConfig endpointConfig, Map<String, String> pathParams) throws Exception {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
-    public Mono<Void> upgrade(ServerWebExchange exchange, WebSocketHandler handler,
-                              @Nullable String subProtocol, Supplier<HandshakeInfo> handshakeInfoFactory) {
-
-        ServerHttpRequest request = exchange.getRequest();
-        ServerHttpResponse response = exchange.getResponse();
-
-        HttpServletRequest servletRequest = ServerHttpRequestDecorator.getNativeRequest(request);
-        HttpServletResponse servletResponse = ServerHttpResponseDecorator.getNativeResponse(response);
-
-        HandshakeInfo handshakeInfo = handshakeInfoFactory.get();
-        DataBufferFactory bufferFactory = response.bufferFactory();
-
-        // Trigger WebFlux preCommit actions and upgrade
-        return exchange.getResponse().setComplete()
-            .then(deferContextual(contextView -> {
-                Endpoint endpoint = new StandardWebSocketHandlerAdapter(
-                    ContextWebSocketHandler.decorate(handler, contextView),
-                    session -> {
-                        //Set the gateway outbound frame limit for websockets
-                        if (httpClientProperties.getWebsocket().getMaxFramePayloadLength() != null) {
-                            session.setMaxTextMessageBufferSize(httpClientProperties.getWebsocket().getMaxFramePayloadLength());
-                            session.setMaxBinaryMessageBufferSize(httpClientProperties.getWebsocket().getMaxFramePayloadLength());
-                        }
-                        return new ApimlWebSocketSession(session, handshakeInfo, bufferFactory);
-                    });
-                String requestURI = servletRequest.getRequestURI();
-                var config = new ApimlServerEndpointConfig(requestURI, endpoint);
-                config.setSubprotocols(subProtocol != null ?
-                    Collections.singletonList(subProtocol) : Collections.emptyList());
-
-                try {
-                    upgradeHttpToWebSocket(servletRequest, servletResponse, config, Collections.emptyMap());
-                } catch (Exception ex) {
-                    return error(ex);
-                }
-                return empty();
-            }));
+    public Mono<Void> upgrade(ServerWebExchange exchange, WebSocketHandler handler, @Nullable String subProtocol, Supplier<HandshakeInfo> handshakeInfoFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

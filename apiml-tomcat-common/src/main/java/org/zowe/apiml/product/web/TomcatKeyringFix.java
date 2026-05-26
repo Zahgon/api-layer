@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.web;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import org.springframework.boot.web.server.AbstractConfigurableWebServerFactory;
 import org.springframework.boot.web.server.Ssl;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.stereotype.Component;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +30,7 @@ import java.util.regex.Pattern;
 public class TomcatKeyringFix implements WebServerFactoryCustomizer<AbstractConfigurableWebServerFactory> {
 
     private static final Pattern KEYRING_PATTERN = Pattern.compile("^(safkeyring[^:]*):/{2,4}([^/]+)/(.+)$");
+
     private static final String KEYRING_PASSWORD = "password";
 
     @Value("${server.ssl.keyStore:#{null}}")
@@ -53,9 +52,7 @@ public class TomcatKeyringFix implements WebServerFactoryCustomizer<AbstractConf
     protected char[] trustStorePassword;
 
     boolean isKeyring(String input) {
-        if (input == null) return false;
-        Matcher matcher = KEYRING_PATTERN.matcher(input);
-        return matcher.matches();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -70,12 +67,7 @@ public class TomcatKeyringFix implements WebServerFactoryCustomizer<AbstractConf
      * @return the normalized URL or {@code null} if the input was {@code null}
      */
     static String formatKeyringUrl(String keyringUrl) {
-        if (keyringUrl == null) return null;
-        Matcher matcher = KEYRING_PATTERN.matcher(keyringUrl);
-        if (matcher.matches()) {
-            keyringUrl = matcher.group(1) + "://" + matcher.group(2) + "/" + matcher.group(3);
-        }
-        return keyringUrl;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -90,20 +82,6 @@ public class TomcatKeyringFix implements WebServerFactoryCustomizer<AbstractConf
      */
     @Override
     public void customize(AbstractConfigurableWebServerFactory factory) {
-        Ssl ssl = factory.getSsl();
-        if (isKeyring(keyStore)) {
-            ssl.setKeyStore(formatKeyringUrl(keyStore));
-            ssl.setKeyAlias(keyAlias);
-            ssl.setKeyStorePassword(keyStorePassword == null ? KEYRING_PASSWORD : String.valueOf(keyStorePassword));
-            ssl.setKeyPassword(keyPassword == null ? KEYRING_PASSWORD : String.valueOf(keyPassword));
-        }
-
-        if (isKeyring(trustStore)) {
-            ssl.setTrustStore(formatKeyringUrl(trustStore));
-            ssl.setTrustStorePassword(trustStorePassword == null ? KEYRING_PASSWORD : String.valueOf(trustStorePassword));
-        }
-
-        log.debug("TomcatKeyringFix applied");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

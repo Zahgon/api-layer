@@ -7,13 +7,13 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("Registered")
 public class Registered {
+
     private final boolean isRegistered;
 
     public Registered(boolean isRegistered) {
@@ -21,6 +21,6 @@ public class Registered {
     }
 
     public boolean getIsRegistered() {
-        return isRegistered;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

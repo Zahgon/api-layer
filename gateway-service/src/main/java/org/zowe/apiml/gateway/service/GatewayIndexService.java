@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service;
 
 import com.google.common.cache.Cache;
@@ -30,10 +29,8 @@ import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
 import org.zowe.apiml.services.ServiceInfo;
 import reactor.core.publisher.Mono;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.APIML_ID;
@@ -47,48 +44,29 @@ import static org.zowe.apiml.constants.EurekaMetadataDefinition.APIML_ID;
 public class GatewayIndexService {
 
     private final ApimlLogger apimlLog = ApimlLogger.of(GatewayIndexService.class, YamlMessageServiceInstance.getInstance());
+
     private final Cache<String, ServiceInstance> apimlGatewayLookup;
+
     private final Cache<String, List<ServiceInfo>> apimlServicesCache;
+
     private final WebClient webClient;
 
     private final ServicesInfoService servicesInfoService;
 
-    public GatewayIndexService(
-        @Qualifier("webClientClientCert") WebClient webClient,
-        @Value("${apiml.gateway.cachePeriodSec:120}") int cachePeriodSec,
-        ServicesInfoService servicesInfoService
-    ) {
+    public GatewayIndexService(@Qualifier("webClientClientCert") WebClient webClient, @Value("${apiml.gateway.cachePeriodSec:120}") int cachePeriodSec, ServicesInfoService servicesInfoService) {
         this.webClient = webClient;
-
         apimlGatewayLookup = CacheBuilder.newBuilder().expireAfterWrite(cachePeriodSec, SECONDS).build();
         apimlServicesCache = CacheBuilder.newBuilder().expireAfterWrite(cachePeriodSec, SECONDS).build();
-
         this.servicesInfoService = servicesInfoService;
     }
 
     private WebClient buildWebClient(ServiceInstance registration) {
         final String baseUrl = String.format("%s://%s:%d", registration.getScheme(), registration.getHost(), registration.getPort());
-
-        return webClient.mutate()
-            .baseUrl(baseUrl)
-            .defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE)
-            .build();
+        return webClient.mutate().baseUrl(baseUrl).defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE).build();
     }
 
     public Mono<List<ServiceInfo>> indexGatewayServices(ServiceInstance registration) {
-        String apimlIdKey = extractApimlId(registration).orElse(buildAlternativeApimlIdKey(registration));
-        log.debug("Fetching registered gateway instance services: {}", apimlIdKey);
-
-        if (EurekaMetadataDefinition.RegistrationType.of(registration.getMetadata()).isPrimary()) {
-            log.debug("Local instance of Gateway, perform a local call");
-            return Mono.just(servicesInfoService.getServicesInfo(apimlIdKey));
-        }
-
-        apimlGatewayLookup.put(apimlIdKey, registration);
-        return fetchServices(apimlIdKey, registration)
-            .doOnError(ex -> apimlLog.log("org.zowe.apiml.gateway.servicesRequestFailed", apimlIdKey, ex.getMessage()))
-            .onErrorComplete()
-            .doFinally(signal -> log.debug("\t {} completed with {}", apimlIdKey, signal));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -98,17 +76,13 @@ public class GatewayIndexService {
      * @param services List of the services
      */
     public void putApimlServices(@NotNull String apimlId, List<ServiceInfo> services) {
-        apimlServicesCache.put(apimlId, services);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Mono<List<ServiceInfo>> fetchServices(String apimlId, ServiceInstance registration) {
         final ParameterizedTypeReference<List<ServiceInfo>> serviceInfoType = new ParameterizedTypeReference<List<ServiceInfo>>() {
         };
-
-        return buildWebClient(registration).get().uri("/gateway/services")
-            .retrieve()
-            .bodyToMono(serviceInfoType)
-            .doOnNext(foreignServices -> apimlServicesCache.put(apimlId, foreignServices));
+        return buildWebClient(registration).get().uri("/gateway/services").retrieve().bodyToMono(serviceInfoType).doOnNext(foreignServices -> apimlServicesCache.put(apimlId, foreignServices));
     }
 
     private String buildAlternativeApimlIdKey(ServiceInstance registration) {
@@ -128,25 +102,11 @@ public class GatewayIndexService {
      * @return full of filter immutable map of the registry
      */
     public Map<String, List<ServiceInfo>> listRegistry(String apimlId, String apiId, String serviceId) {
-
-        Map<String, List<ServiceInfo>> allServices = ImmutableMap.<String, List<ServiceInfo>>builder()
-            .putAll(apimlServicesCache.asMap()).build();
-        return allServices.entrySet().stream()
-            .filter(entry -> apimlId == null || StringUtils.equals(apimlId, entry.getKey()))
-            .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), filterServicesByApiIdAndServiceId(entry.getValue(), apiId, serviceId)))
-            .filter(entry -> !CollectionUtils.isEmpty(entry.getValue()))
-            .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     List<ServiceInfo> filterServicesByApiIdAndServiceId(List<ServiceInfo> apimlIdServices, String apiId, String serviceId) {
-        if (!CollectionUtils.isEmpty(apimlIdServices)) {
-            return apimlIdServices.stream()
-                .filter(Objects::nonNull)
-                .filter(serviceInfo -> apiId == null || hasSameApiId(serviceInfo, apiId))
-                .filter(serviceInfo -> serviceId == null || hasSameServiceId(serviceInfo, serviceId))
-                .toList();
-        }
-        return Collections.emptyList();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean hasSameApiId(ServiceInfo serviceInfo, String apiId) {

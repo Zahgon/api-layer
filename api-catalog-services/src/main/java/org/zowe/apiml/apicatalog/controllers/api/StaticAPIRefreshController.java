@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.api;
 
 import lombok.RequiredArgsConstructor;
@@ -29,14 +28,8 @@ public class StaticAPIRefreshController {
 
     @PostMapping(value = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<String>> refreshStaticApis() {
-        return staticRegistrationService.refresh()
-            .map(staticAPIResponse -> ResponseEntity
-                .status(staticAPIResponse.getStatusCode())
-                .body(staticAPIResponse.getBody())
-            )
-            .subscribeOn(Schedulers.boundedElastic());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }
 
 @RestController
@@ -47,7 +40,6 @@ class StaticAPIRefreshControllerModulith extends StaticAPIRefreshController {
     public StaticAPIRefreshControllerModulith(StaticRegistrationService staticRegistrationService) {
         super(staticRegistrationService);
     }
-
 }
 
 @RestController
@@ -58,5 +50,4 @@ class StaticAPIRefreshControllerMicroservice extends StaticAPIRefreshController 
     public StaticAPIRefreshControllerMicroservice(StaticRegistrationService staticRegistrationService) {
         super(staticRegistrationService);
     }
-
 }

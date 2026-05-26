@@ -7,12 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service;
 
 public class DefaultEvictionStrategy implements EvictionStrategy {
+
     @Override
     public void evict(String key) {
-        // Intentionally do nothing.
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

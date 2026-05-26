@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -24,16 +23,6 @@ public class HttpClient {
     }
 
     public int executeCall(URL url) throws IOException {
-        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-        try {
-            con.setRequestMethod("GET");
-            con.setConnectTimeout(5000);
-            con.setReadTimeout(5000);
-            return con.getResponseCode();
-        } finally {
-            con.disconnect();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

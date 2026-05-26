@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.query;
 
 import org.zowe.apiml.security.common.token.TokenAuthentication;
@@ -18,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,11 +26,12 @@ import java.io.IOException;
  */
 @Component
 public class SuccessfulQueryHandler implements AuthenticationSuccessHandler {
+
     private final ObjectMapper mapper;
+
     private final AuthenticationService authenticationService;
 
-    public SuccessfulQueryHandler(ObjectMapper securityObjectMapper,
-                                  AuthenticationService authenticationService) {
+    public SuccessfulQueryHandler(ObjectMapper securityObjectMapper, AuthenticationService authenticationService) {
         this.mapper = securityObjectMapper;
         this.authenticationService = authenticationService;
     }
@@ -46,19 +45,7 @@ public class SuccessfulQueryHandler implements AuthenticationSuccessHandler {
      * @throws IOException when the response cannot be written
      */
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-        throws IOException {
-        TokenAuthentication tokenAuthentication = (TokenAuthentication) authentication;
-        String token = tokenAuthentication.getCredentials();
-
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.OK.value());
-
-        mapper.writeValue(response.getWriter(), authenticationService.parseJwtToken(token).getQueryResponse());
-
-        response.getWriter().flush();
-        if (!response.isCommitted()) {
-            throw new IOException("Authentication response has not been committed.");
-        }
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,21 +7,21 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import org.zowe.apiml.server.SocketServer;
-
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLServerSocket;
 import java.io.IOException;
 import java.net.URL;
 import java.security.KeyStoreException;
 
-@SuppressWarnings("squid:S106") //ignoring the System.out System.err warinings
+//ignoring the System.out System.err warinings
+@SuppressWarnings("squid:S106")
 public class LocalHandshake implements Verifier {
 
     private SSLContextHolder sslContextHolder;
+
     private HttpClient client;
 
     public LocalHandshake(SSLContextHolder sslContextHolder, HttpClient client) {
@@ -31,35 +31,6 @@ public class LocalHandshake implements Verifier {
 
     @Override
     public boolean verify() {
-        try { //NOSONAR
-            SSLServerSocket listener = (SSLServerSocket) sslContextHolder.getSslContextWithKeystore().getServerSocketFactory().createServerSocket(0);
-//            start listening on socket to do a SSL handshake
-            new SocketServer(listener);
-            String address = "https://localhost:" + listener.getLocalPort();
-            String keyAlias = sslContextHolder.getStores().getConf().getKeyAlias();
-            if (keyAlias == null) {
-
-                keyAlias = sslContextHolder.getStores().getKeyStore().aliases().nextElement();
-
-            }
-            String trustStore = sslContextHolder.getStores().getConf().getTrustStore();
-            try { //NOSONAR
-                System.out.println("Start of the local TLS handshake.");
-                client.executeCall(new URL(address));
-                System.out.println("Handshake was successful. Certificate stored under alias \"" + keyAlias + "\" is trusted by truststore \"" + trustStore
-                    + "\".");
-
-                return true;
-            } catch (SSLHandshakeException e) {
-                System.out.println("Handshake failed. Certificate stored under alias \"" + keyAlias + "\" is not trusted by truststore \"" + trustStore
-                    + "\". Error message: " + e.getMessage());
-            }
-        } catch (IOException e) {
-            System.out.println("Failed when calling local server. Error message: " + e.getMessage());
-        } catch (KeyStoreException e) {
-            System.err.println("Failed when loading key alias. " + e.getMessage());
-        }
-
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config;
 
 import org.apache.commons.lang.StringUtils;
@@ -24,26 +23,6 @@ public class SslUpdater implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
-        if (bean instanceof ServerProperties) {
-            ServerProperties serverProperties = (ServerProperties) bean;
-            Ssl ssl = serverProperties.getSsl();
-            if (SecurityUtils.isKeyring(ssl.getKeyStore())) {
-                ssl.setKeyStore(SecurityUtils.formatKeyringUrl(ssl.getKeyStore()));
-                if (StringUtils.isEmpty(ssl.getKeyStorePassword())) {
-                    ssl.setKeyStorePassword(KEYRING_PASSWORD);
-                }
-                if (StringUtils.isEmpty(ssl.getKeyPassword())) {
-                    ssl.setKeyPassword(KEYRING_PASSWORD);
-                }
-            }
-            if (SecurityUtils.isKeyring(ssl.getTrustStore())) {
-                ssl.setTrustStore(SecurityUtils.formatKeyringUrl(ssl.getTrustStore()));
-                if (StringUtils.isEmpty(ssl.getTrustStorePassword())) {
-                    ssl.setTrustStorePassword(KEYRING_PASSWORD);
-                }
-            }
-        }
-        return bean;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

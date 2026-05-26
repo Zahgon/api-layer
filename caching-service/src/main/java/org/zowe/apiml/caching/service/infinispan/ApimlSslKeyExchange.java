@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.infinispan;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jgroups.Address;
 import org.jgroups.protocols.SSL_KEY_EXCHANGE;
 import org.jgroups.stack.IpAddress;
-
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,109 +40,53 @@ public class ApimlSslKeyExchange extends SSL_KEY_EXCHANGE {
     }
 
     String toString(Throwable t) {
-        var stack = new ArrayList<Throwable>();
-        Throwable previous;
-        do {
-            stack.add(t);
-            previous = t;
-            t = t.getCause();
-        } while ((t != null) && (t != previous));
-        return stack.stream().map(Throwable::toString).collect(Collectors.joining(": "));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void printError(String message, List<Throwable> exceptionList) {
-        log.error("{}: {}", message, exceptionList.stream().map(this::toString).collect(Collectors.joining(", ")));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void printError(String message) {
-        var exceptionList = EXCEPTIONS.get();
-        if (exceptionList != null) {
-            printError(message, exceptionList);
-            EXCEPTIONS.remove();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void decorate(Exception e) {
-        var exceptionList = EXCEPTIONS.get();
-        if (exceptionList != null) {
-            var iterator = exceptionList.iterator();
-            if ((e.getCause() == null) || (e.getCause() == e)) {
-                e.initCause(iterator.next());
-            }
-            while (iterator.hasNext()) {
-                e.addSuppressed(iterator.next());
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected SSLServerSocket createServerSocket() throws Exception {
-        try {
-            return super.createServerSocket();
-        } catch (Exception e) {
-            decorate(e);
-            throw e;
-        } finally {
-            printError("Cannot create server socket");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected SSLSocket createSocketTo(Address target) throws Exception {
-        try {
-            return super.createSocketTo(target);
-        } catch (Exception e) {
-            decorate(e);
-            throw e;
-        } finally {
-            printError("Cannot create socket to remote address");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected SSLSocket createSocketTo(IpAddress dest, SSLSocketFactory sslSocketFactory) {
-        try {
-            return super.createSocketTo(dest, sslSocketFactory);
-        } catch (RuntimeException re) {
-            decorate(re);
-            throw re;
-        } finally {
-            printError("Cannot create socket to remote address");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private SSLContext update(SSLContext context) {
-        return new SSLContextWrapper(
-            new SSLContextSpiWrapper(
-                null,
-                new SSLSocketFactoryWrapper(context.getSocketFactory()),
-                new SSLServerSocketFactoryWrapper(context.getServerSocketFactory())
-            ),
-            context
-        );
+        return new SSLContextWrapper(new SSLContextSpiWrapper(null, new SSLSocketFactoryWrapper(context.getSocketFactory()), new SSLServerSocketFactoryWrapper(context.getServerSocketFactory())), context);
     }
 
     @Override
     public void init() throws Exception {
-        super.init();
-        synchronized (ApimlSslKeyExchange.class) {
-            if (!(super.client_ssl_ctx instanceof SSLContextWrapper)) {
-                super.client_ssl_ctx = update(super.client_ssl_ctx);
-            }
-            if (!(super.server_ssl_ctx instanceof SSLContextWrapper)) {
-                super.server_ssl_ctx = update(super.server_ssl_ctx);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public SSL_KEY_EXCHANGE setClientSSLContext(SSLContext clientSslCtx) {
-        return super.setClientSSLContext(update(clientSslCtx));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public SSL_KEY_EXCHANGE setServerSSLContext(SSLContext serverSslCtx) {
-        return super.setServerSSLContext(update(serverSslCtx));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @RequiredArgsConstructor
@@ -155,44 +97,38 @@ public class ApimlSslKeyExchange extends SSL_KEY_EXCHANGE {
 
         @Override
         public String[] getDefaultCipherSuites() {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public String[] getSupportedCipherSuites() {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public Socket createSocket(Socket s, String host, int port, boolean autoClose) {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public Socket createSocket(String host, int port) {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public Socket createSocket(String host, int port, InetAddress localHost, int localPort) {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public Socket createSocket(InetAddress host, int port) throws IOException {
-            try {
-                return original.createSocket(host, port);
-            } catch (IOException | RuntimeException e) {
-                addException(e);
-                throw e;
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
 
     @RequiredArgsConstructor
@@ -203,34 +139,28 @@ public class ApimlSslKeyExchange extends SSL_KEY_EXCHANGE {
 
         @Override
         public String[] getDefaultCipherSuites() {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public String[] getSupportedCipherSuites() {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public ServerSocket createServerSocket(int port) {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public ServerSocket createServerSocket(int port, int backlog) {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public ServerSocket createServerSocket(int port, int backlog, InetAddress ifAddress) throws IOException {
-            try {
-                return original.createServerSocket(port, backlog, ifAddress);
-            } catch (IOException | RuntimeException e) {
-                addException(e);
-                throw e;
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
 
     @RequiredArgsConstructor
@@ -238,44 +168,45 @@ public class ApimlSslKeyExchange extends SSL_KEY_EXCHANGE {
 
         @Delegate
         private final SSLContextSpi original;
+
         private final SSLSocketFactory sslSocketFactory;
+
         private final SSLServerSocketFactory sslServerSocketFactory;
 
         @Override
         protected void engineInit(KeyManager[] km, TrustManager[] tm, SecureRandom sr) {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         protected SSLSocketFactory engineGetSocketFactory() {
-            return this.sslSocketFactory;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         protected SSLServerSocketFactory engineGetServerSocketFactory() {
-            return this.sslServerSocketFactory;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         protected SSLEngine engineCreateSSLEngine() {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         protected SSLEngine engineCreateSSLEngine(String host, int port) {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         protected SSLSessionContext engineGetServerSessionContext() {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         protected SSLSessionContext engineGetClientSessionContext() {
-            throw new IllegalStateException("Not implemented");
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
 
     static class SSLContextWrapper extends SSLContext {
@@ -283,7 +214,5 @@ public class ApimlSslKeyExchange extends SSL_KEY_EXCHANGE {
         SSLContextWrapper(SSLContextSpi contextSpi, SSLContext original) {
             super(contextSpi, original.getProvider(), original.getProtocol());
         }
-
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Other Operations")
 @RequestMapping("/api/v1")
 public class GreetingController {
+
     private static final String GREETING = "Hello, I'm a sample extension!";
 
     /**
@@ -29,6 +29,6 @@ public class GreetingController {
      */
     @GetMapping(value = "/greeting")
     public String greeting() {
-        return GREETING;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

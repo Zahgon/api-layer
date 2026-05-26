@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.login.saf;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,36 +26,21 @@ import org.zowe.apiml.security.common.login.LoginRequest;
 @Component
 @ConditionalOnExpression("#{('${apiml.security.auth.provider:zosmf}' == 'zosmf') or ('${apiml.security.auth.provider:zosmf}' == 'dummy') or ('${apiml.security.auth.provider:zosmf}' == 'saf')}")
 public class ZosAuthenticationProvider implements AuthenticationProvider, InitializingBean {
+
     private PlatformUser platformUser = null;
 
     private final String authenticationProvider;
+
     private final AuthenticationService authenticationService;
 
-    public ZosAuthenticationProvider(AuthenticationService authenticationService,
-                                     @Value("${apiml.security.auth.provider}") String authenticationProvider) {
+    public ZosAuthenticationProvider(AuthenticationService authenticationService, @Value("${apiml.security.auth.provider}") String authenticationProvider) {
         this.authenticationService = authenticationService;
         this.authenticationProvider = authenticationProvider;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) {
-        String userid = authentication.getName();
-        char[] password = LoginRequest.getPassword(authentication);
-        char[] newPassword = LoginRequest.getNewPassword(authentication);
-        PlatformReturned returned;
-        if (!ArrayUtils.isEmpty(newPassword)) {
-            returned = (PlatformReturned) getPlatformUser().changePassword(userid, new String(password), new String(newPassword));
-        } else {
-            returned = (PlatformReturned) getPlatformUser().authenticate(userid, new String(password));
-        }
-
-        if ((returned == null) || (returned.isSuccess())) {
-            final String domain = "security-domain";
-            final String jwtToken = authenticationService.createJwtToken(userid, domain, null);
-            return authenticationService.createTokenAuthentication(userid, jwtToken);
-        } else {
-            throw new ZosAuthenticationException(returned);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private PlatformUser getPlatformUser() {
@@ -65,18 +49,11 @@ public class ZosAuthenticationProvider implements AuthenticationProvider, Initia
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void afterPropertiesSet() {
-        if (platformUser == null &&
-            (authenticationProvider != null && authenticationProvider.equals(LoginProvider.SAF.getValue()))) {
-            try {
-                platformUser = new SafPlatformUser(new SafPlatformClassFactory());
-            } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
-                throw new IllegalArgumentException("Unknown structure of SAF platform classes", e);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

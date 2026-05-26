@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.passticket;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +23,9 @@ public abstract class AbstractIRRPassTicketException extends PassTicketException
     private static final long serialVersionUID = -6233392272992529775L;
 
     protected final int safRc;
+
     protected final int racfRc;
+
     protected final int racfRsn;
 
     protected AbstractIRRPassTicketException(ErrorCode errorCode) {
@@ -34,18 +35,15 @@ public abstract class AbstractIRRPassTicketException extends PassTicketException
     }
 
     public ErrorCode getErrorCode() {
-        return ErrorCode.getErrorCode(this);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected String getMessage(String baseMessage) {
-        return String.format("%s %s: safRc=%d, racfRc=%d, racfRsn=%d",
-            baseMessage, getErrorCode().getMessage(),
-            this.safRc, this.racfRc, this.racfRsn
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public int getHttpStatus() {
-        return getErrorCode().getHttpStatus();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @AllArgsConstructor
@@ -66,17 +64,14 @@ public abstract class AbstractIRRPassTicketException extends PassTicketException
         ERR_8_12_20(8, 12, 20, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Invocation of the Security Server Network Authentication Service Program Call (PC) interface failed with an 'abend in the PC service routine' return code. The symptom record associated with this abend can be found in the logrec data set."),
         ERR_8_12_24(8, 12, 24, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Invocation of the Security Server Network Authentication Service Program Call (PC) interface failed with an 'unable to obtain control lock' return code. This can occur if the task holding the lock is not being dispatched (for example, a dump is in progress)."),
         ERR_8_16_28(8, 16, 28, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Unable to generate PassTicket. Verify that the secured signon (PassTicket) function and application ID is configured properly by referring to Using PassTickets in z/OS Security Server RACF Security Administrator's Guide."),
-        ERR_8_16_32(8, 16, 32, HttpStatus.SC_INTERNAL_SERVER_ERROR, "PassTicket evaluation failure. Possible reasons include: " +
-            "PassTicket to be evaluated is not a successful PassTicket. "
-            + "The PassTicket to be evaluated was already evaluated before and replay protection is in effect. "
-            + "No PTKTDATA profile exists to match the specified application "
-            + "An internal error occurred."),
+        ERR_8_16_32(8, 16, 32, HttpStatus.SC_INTERNAL_SERVER_ERROR, "PassTicket evaluation failure. Possible reasons include: " + "PassTicket to be evaluated is not a successful PassTicket. " + "The PassTicket to be evaluated was already evaluated before and replay protection is in effect. " + "No PTKTDATA profile exists to match the specified application " + "An internal error occurred."),
         ERR_8_16_X(8, 16, null, HttpStatus.SC_INTERNAL_SERVER_ERROR, "PassTicket evaluation extended failure. X'nnnnnnnn' is the internal reason code for the evaluation failure."),
         ERR_UNKNOWN(null, null, null, HttpStatus.SC_INTERNAL_SERVER_ERROR, "The Saf Auth Service returned unknown exception.");
 
-
         private final Integer safRc;
+
         private final Integer racfRc;
+
         private final Integer racfRsn;
 
         private final int httpStatus;
@@ -84,17 +79,7 @@ public abstract class AbstractIRRPassTicketException extends PassTicketException
         private String message;
 
         public static ErrorCode getErrorCode(AbstractIRRPassTicketException e) {
-            for (final ErrorCode ec : values()) {
-                if (
-                    (ec.getSafRc() == null || ec.getSafRc().equals(e.getSafRc())) &&
-                    (ec.getRacfRc() == null || ec.getRacfRc().equals(e.getRacfRc())) &&
-                    (ec.getRacfRsn() == null || ec.getRacfRsn().equals(e.getRacfRsn()))
-                ) {
-                    return ec;
-                }
-            }
-
-            return ERR_UNKNOWN;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 }

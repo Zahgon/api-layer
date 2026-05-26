@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import org.springframework.boot.actuate.health.Health;
@@ -16,7 +15,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EurekaHealthIndicator;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -37,9 +35,7 @@ public class EurekaHealthIndicatorApiml extends EurekaHealthIndicator {
 
     @Override
     public Health health() {
-        Health.Builder builder = Health.unknown();
-        Status status = getStatus();
-        return builder.status(status).withDetail("applications", getServiceInstances()).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Status getStatus() {
@@ -50,11 +46,6 @@ public class EurekaHealthIndicatorApiml extends EurekaHealthIndicator {
     }
 
     private Map<String, Object> getServiceInstances() {
-        return discoveryClient.getServices().stream()
-            .collect(Collectors.toMap(
-                String::toLowerCase,
-                serviceId -> discoveryClient.getInstances(serviceId).size())
-            );
+        return discoveryClient.getServices().stream().collect(Collectors.toMap(String::toLowerCase, serviceId -> discoveryClient.getInstances(serviceId).size()));
     }
-
 }

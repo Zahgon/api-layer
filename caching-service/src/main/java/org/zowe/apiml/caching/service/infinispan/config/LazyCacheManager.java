@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.infinispan.config;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ import org.infinispan.remoting.transport.Address;
 import org.infinispan.stats.CacheContainerStats;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-
 import javax.security.auth.Subject;
 import java.io.IOException;
 import java.util.List;
@@ -50,12 +48,10 @@ public class LazyCacheManager extends DefaultCacheManager {
     private static final int INIT_TIMEOUT_MINS = 1;
 
     private final AtomicReference<Producer<DefaultCacheManager>> cacheManager;
+
     private final CacheInitializer cacheInitializer;
 
-    public LazyCacheManager(
-        ConfigurationBuilderHolder cacheManagerConfig,
-        Map<String, ConfigurationBuilder> caches
-    ) {
+    public LazyCacheManager(ConfigurationBuilderHolder cacheManagerConfig, Map<String, ConfigurationBuilder> caches) {
         super(cacheManagerConfig, false);
         cacheInitializer = new CacheInitializer(cacheManagerConfig, caches);
         cacheManager = new AtomicReference<>(cacheInitializer::getDefaultCacheManager);
@@ -70,191 +66,191 @@ public class LazyCacheManager extends DefaultCacheManager {
     }
 
     public boolean isInitialized() {
-        return cacheInitializer.isInitialized();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Configuration defineConfiguration(String cacheName, Configuration configuration) {
-        return getCacheManager().defineConfiguration(cacheName, configuration);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Configuration defineConfiguration(String cacheName, String templateCacheName, Configuration configurationOverride) {
-        return getCacheManager().defineConfiguration(cacheName, templateCacheName, configurationOverride);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void undefineConfiguration(String configurationName) {
-        getCacheManager().undefineConfiguration(configurationName);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getClusterName() {
-        return getCacheManager().getClusterName();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public List<Address> getMembers() {
-        return getCacheManager().getMembers();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Address getAddress() {
-        return getCacheManager().getAddress();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Address getCoordinator() {
-        return getCacheManager().getCoordinator();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean isCoordinator() {
-        return getCacheManager().isCoordinator();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public ComponentStatus getStatus() {
-        return getCacheManager().getStatus();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public GlobalConfiguration getCacheManagerConfiguration() {
-        return getCacheManager().getCacheManagerConfiguration();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Configuration getCacheConfiguration(String name) {
-        return getCacheManager().getCacheConfiguration(name);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Configuration getDefaultCacheConfiguration() {
-        return getCacheManager().getDefaultCacheConfiguration();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Set<String> getAccessibleCacheNames() {
-        return getCacheManager().getAccessibleCacheNames();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean isRunning(String cacheName) {
-        return getCacheManager().isRunning(cacheName);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean isDefaultRunning() {
-        return getCacheManager().isDefaultRunning();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean cacheExists(String cacheName) {
-        return getCacheManager().cacheExists(cacheName);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean cacheConfigurationExists(String name) {
-        return getCacheManager().cacheConfigurationExists(name);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public <K, V> Cache<K, V> getCache() {
-        return getCacheManager().getCache();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public <K, V> Cache<K, V> getCache(String cacheName) {
-        return getCacheManager().getCache(cacheName);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public <K, V> Cache<K, V> createCache(String name, Configuration configuration) {
-        return getCacheManager().createCache(name, configuration);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public <K, V> Cache<K, V> getCache(String cacheName, boolean createIfAbsent) {
-        return getCacheManager().getCache(cacheName, createIfAbsent);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public EmbeddedCacheManager startCaches(String... cacheNames) {
-        return getCacheManager().startCaches(cacheNames);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void addCacheDependency(String from, String to) {
-        getCacheManager().addCacheDependency(from, to);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public CacheContainerStats getStats() {
-        return getCacheManager().getStats();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Health getHealth() {
-        return getCacheManager().getHealth();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public CacheManagerInfo getCacheManagerInfo() {
-        return getCacheManager().getCacheManagerInfo();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public ClassAllowList getClassAllowList() {
-        return getCacheManager().getClassAllowList();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Subject getSubject() {
-        return getCacheManager().getSubject();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public EmbeddedCacheManager withSubject(Subject subject) {
-        return getCacheManager().withSubject(subject);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Set<String> getCacheNames() {
-        return getCacheManager().getCacheNames();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void start() {
-        getCacheManager().start();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void stop() {
-        getCacheManager().stop();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public <T extends CacheContainer> T getOriginal() {
-        return (T) getCacheManager();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void close() throws IOException {
-        getCacheManager().close();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public CompletionStage<Void> addListenerAsync(Object listener) {
-        return getCacheManager().addListenerAsync(listener);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public CompletionStage<Void> removeListenerAsync(Object listener) {
-        return getCacheManager().removeListenerAsync(listener);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationStart() {
-        cacheInitializer.onApplicationStart();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @RequiredArgsConstructor
@@ -263,6 +259,7 @@ public class LazyCacheManager extends DefaultCacheManager {
         private DefaultCacheManager underInit;
 
         private final ConfigurationBuilderHolder cacheManagerConfig;
+
         private final Map<String, ConfigurationBuilder> caches;
 
         private final Phaser threadCounter = new Phaser();
@@ -291,78 +288,14 @@ public class LazyCacheManager extends DefaultCacheManager {
          * @return partially or fully initialized cache manager
          */
         public DefaultCacheManager getDefaultCacheManager() {
-            try {
-                // register to the barrier to check that the thread will leave method after each cache is initiated
-                threadCounter.register();
-
-                // start cache manager (only one thread could do that)
-                synchronized (LazyCacheManager.class) {
-                    if (underInit == null) {
-                        log.debug("attempt to create cache manager");
-                        try {
-                            underInit = startDefaultCacheManager();
-                            log.debug("cache manager was created");
-                        } catch (Exception e) {
-                            log.warn("Cannot initialize DefaultCacheManager", e);
-                            return null;
-                        }
-                    }
-                }
-
-                while (true) {
-                    String cacheName;
-                    ConfigurationBuilder cacheBuilder;
-                    // obtain name and builder of one cache (to initiate it only in one thread)
-                    synchronized (LazyCacheManager.class) {
-                        var i = caches.entrySet().iterator();
-                        if (i.hasNext()) {
-                            var entry = i.next();
-                            cacheName = entry.getKey();
-                            cacheBuilder = entry.getValue();
-                            i.remove();
-                        } else {
-                            // if there is no cache to be initiated return instance and avoid using this method in the next calls
-                            cacheManager.set(() -> underInit);
-                            return underInit;
-                        }
-                    }
-
-                    try {
-                        createCache(cacheName, cacheBuilder);
-                    } catch (Exception e) {
-                        // initialization of cache failed. Put it back to be initialized again next invocation
-                        synchronized (LazyCacheManager.class) {
-                            caches.put(cacheName, cacheBuilder);
-                        }
-                        cacheManager.set(this::getDefaultCacheManager);
-                        return underInit;
-                    }
-                }
-            } finally {
-                /**
-                 * all caches should be initialized here or some caches initialization failed. Anyway, wait for other
-                 * threads (to avoid partial initialization) before leaving the method. Waiting is limited by timeout
-                 * defined in {@link #INIT_TIMEOUT_MINS}
-                 */
-                threadCounter.arriveAndDeregister();
-                try {
-                    threadCounter.awaitAdvanceInterruptibly(0, INIT_TIMEOUT_MINS, TimeUnit.MINUTES);
-                } catch (InterruptedException ie) {
-                    log.error("Thread was interrupted", ie);
-                    Thread.currentThread().interrupt();
-                } catch (TimeoutException te) {
-                    log.warn("Timeout while initializing of caches: {}", te.getMessage());
-                }
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         private boolean createCache(String cacheName, ConfigurationBuilder cacheBuilder) {
             var cacheConfig = cacheBuilder.build();
             log.debug("Initializing cache {} with config {}", cacheName, cacheConfig);
             try {
-                underInit.administration()
-                    .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
-                    .getOrCreateCache(cacheName, cacheConfig);
+                underInit.administration().withFlags(CacheContainerAdmin.AdminFlag.VOLATILE).getOrCreateCache(cacheName, cacheConfig);
                 return true;
             } catch (CacheConfigurationException cce) {
                 log.warn("Error during initialization of cache {}", cacheName, cce);
@@ -378,19 +311,11 @@ public class LazyCacheManager extends DefaultCacheManager {
         }
 
         public boolean isInitialized() {
-            return underInit != null && caches.isEmpty();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public void onApplicationStart() {
-            if (!isInitialized() && (threadCounter.getUnarrivedParties() == 0)) {
-                /**
-                 * spring context is ready and no thread initialized the cache manager yet. Do it to avoid situation
-                 * when service is not fully ready till any bean need a specific cache.
-                 */
-                getDefaultCacheManager();
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.health;
 
 import lombok.RequiredArgsConstructor;
@@ -29,10 +28,6 @@ public class DiscoveryServiceHealthIndicator extends AbstractHealthIndicator {
 
     @Override
     protected void doHealthCheck(Health.Builder builder) {
-        String zaasServiceId = CoreService.ZAAS.getServiceId();
-        boolean gatewayDown = this.discoveryClient.getInstances(zaasServiceId).isEmpty();
-        builder
-            .status(gatewayDown ? new Status("PARTIAL", "Authenticated endpoints not available.") : Status.UP)
-            .withDetail(zaasServiceId, gatewayDown ? Status.DOWN : Status.UP);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

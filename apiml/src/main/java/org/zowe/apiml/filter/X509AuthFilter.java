@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import lombok.RequiredArgsConstructor;
@@ -22,10 +21,8 @@ import org.springframework.web.server.WebFilterChain;
 import org.zowe.apiml.security.common.token.X509AuthenticationToken;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
-
 import java.security.cert.X509Certificate;
 import java.util.Optional;
-
 import static org.zowe.apiml.security.common.filter.CategorizeCertsFilter.ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE;
 
 /**
@@ -49,31 +46,6 @@ public class X509AuthFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        X509Certificate[] certs = exchange.getAttribute(ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE);
-        boolean skip = Optional.ofNullable(exchange.getAttribute(SKIP_X509_AUTH_ATTR)).map(value -> Boolean.valueOf(String.valueOf(value))).orElse(false);
-        if (ArrayUtils.isEmpty(certs) || skip) {
-            return chain.filter(exchange);
-        }
-
-        return ReactiveSecurityContextHolder.getContext()
-            .flatMap(ctx -> {
-                if (ctx.getAuthentication().isAuthenticated() && ctx.getAuthentication().getPrincipal() != null) {
-                    return Mono.just(ctx.getAuthentication());
-                }
-                return Mono.empty();
-            })
-            .switchIfEmpty(Mono.<Authentication>defer(() -> x509AuthenticationProvider.authenticate(new X509AuthenticationToken(certs))))
-            .onErrorResume(AuthenticationException.class, ex -> Mono.empty())
-            .map(auth -> auth.isAuthenticated() ? ReactiveSecurityContextHolder.withAuthentication(auth) : Context.empty())
-            .switchIfEmpty(Mono.just(Context.empty()))
-            .flatMap(ctx -> {
-                var next = chain.filter(exchange);
-                if (!ctx.isEmpty()) {
-                    return next.contextWrite(ctx);
-                }
-                return next;
-            });
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

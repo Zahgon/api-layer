@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ public class InstanceInfoService {
     private final DiscoveryClient discoveryClient;
 
     public Flux<ServiceInstance> getServiceInstances(String serviceId) {
-        return Flux.defer(() -> Flux.fromIterable(discoveryClient.getInstances(serviceId)));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

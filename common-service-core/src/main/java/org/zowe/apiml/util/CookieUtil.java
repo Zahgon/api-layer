@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
-
 import java.net.HttpCookie;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,13 +28,21 @@ import java.util.stream.Stream;
 public final class CookieUtil {
 
     public static class CookieHeaderBuilder {
+
         private final String name;
+
         private final String value;
+
         private String comment;
+
         private String path = "/";
+
         private String sameSite = "Strict";
+
         private Integer maxAge = null;
+
         private boolean isHttpOnly = false;
+
         private boolean isSecure = false;
 
         public CookieHeaderBuilder(String name, String value) {
@@ -45,61 +51,31 @@ public final class CookieUtil {
         }
 
         public CookieHeaderBuilder comment(String comment) {
-            this.comment = comment;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public CookieHeaderBuilder path(String comment) {
-            this.path = comment;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public CookieHeaderBuilder sameSite(String sameSite) {
-            this.sameSite = sameSite;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public CookieHeaderBuilder maxAge(Integer maxAge) {
-            this.maxAge = maxAge;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public CookieHeaderBuilder httpOnly(boolean isHttpOnly) {
-            this.isHttpOnly = isHttpOnly;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public CookieHeaderBuilder secure(boolean isSecure) {
-            this.isSecure = isSecure;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public String build() {
-            String cookieHeader = String.format(
-                "%s=%s; Path=%s; SameSite=%s;",
-                name,
-                value,
-                path,
-                sameSite
-            );
-
-            if (comment != null) {
-                cookieHeader += " Comment=" + comment + ";";
-            }
-
-            if (maxAge != null) {
-                cookieHeader += " Max-Age=" + maxAge + ";";
-            }
-
-            if (isHttpOnly) {
-                cookieHeader += " HttpOnly;";
-            }
-
-            if (isSecure) {
-                cookieHeader += " Secure;";
-            }
-
-            return cookieHeader;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 
@@ -112,23 +88,7 @@ public final class CookieUtil {
      * @return new header string, which contains a new cookie
      */
     public static String setCookie(String cookieHeader, String name, String value) {
-        StringBuilder sb = new StringBuilder();
-
-        int counter = 0;
-        if (StringUtils.isNotBlank(cookieHeader)) {
-            for (final String cookie : cookieHeader.split(";")) {
-                final String[] cookieParts = cookie.split("=", 2);
-                if (StringUtils.equals(StringUtils.trim(cookieParts[0]), name)) continue;
-
-                if (counter++ > 0) sb.append(';');
-                sb.append(cookie);
-            }
-        }
-
-        if (counter > 0) sb.append(';');
-        sb.append(name).append('=').append(value);
-
-        return sb.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -140,34 +100,11 @@ public final class CookieUtil {
      * @return new header string, without a specified cookie
      */
     public static String removeCookie(String cookieHeader, String name) {
-        StringBuilder sb = new StringBuilder();
-
-        int counter = 0;
-        boolean changed = false;
-        if (StringUtils.isNotBlank(cookieHeader)) {
-            for (final String cookie : cookieHeader.split(";")) {
-                final String[] cookieParts = cookie.split("=", 2);
-                if (StringUtils.equals(StringUtils.trim(cookieParts[0]), name)) {
-                    changed = true;
-                    continue;
-                }
-
-                if (counter++ > 0) sb.append(';');
-                sb.append(cookie);
-            }
-        }
-
-        if (!changed) return cookieHeader;
-        return sb.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static List<HttpCookie> parseCookieSuppress(String cookie) {
-        try {
-            return HttpCookie.parse(cookie);
-        } catch (Exception e) {
-            log.debug("Cannot parse cookie from String `{}`: {}", cookie, e.getMessage());
-            return Collections.emptyList();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -176,14 +113,6 @@ public final class CookieUtil {
      * @return stream of HttpCookie
      */
     public static Stream<HttpCookie> readCookies(HttpHeaders httpHeaders) {
-        return Optional.ofNullable(httpHeaders.get(HttpHeaders.COOKIE))
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(v -> StringUtils.split(v, ";"))
-            .flatMap(Arrays::stream)
-            .map(StringUtils::trim)
-            .map(CookieUtil::parseCookieSuppress)
-            .flatMap(List::stream);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

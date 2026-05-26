@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -82,21 +80,14 @@ public class APIContainer implements Serializable {
     }
 
     public void addService(APIService apiService) {
-        if (services == null) {
-            services = new HashSet<>();
-        }
-        boolean match = services.stream().anyMatch(service -> service.getServiceId().equalsIgnoreCase(apiService.getServiceId()));
-        if (!match) {
-            services.add(apiService);
-            updateLastUpdatedTimestamp();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Update the last updated timestamp to now
      */
     public void updateLastUpdatedTimestamp() {
-        this.lastUpdatedTimestamp = Calendar.getInstance();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -106,17 +97,6 @@ public class APIContainer implements Serializable {
      * @return true if updated recently
      */
     public boolean isRecentUpdated(int thresholdInMillis) {
-        boolean isRecent;
-        Calendar threshold = Calendar.getInstance();
-        threshold.add(Calendar.MILLISECOND, -thresholdInMillis);
-        isRecent = threshold.before(this.lastUpdatedTimestamp);
-        if (isRecent) {
-            log.debug("\nContainer: " + this.getId() + " has been updated within the given threshold of " + thresholdInMillis / 1000
-                + " seconds.\nThreshold: " + threshold.getTime() + "\nThis: " + this.lastUpdatedTimestamp.getTime()
-                + "\ntime difference(millis): " +
-                TimeUnit.MILLISECONDS.toSeconds(this.lastUpdatedTimestamp.getTimeInMillis() - threshold.getTimeInMillis())
-                + " recently updated\n");
-        }
-        return isRecent;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

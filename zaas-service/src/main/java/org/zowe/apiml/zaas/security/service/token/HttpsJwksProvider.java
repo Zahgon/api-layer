@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.token;
 
 import lombok.RequiredArgsConstructor;
@@ -23,12 +22,6 @@ public class HttpsJwksProvider {
     private final HttpConfig httpConfig;
 
     public HttpsJwks getFor(String url) {
-        var httpsJwks = new HttpsJwks(url);
-        var get = new Get();
-        get.setSslSocketFactory(httpConfig.getSecureSslContextWithoutKeystore().getSocketFactory());
-        get.setHostnameVerifier(httpConfig.getSecureHostnameVerifier());
-        httpsJwks.setSimpleHttpGet(get);
-        return httpsJwks;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

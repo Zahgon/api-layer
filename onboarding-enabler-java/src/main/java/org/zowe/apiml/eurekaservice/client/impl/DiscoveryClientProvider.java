@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client.impl;
 
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -21,10 +20,7 @@ public class DiscoveryClientProvider implements org.zowe.apiml.eurekaservice.cli
 
     @SuppressWarnings("rawtypes")
     @Override
-    public EurekaClient client(ApplicationInfoManager applicationInfoManager,
-                               EurekaClientConfig clientConfig,
-                               TransportClientFactories transportClientFactories,
-                               AbstractDiscoveryClientOptionalArgs args) {
-        return new DiscoveryClient(applicationInfoManager, clientConfig, transportClientFactories,args);
+    public EurekaClient client(ApplicationInfoManager applicationInfoManager, EurekaClientConfig clientConfig, TransportClientFactories transportClientFactories, AbstractDiscoveryClientOptionalArgs args) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

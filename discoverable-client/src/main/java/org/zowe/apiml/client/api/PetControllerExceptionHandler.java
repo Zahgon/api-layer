@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -30,17 +29,17 @@ import org.zowe.apiml.message.api.ApiMessage;
 import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.message.core.Message;
 import org.zowe.apiml.message.core.MessageService;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class creates responses for exceptional behavior of the PetController
  */
-@ControllerAdvice(assignableTypes = {PetController.class})
+@ControllerAdvice(assignableTypes = { PetController.class })
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RequiredArgsConstructor
 public class PetControllerExceptionHandler {
+
     private final MessageService messageService;
 
     /**
@@ -51,12 +50,7 @@ public class PetControllerExceptionHandler {
      */
     @ExceptionHandler(PetNotFoundException.class)
     public ResponseEntity<ApiMessageView> handlePetNotFound(PetNotFoundException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.sampleservice.api.petNotFound", exception.getId());
-
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(message.mapToView());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -67,12 +61,7 @@ public class PetControllerExceptionHandler {
      */
     @ExceptionHandler(PetIdMismatchException.class)
     public ResponseEntity<ApiMessageView> handleIdMismatch(PetIdMismatchException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.sampleservice.api.petIdMismatchException", exception.getPathId(), exception.getBodyId());
-
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(message.mapToView());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -83,12 +72,7 @@ public class PetControllerExceptionHandler {
      */
     @ExceptionHandler(TypeMismatchException.class)
     public ResponseEntity<ApiMessageView> handleIdTypeMismatch(TypeMismatchException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.sampleservice.api.petIdTypeMismatch", exception.getValue());
-
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(message.mapToView());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -99,27 +83,7 @@ public class PetControllerExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiMessageView> handleMethodArgumentNotValid(MethodArgumentNotValidException exception) {
-        List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-        List<Object[]> messages = new ArrayList<>();
-
-        for (FieldError fieldError : fieldErrors) {
-            Object[] messageFields = new Object[3];
-            messageFields[0] = fieldError.getField();
-            messageFields[1] = fieldError.getRejectedValue();
-            messageFields[2] = fieldError.getDefaultMessage();
-            messages.add(messageFields);
-        }
-
-        List<ApiMessage> listApiMessage = messageService
-            .createMessage("org.zowe.apiml.sampleservice.api.petMethodArgumentNotValid", messages)
-            .stream()
-            .map(Message::mapToApiMessage)
-            .toList();
-
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(new ApiMessageView(listApiMessage));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -130,12 +94,7 @@ public class PetControllerExceptionHandler {
      */
     @ExceptionHandler(UnrecognizedPropertyException.class)
     public ResponseEntity<ApiMessageView> handleUnrecognizedProperty(UnrecognizedPropertyException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.sampleservice.api.petUnrecognizedProperty", exception.getPropertyName());
-
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(message.mapToView());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -146,12 +105,7 @@ public class PetControllerExceptionHandler {
      */
     @ExceptionHandler(JsonParseException.class)
     public ResponseEntity<ApiMessageView> jsonParseException(JsonParseException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.sampleservice.api.jsonParseException", exception.getMessage());
-
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(message.mapToView());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -162,12 +116,6 @@ public class PetControllerExceptionHandler {
      */
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<ApiMessageView> handleInvalidFormatException(InvalidFormatException exception) {
-        String fieldName = exception.getPath().get(0).getFieldName();
-        Message message = messageService.createMessage("org.zowe.apiml.sampleservice.api.petInvalidFormatException", fieldName);
-
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(message.mapToView());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

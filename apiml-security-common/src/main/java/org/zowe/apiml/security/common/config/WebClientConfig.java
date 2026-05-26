@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.config;
 
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,7 +28,6 @@ import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
 import org.zowe.apiml.product.web.HttpConfig;
 import org.zowe.apiml.security.HttpsConfigError;
 import org.zowe.apiml.security.common.util.ConnectionUtil;
-
 import io.netty.handler.ssl.SslContext;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import lombok.RequiredArgsConstructor;
@@ -51,56 +48,22 @@ public class WebClientConfig {
     private boolean isClientAttlsEnabled;
 
     @Bean
-    HttpClientFactory gatewayHttpClientFactory(
-        HttpClientProperties properties,
-        ServerProperties serverProperties, List<HttpClientCustomizer> customizers,
-        HttpClientSslConfigurer sslConfigurer
-    ) {
-        SslContext sslContext;
-        try {
-            sslContext = ConnectionUtil.getSslContext(config, false);
-        } catch (Exception e) {
-            apimlLog.log("org.zowe.apiml.common.sslContextInitializationError", e.getMessage());
-            throw new HttpsConfigError("Error initializing SSL Context: " + e.getMessage(), e,
-                HttpsConfigError.ErrorCode.HTTP_CLIENT_INITIALIZATION_FAILED, config.httpsConfig());
-        }
-        return new HttpClientFactory(properties, serverProperties, sslConfigurer, customizers) {
-            @Override
-            protected HttpClient createInstance() {
-                return super.createInstance()
-                    .secure(sslContextSpec -> sslContextSpec.sslContext(sslContext))
-                    .resolver(DefaultAddressResolverGroup.INSTANCE);
-            }
-        };
+    HttpClientFactory gatewayHttpClientFactory(HttpClientProperties properties, ServerProperties serverProperties, List<HttpClientCustomizer> customizers, HttpClientSslConfigurer sslConfigurer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     HttpClient getHttpClient(HttpClient httpClient, boolean useClientCert) {
-        try {
-            return ConnectionUtil.getHttpClient(config, httpClient, useClientCert);
-        } catch (Exception e) {
-            apimlLog.log("org.zowe.apiml.common.sslContextInitializationError", e.getMessage());
-            throw new HttpsConfigError("Error initializing SSL Context: " + e.getMessage(), e,
-                HttpsConfigError.ErrorCode.HTTP_CLIENT_INITIALIZATION_FAILED, config.httpsConfig());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @Primary
     WebClient webClient(HttpClient httpClient) {
-        HttpClient base = getHttpClient(httpClient, false)
-            .followRedirect(true);
-        return WebClient.builder()
-            .clientConnector(new ReactorClientHttpConnector(base))
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(2 * 1024 * 1024))
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     WebClient webClientClientCert(HttpClient httpClient) {
-        boolean isKeyLoadPrevented = StringUtils.isBlank(config.getKeyStorePath()) && isClientAttlsEnabled;
-        return WebClient.builder()
-            .clientConnector(new ReactorClientHttpConnector(getHttpClient(httpClient, !isKeyLoadPrevented)))
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.zosmf;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,13 +25,12 @@ public class TokenValidationConfigRsu2012 {
     @Bean
     @Order(30)
     TokenValidationStrategy authenticateValidationStrategy(@Qualifier("restTemplateWithoutKeystore") RestTemplate restTemplateWithoutKeystore) {
-        return new AuthenticatedEndpointStrategy(restTemplateWithoutKeystore, "/zosmf/services/authenticate", HttpMethod.POST);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @Order(50)
     TokenValidationStrategy authenticateValidationStrategy2(@Qualifier("restTemplateWithoutKeystore") RestTemplate restTemplateWithoutKeystore) {
-        return new AuthenticatedEndpointStrategy(restTemplateWithoutKeystore, "/zosmf/notifications/inbox", HttpMethod.GET);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,18 +7,15 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import lombok.experimental.UtilityClass;
-
 import java.net.*;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
 @UtilityClass
 public class UrlUtils {
-
 
     /**
      * Remove slashes from input string parameter
@@ -27,7 +24,7 @@ public class UrlUtils {
      * @return input without removed trailing slashes.
      */
     public String trimSlashes(String string) {
-        return string.replaceAll("((^/)|(/$))", "");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -37,13 +34,7 @@ public class UrlUtils {
      * @return An url string with any non alpha-numeric characters substituted by '-'
      */
     public String getEncodedUrl(String url) {
-        if (url != null) {
-            return url.replaceAll("\\W", "-");
-        } else {
-            byte[] bytes = new byte[20];
-            new SecureRandom().nextBytes(bytes);
-            return Arrays.toString(bytes);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -53,7 +44,7 @@ public class UrlUtils {
      * @return the trimmed URI string
      */
     public String removeFirstAndLastSlash(String uri) {
-        return StringUtils.removeFirstAndLastOccurrence(uri, "/");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -63,7 +54,7 @@ public class UrlUtils {
      * @return the modified URI string
      */
     public String addFirstSlash(String uri) {
-        return StringUtils.prependSubstring(uri, "/");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -72,7 +63,7 @@ public class UrlUtils {
      * @return the modified URI
      */
     public String removeLastSlash(String uri) {
-        return StringUtils.removeLastOccurrence(uri, "/");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -82,34 +73,24 @@ public class UrlUtils {
      * @return the resolved IP address or 'null'
      */
     public String getHostIPAddress(String fqdn) throws UnknownHostException {
-        return InetAddress.getByName(fqdn).getHostAddress();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
-     *
      * @param urlString is a string representing a URL
      * @return IP address of the host domain name provided by FQDN
      * @throws MalformedURLException if urlString parameter is not valid URL
      * @throws UnknownHostException if host name part of the URL is not resolvable
      */
     public String getIpAddressFromUrl(String urlString) throws MalformedURLException, UnknownHostException {
-        URL baseUrl = new URL(urlString);
-
-        String hostname = baseUrl.getHost();
-        return UrlUtils.getHostIPAddress(hostname);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
-     *
      * @param urlString is a string representing a URL
      * @return true if provided string is actually valid URL format. False otherwise
      */
     public boolean isValidUrl(String urlString) {
-        try {
-            new URL(urlString).toURI();
-            return true;
-        } catch (MalformedURLException | URISyntaxException e) {
-            return false;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.configuration;
 
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +16,9 @@ import org.springframework.web.util.UrlPathHelper;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
+
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        UrlPathHelper urlPathHelper = new UrlPathHelper();
-        urlPathHelper.setUrlDecode(false);
-        configurer.setUrlPathHelper(urlPathHelper);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

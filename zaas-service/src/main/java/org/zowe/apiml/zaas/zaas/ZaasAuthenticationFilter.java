@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.zaas;
 
 import jakarta.servlet.FilterChain;
@@ -25,11 +24,9 @@ import org.zowe.apiml.security.common.error.AuthExceptionHandler;
 import org.zowe.apiml.security.common.handler.ServletErrorUtils;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSource;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSourceService;
-
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-
 import static org.zowe.apiml.zaas.zaas.ExtractAuthSourceFilter.AUTH_SOURCE_ATTR;
 import static org.zowe.apiml.zaas.zaas.ExtractAuthSourceFilter.AUTH_SOURCE_PARSED_ATTR;
 
@@ -37,29 +34,14 @@ import static org.zowe.apiml.zaas.zaas.ExtractAuthSourceFilter.AUTH_SOURCE_PARSE
 public class ZaasAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthSourceService authSourceService;
+
     private final AuthExceptionHandler authExceptionHandler;
+
     @InjectApimlLogger
     private final ApimlLogger apimlLog = ApimlLogger.empty();
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        try {
-            Optional<AuthSource> authSource = Optional.ofNullable((AuthSource) request.getAttribute(AUTH_SOURCE_ATTR));
-            if (authSource.isEmpty() || !authSourceService.isValid(authSource.get())) {
-                throw new InsufficientAuthenticationException("Authentication failed.");
-            }
-
-            Optional<AuthSource.Parsed> authSourceParsed = Optional.ofNullable((AuthSource.Parsed) request.getAttribute(AUTH_SOURCE_PARSED_ATTR));
-            if (authSourceParsed.isEmpty() || StringUtils.isBlank(authSourceParsed.get().getUserId())) {
-                throw new InsufficientAuthenticationException("Authentication failed.");
-            }
-
-            filterChain.doFilter(request, response);
-        } catch (RuntimeException e) {
-            var consumer = ServletErrorUtils.createApiErrorWriter(response, apimlLog);
-            var addHeader = (BiConsumer<String, String>) response::addHeader;
-            authExceptionHandler.handleException(request.getRequestURI(), consumer, addHeader, e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

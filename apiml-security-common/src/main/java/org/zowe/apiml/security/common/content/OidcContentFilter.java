@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.content;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.zowe.apiml.security.common.error.ResourceAccessExceptionHandler;
 import org.zowe.apiml.security.common.handler.FailedAuthenticationHandler;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
-
 import java.util.Optional;
-
 import static org.zowe.apiml.constants.ApimlConstants.HEADER_OIDC_TOKEN;
 import static org.zowe.apiml.security.common.token.TokenAuthentication.Type.OIDC;
 
@@ -30,8 +27,6 @@ public class OidcContentFilter extends AbstractSecureContentFilter {
 
     @Override
     protected Optional<AbstractAuthenticationToken> extractContent(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(HEADER_OIDC_TOKEN))
-            .map(token -> new TokenAuthentication(token, OIDC));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

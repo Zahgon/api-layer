@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zss.api;
 
 import lombok.RequiredArgsConstructor;
@@ -21,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zowe.apiml.zss.model.Authentication;
 import org.zowe.apiml.zss.model.Token;
 import org.zowe.apiml.zss.services.SafIdtProvider;
-
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class SafIdtController {
+
     private final SafIdtProvider provider;
 
     /**
@@ -40,24 +39,8 @@ public class SafIdtController {
      * - 201 - Valid SAF IDT token.
      */
     @PostMapping(value = "/zss/saf/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Token> authenticate(
-        @RequestBody Authentication authentication
-    ) {
-        if (StringUtils.isEmpty(authentication.getUsername()) ||
-                StringUtils.isEmpty(authentication.getPass()) ||
-                StringUtils.isEmpty(authentication.getAppl())
-        ) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Optional<Token> token = provider.authenticate(authentication);
-
-        return token
-            .map(value ->
-                new ResponseEntity<>(value, HttpStatus.CREATED))
-            .orElseGet(
-                () -> new ResponseEntity<>(HttpStatus.UNAUTHORIZED)
-            );
+    public ResponseEntity<Token> authenticate(@RequestBody Authentication authentication) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -70,17 +53,7 @@ public class SafIdtController {
      * - 200 - The token is valid
      */
     @PostMapping(value = "/zss/saf/verify", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Token> verify(
-        @RequestBody Token token
-    ) {
-        if (StringUtils.isEmpty(token.getJwt())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if (provider.verify(token)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<Token> verify(@RequestBody Token token) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

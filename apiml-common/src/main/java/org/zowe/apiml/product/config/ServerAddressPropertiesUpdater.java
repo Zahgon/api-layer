@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.config;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
-
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,9 +56,7 @@ public class ServerAddressPropertiesUpdater implements EnvironmentPostProcessor 
      */
     private Properties readProperties() {
         Properties properties = new Properties();
-        try (
-            InputStream is = getClass().getClassLoader().getResourceAsStream("META-INF/spring.factories")
-        ) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("META-INF/spring.factories")) {
             if (is == null) {
                 log.debug("META-INF/spring.factories file was not found.");
                 return properties;
@@ -88,18 +84,13 @@ public class ServerAddressPropertiesUpdater implements EnvironmentPostProcessor 
             // the value is not configured at all (uses the default one: 0.0.0.0)
             return;
         }
-
-        var addresses = Arrays.asList(addressValue.split(",")).stream()
-            .map(String::trim)
-            .toList();
-
+        var addresses = Arrays.asList(addressValue.split(",")).stream().map(String::trim).toList();
         if (basePort) {
             // process the default port - the first value is configured by Spring Boot
             overriddenProperties.putIfAbsent(addressKey, addresses.get(0));
             addresses = addresses.subList(1, addresses.size());
             overriddenProperties.putIfAbsent(addressKey + ADDITIONAL_SUFFIX, StringUtils.join(addresses, ","));
         }
-
         if (!addresses.isEmpty()) {
             int port = Integer.parseInt(environment.getProperty(portKey));
             ADDITIONAL_NETWORKS.put(port, addresses);
@@ -115,30 +106,7 @@ public class ServerAddressPropertiesUpdater implements EnvironmentPostProcessor 
      */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        webApplicationType = environment.getProperty("spring.main.web-application-type");
-
-        try {
-            var overriddenProperties = new HashMap<String, Object>();
-            var config = readProperties();
-            for (int i = 0; ; i++) {
-                String prefix = getClass().getName() + ".connector." + i + ".";
-                if (!config.containsKey(prefix + "portKey")) break;
-
-                splitProperty(
-                    environment, overriddenProperties,
-                    (String) config.get(prefix + "addressKey"),
-                    (String) config.get(prefix + "portKey"),
-                    Boolean.valueOf((String) config.get(prefix + "main"))
-                );
-            }
-
-            if (!overriddenProperties.isEmpty()) {
-                environment.getPropertySources().addFirst(new MapPropertySource("override", overriddenProperties));
-            }
-        } catch (RuntimeException e) {
-            log.error("Cannot open additional Tomcat connectors", e);
-            throw e;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -148,25 +116,7 @@ public class ServerAddressPropertiesUpdater implements EnvironmentPostProcessor 
      */
     @Bean
     public static BeanDefinitionRegistryPostProcessor registerAdditionalTomcatConnectors() {
-        if (ADDITIONAL_NETWORKS.isEmpty()) {
-            return registry -> {};
-        }
-
-        Class<?> connectorCustomizerClass = "servlet".equalsIgnoreCase(webApplicationType) ? AdditionalConnectorServlet.class : AdditionalConnectorReactive.class;
-        return registry -> {
-            for (var entry : ADDITIONAL_NETWORKS.entrySet()) {
-                int port = entry.getKey();
-                for (ListIterator li = entry.getValue().listIterator(); li.hasNext(); ) {
-                    String address = (String) li.next();
-                    String beanName = "tomcatAdditionalConnector-" + port + "-" + li.nextIndex();
-                    var beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(connectorCustomizerClass)
-                        .addPropertyValue("port", port)
-                        .addPropertyValue("address", address)
-                        .getBeanDefinition();
-                    registry.registerBeanDefinition(beanName, beanDefinition);
-                }
-            }
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @RequiredArgsConstructor
@@ -176,6 +126,7 @@ public class ServerAddressPropertiesUpdater implements EnvironmentPostProcessor 
 
         @Setter
         protected int port;
+
         @Setter
         protected String address;
 
@@ -203,16 +154,10 @@ public class ServerAddressPropertiesUpdater implements EnvironmentPostProcessor 
 
         @Override
         public void customize(F factory) {
-            invokeCustomizer(factory, (Class<? super F>) factory.getClass(), connector);
-            connector.setPort(port);
-            if (address != null) {
-                connector.setProperty("address", address);
-            }
-            initFactory(factory);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         protected abstract void initFactory(F factory);
-
     }
 
     /**
@@ -226,10 +171,8 @@ public class ServerAddressPropertiesUpdater implements EnvironmentPostProcessor 
 
         @Override
         protected void initFactory(TomcatReactiveWebServerFactory factory) {
-            factory.addAdditionalTomcatConnectors(connector);
-            factory.addConnectorCustomizers(connectorCustomizers.toArray(new TomcatConnectorCustomizer[0]));
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
 
     /**
@@ -243,10 +186,7 @@ public class ServerAddressPropertiesUpdater implements EnvironmentPostProcessor 
 
         @Override
         protected void initFactory(TomcatServletWebServerFactory factory) {
-            factory.addAdditionalTomcatConnectors(connector);
-            factory.addConnectorCustomizers(connectorCustomizers.toArray(new TomcatConnectorCustomizer[0]));
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.client.login;
 
 import lombok.RequiredArgsConstructor;
@@ -20,10 +19,8 @@ import org.springframework.stereotype.Component;
 import org.zowe.apiml.security.client.service.GatewaySecurity;
 import org.zowe.apiml.security.common.login.LoginRequest;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
-
 import java.util.Arrays;
 import java.util.Optional;
-
 import static org.zowe.apiml.security.SecurityUtils.readPassword;
 
 /**
@@ -44,39 +41,11 @@ public class GatewayLoginProvider implements AuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) {
-        String username = authentication.getPrincipal().toString();
-        char[] password = null;
-        char[] newPassword = null;
-        boolean cleanup = false;
-        try {
-            if (authentication.getCredentials() instanceof LoginRequest) {
-                LoginRequest credentials = (LoginRequest) authentication.getCredentials();
-                password = credentials.getPassword();
-                newPassword = LoginRequest.getNewPassword(authentication);
-            } else {
-                password = readPassword(authentication.getCredentials());
-                cleanup = !(authentication.getCredentials() instanceof char[]);
-            }
-
-            Optional<String> token = gatewaySecurity.login(username, password, newPassword);
-
-            if (!token.isPresent()) {
-                throw new BadCredentialsException("Invalid Credentials");
-            }
-
-            TokenAuthentication tokenAuthentication = new TokenAuthentication(username, token.get(), TokenAuthentication.Type.JWT);
-            tokenAuthentication.setAuthenticated(true);
-
-            return tokenAuthentication;
-        } finally {
-            if (cleanup) {
-                Arrays.fill(password, (char) 0);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean supports(Class<?> auth) {
-        return auth.equals(UsernamePasswordAuthenticationToken.class);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

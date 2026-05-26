@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.configuration;
 
 import io.swagger.v3.oas.models.Components;
@@ -39,39 +38,21 @@ public class SwaggerConfiguration {
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI()
-            .info(new Info()
-                .title(apiTitle)
-                .description(apiDescription))
-            .components(new Components().addSecuritySchemes("ESM token",
-                new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name("esmToken"))
-            );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public GroupedOpenApi apiV1() {
-        return GroupedOpenApi.builder()
-            .group("apiv1")
-            .pathsToMatch("/api/v1/**")
-            .addOpenApiCustomizer(openApi -> openApi.setInfo(openApi.getInfo().version(apiVersionRest1)))
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public GroupedOpenApi apiV2() {
-        return GroupedOpenApi.builder()
-            .group("apiv2")
-            .pathsToMatch("/api/v2/**")
-            .addOpenApiCustomizer(openApi -> openApi.setInfo(openApi.getInfo().version(apiVersionRest2)))
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public GroupedOpenApi graphV1() {
-        return GroupedOpenApi.builder()
-            .group("graphv1")
-            .pathsToMatch("/graphql/v1/**")
-            .addOpenApiCustomizer(openApi -> openApi.setInfo(openApi.getInfo().version(graphqlVersion)))
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

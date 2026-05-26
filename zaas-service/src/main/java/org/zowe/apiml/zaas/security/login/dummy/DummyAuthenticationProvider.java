@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.login.dummy;
 
 import jakarta.annotation.PostConstruct;
@@ -27,7 +26,6 @@ import org.zowe.apiml.zaas.ZaasServiceAvailableEvent;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
 import org.zowe.apiml.security.common.login.LoginRequest;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
-
 import static org.zowe.apiml.security.SecurityUtils.readPassword;
 
 /**
@@ -38,15 +36,14 @@ import static org.zowe.apiml.security.SecurityUtils.readPassword;
 @Component
 @ConditionalOnProperty(value = "apiml.security.auth.provider", havingValue = "dummy")
 public class DummyAuthenticationProvider extends DaoAuthenticationProvider {
+
     private static final String DUMMY_PROVIDER = "Dummy provider";
 
     private final AuthenticationService authenticationService;
+
     private final ApplicationEventPublisher publisher;
 
-    public DummyAuthenticationProvider(BCryptPasswordEncoder encoder,
-                                       @Qualifier("dummyService") UserDetailsService userDetailsService,
-                                       AuthenticationService authenticationService,
-                                       ApplicationEventPublisher publisher) {
+    public DummyAuthenticationProvider(BCryptPasswordEncoder encoder, @Qualifier("dummyService") UserDetailsService userDetailsService, AuthenticationService authenticationService, ApplicationEventPublisher publisher) {
         super();
         this.setPasswordEncoder(encoder);
         this.setUserDetailsService(userDetailsService);
@@ -56,7 +53,7 @@ public class DummyAuthenticationProvider extends DaoAuthenticationProvider {
 
     @PostConstruct
     void init() {
-        publisher.publishEvent(new ZaasServiceAvailableEvent("dummy"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -67,36 +64,6 @@ public class DummyAuthenticationProvider extends DaoAuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthentication;
-
-        try {
-            /*
-             * this implementation is just for testing purposes, therefore it is not necessary to use only array of
-             * characters. It is pretty complicated once tests use BCrypt
-             */
-            String password;
-            if (authentication.getCredentials() instanceof LoginRequest) {
-                LoginRequest loginRequest = (LoginRequest) authentication.getCredentials();
-                password = new String(loginRequest.getPassword());
-            } else {
-                password = new String(readPassword(authentication.getCredentials()));
-            }
-
-            authentication = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), password);
-            usernamePasswordAuthentication
-                = (UsernamePasswordAuthenticationToken) super.authenticate(authentication);
-        } catch (AuthenticationException exception) {
-            throw new BadCredentialsException("Invalid Credentials");
-        } catch (Exception e) {
-            throw new AuthenticationServiceException("A failure occurred when authenticating.", e);
-        }
-
-        String username = usernamePasswordAuthentication.getName();
-        String token = authenticationService.createJwtToken(username, DUMMY_PROVIDER, null);
-
-        TokenAuthentication tokenAuthentication = new TokenAuthentication(username, token, TokenAuthentication.Type.JWT);
-        tokenAuthentication.setAuthenticated(true);
-        return tokenAuthentication;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

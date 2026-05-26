@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import lombok.Builder;
@@ -18,9 +17,7 @@ import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.eurekaservice.client.ApiMediationClient;
-
 import java.util.regex.Pattern;
-
 import static io.netty.handler.codec.http.HttpHeaders.Values.APPLICATION_JSON;
 
 @Component
@@ -35,19 +32,7 @@ public class ClientEurekaRegistryVersionEndpoint {
 
     @ReadOperation(produces = APPLICATION_JSON)
     public VersionDto status() {
-        long version = -1;
-        var eurekaClient = apiMediationClient.getEurekaClient();
-        if (eurekaClient != null) {
-            var hashCode = eurekaClient.getApplications().getAppsHashCode();
-            var matcher = VERSION_PATTERN.matcher(hashCode);
-            if (matcher.find()) {
-                version = Long.parseLong(matcher.group(1));
-                log.debug("New Eureka registry version: {}", version);
-            } else {
-                log.debug("Unexpected Eureka registry hashCode: {}", hashCode);
-            }
-        }
-        return VersionDto.builder().version(version).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Builder
@@ -55,7 +40,5 @@ public class ClientEurekaRegistryVersionEndpoint {
     static class VersionDto {
 
         private Long version;
-
     }
-
 }

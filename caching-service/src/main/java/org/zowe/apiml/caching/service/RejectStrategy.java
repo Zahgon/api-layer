@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service;
 
 import lombok.RequiredArgsConstructor;
@@ -18,12 +17,11 @@ import org.zowe.apiml.message.log.ApimlLogger;
 @RequiredArgsConstructor
 @Slf4j
 public class RejectStrategy implements EvictionStrategy {
+
     private final ApimlLogger apimlLog;
 
     @Override
     public void evict(String key) {
-        apimlLog.log("org.zowe.apiml.cache.insufficientStorage");
-
-        throw new StorageException(Messages.INSUFFICIENT_STORAGE.getKey(), Messages.INSUFFICIENT_STORAGE.getStatus());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

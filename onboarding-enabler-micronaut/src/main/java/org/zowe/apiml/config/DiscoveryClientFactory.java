@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.config;
 
 import io.micronaut.context.annotation.Factory;
@@ -16,7 +15,6 @@ import org.zowe.apiml.eurekaservice.client.ApiMediationClient;
 import org.zowe.apiml.eurekaservice.client.EurekaClientConfigProvider;
 import org.zowe.apiml.eurekaservice.client.EurekaClientProvider;
 import org.zowe.apiml.eurekaservice.client.impl.ApiMediationClientImpl;
-
 import jakarta.inject.Singleton;
 
 @Factory
@@ -25,19 +23,18 @@ public class DiscoveryClientFactory {
     @Requires(missingBeans = EurekaClientProvider.class)
     @Singleton
     public ApiMediationClient defaultApiMlClient() {
-        return new ApiMediationClientImpl();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Requires(beans = EurekaClientProvider.class)
     @Singleton
     public ApiMediationClient apiMlClient(EurekaClientProvider eurekaClientProvider) {
-        return new ApiMediationClientImpl(eurekaClientProvider);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @Requires(beans = {EurekaClientProvider.class, EurekaClientConfigProvider.class})
+    @Requires(beans = { EurekaClientProvider.class, EurekaClientConfigProvider.class })
     @Singleton
     public ApiMediationClient apiMlClient(EurekaClientProvider eurekaClientProvider, EurekaClientConfigProvider eurekaClientConfigProvider) {
-        return new ApiMediationClientImpl(eurekaClientProvider, eurekaClientConfigProvider);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

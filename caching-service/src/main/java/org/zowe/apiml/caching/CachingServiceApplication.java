@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching;
 
 import org.springframework.boot.SpringApplication;
@@ -18,22 +17,13 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.zowe.apiml.enable.EnableApiDiscovery;
 import org.zowe.apiml.product.logging.annotations.EnableApimlLogger;
 
-@SpringBootApplication(
-    exclude = {
-        OpenTelemetryAutoConfiguration.class,
-        OpenTelemetryLoggingAutoConfiguration.class
-    }
-)
+@SpringBootApplication(exclude = { OpenTelemetryAutoConfiguration.class, OpenTelemetryLoggingAutoConfiguration.class })
 @EnableApiDiscovery
 @EnableRetry
 @EnableApimlLogger
 public class CachingServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(CachingServiceApplication.class);
-        app.setLogStartupInfo(false);
-
-        app.run(args);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

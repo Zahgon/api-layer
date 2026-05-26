@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zowe.apiml.client.model.Greeting;
-
 import java.util.Date;
 
 @RestController
@@ -29,10 +27,9 @@ public class WebServiceController {
     /**
      * Gets a custom greeting from Web Service.
      */
-    @GetMapping(value = {"/ws", "/sse"})
-    @Operation(summary = "Get a greeting", tags = {"Web Service"})
+    @GetMapping(value = { "/ws", "/sse" })
+    @Operation(summary = "Get a greeting", tags = { "Web Service" })
     public Greeting weServiceGreet() {
-
-        return new Greeting(new Date(), String.format(TEMPLATE, "Web service"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

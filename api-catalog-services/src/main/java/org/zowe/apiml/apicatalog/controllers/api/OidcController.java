@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zowe.apiml.apicatalog.oidc.OidcUtils;
 import reactor.core.publisher.Mono;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,25 +35,18 @@ public class OidcController {
 
     @GetMapping(value = "/provider", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<List<String>>> getOidcProvider() {
-        if (oidcProviderCache.get() == null) {
-            oidcProviderCache.set(OidcUtils.getOidcProvider());
-        }
-
-        return Mono.just(new ResponseEntity<>(oidcProviderCache.get(), oidcProviderCache.get().isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }
 
 @RestController
-@RequestMapping({"/apicatalog/oidc", "/apicatalog/api/v1/oidc"})
+@RequestMapping({ "/apicatalog/oidc", "/apicatalog/api/v1/oidc" })
 @ConditionalOnBean(name = "modulithConfig")
-class OidcControllerModulith extends  OidcController {
-
+class OidcControllerModulith extends OidcController {
 }
 
 @RestController
-@RequestMapping({"/apicatalog/oidc", "/apicatalog/api/v1/oidc"})
+@RequestMapping({ "/apicatalog/oidc", "/apicatalog/api/v1/oidc" })
 @ConditionalOnMissingBean(name = "modulithConfig")
-class OidcControllerMicroservice extends  OidcController {
-
+class OidcControllerMicroservice extends OidcController {
 }

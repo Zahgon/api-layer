@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import org.springframework.boot.SpringApplication;
@@ -17,8 +16,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MockServicesApplication {
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(MockServicesApplication.class);
-        app.setLogStartupInfo(false);
-        app.run(args);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

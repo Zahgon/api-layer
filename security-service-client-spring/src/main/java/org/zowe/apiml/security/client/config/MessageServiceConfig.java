@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.client.config;
 
 import org.zowe.apiml.message.core.MessageService;
@@ -22,9 +21,6 @@ public class MessageServiceConfig {
 
     @Bean
     public MessageService messageService() {
-        MessageService messageService = YamlMessageServiceInstance.getInstance();
-        messageService.loadMessages("/security-client-log-messages.yml");
-        return messageService;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

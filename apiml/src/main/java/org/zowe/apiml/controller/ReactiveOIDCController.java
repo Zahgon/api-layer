@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,9 +33,7 @@ import org.zowe.apiml.zaas.controllers.AuthController;
 import org.zowe.apiml.zaas.security.webfinger.WebFingerProvider;
 import org.zowe.apiml.zaas.security.webfinger.WebFingerResponse;
 import reactor.core.publisher.Mono;
-
 import java.io.IOException;
-
 import static org.zowe.apiml.zaas.controllers.AuthController.OIDC_TOKEN_VALIDATE;
 import static org.zowe.apiml.zaas.controllers.AuthController.OIDC_WEBFINGER_PATH;
 
@@ -47,41 +44,25 @@ import static org.zowe.apiml.zaas.controllers.AuthController.OIDC_WEBFINGER_PATH
 public class ReactiveOIDCController {
 
     private final WebFingerProvider webFingerProvider;
-    @Nullable private final OIDCProvider oidcProvider;
+
+    @Nullable
+    private final OIDCProvider oidcProvider;
 
     @Data
     public static class RulesRequestModel {
+
         private String serviceId;
+
         private String userId;
+
         private long timestamp;
     }
 
     @PostMapping(path = OIDC_TOKEN_VALIDATE)
-    @Operation(summary = "Validate OIDC token",
-        tags = {"OIDC"},
-        operationId = "validateOIDCToken",
-        description = "Use the `/oidc-token/validate` API to validate token against configured OIDC provider. " +
-            "The Gateway can verify token locally or remotely depends on API Mediation Layer configuration.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            content = @Content(
-                schema = @Schema(implementation = AuthController.ValidateRequestModel.class)
-            ),
-            description = "Specifies the OIDC token for validation without scopes (serviceId will be ignored)."
-        )
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Valid token"),
-        @ApiResponse(responseCode = "401", description = "Invalid token or OIDC provider is not defined")
-    })
+    @Operation(summary = "Validate OIDC token", tags = { "OIDC" }, operationId = "validateOIDCToken", description = "Use the `/oidc-token/validate` API to validate token against configured OIDC provider. " + "The Gateway can verify token locally or remotely depends on API Mediation Layer configuration.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = AuthController.ValidateRequestModel.class)), description = "Specifies the OIDC token for validation without scopes (serviceId will be ignored)."))
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Valid token"), @ApiResponse(responseCode = "401", description = "Invalid token or OIDC provider is not defined") })
     public Mono<ResponseEntity<Void>> validateOIDCToken(@RequestBody AuthController.ValidateRequestModel validateRequestModel) {
-        return Mono.fromSupplier(() -> {
-            log.debug("Validating OIDC token using provider {}", oidcProvider);
-            var token = validateRequestModel.getToken();
-            if (oidcProvider != null && oidcProvider.isValid(token)) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -90,34 +71,9 @@ public class ReactiveOIDCController {
      * @return List of link's relation type and the target URI for provided clientID
      */
     @GetMapping(path = OIDC_WEBFINGER_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "List of link's relation type and the target URI for provided clientID",
-        tags = {"OIDC"},
-        operationId = "getWebFinger",
-        description = "[EXPERIMENTAL] The endpoint can be used to obtain links to authenticate against OIDC provider based on clientID provided in the request. " +
-            "The links are defined in the configuration of the API Mediation Layer.",
-        security = {
-            @SecurityRequirement(name = "Bearer"),
-            @SecurityRequirement(name = "CookieAuth"),
-            @SecurityRequirement(name = "LoginBasicAuth")
-        })
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "404", description = "WebFinger is disabled"),
-    })
+    @Operation(summary = "List of link's relation type and the target URI for provided clientID", tags = { "OIDC" }, operationId = "getWebFinger", description = "[EXPERIMENTAL] The endpoint can be used to obtain links to authenticate against OIDC provider based on clientID provided in the request. " + "The links are defined in the configuration of the API Mediation Layer.", security = { @SecurityRequirement(name = "Bearer"), @SecurityRequirement(name = "CookieAuth"), @SecurityRequirement(name = "LoginBasicAuth") })
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "404", description = "WebFinger is disabled") })
     public Mono<ResponseEntity<Object>> getWebFinger(@RequestParam(name = "resource") String clientId) {
-        return Mono.fromSupplier(() -> {
-            if (webFingerProvider.isEnabled()) {
-                try {
-                    WebFingerResponse response = webFingerProvider.getWebFingerConfig(clientId);
-                    return ResponseEntity.ok(response);
-                } catch (IOException e) {
-                    throw new InvalidWebFingerConfigurationException(e);
-                }
-
-            }
-            return ResponseEntity.notFound().build();
-        });
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

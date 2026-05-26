@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client.impl;
 
 import lombok.AccessLevel;
@@ -15,10 +14,8 @@ import lombok.Setter;
 import org.zowe.apiml.eurekaservice.client.config.ApiMediationServiceConfig;
 import org.zowe.apiml.product.zos.ZUtilDummy;
 import org.zowe.apiml.util.ClassOrDefaultProxyUtils;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.zowe.apiml.product.zos.ZosSystemInformation.*;
 
 public class DefaultCustomMetadataHelper {
@@ -35,14 +32,12 @@ public class DefaultCustomMetadataHelper {
     }
 
     protected boolean isRunningOnZos() {
-        return "z/OS".equals(System.getProperty(OS_NAME));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Map<String, Object> getDefaultCustomMetadata() {
         Map<String, Object> output = new HashMap<>();
-
         output.put(OS_NAME, System.getProperty(OS_NAME));
-
         if (isRunningOnZos()) {
             output.put(ZOS_JOB_ID, zUtil.getCurrentJobId());
             output.put(ZOS_JOB_NAME, zUtil.getCurrentJobname());
@@ -52,24 +47,14 @@ public class DefaultCustomMetadataHelper {
             output.put(ZOS_SYSCLONE, zUtil.substituteSystemSymbols("&SYSCLONE."));
             output.put(ZOS_SYSPLEX, zUtil.substituteSystemSymbols("&SYSPLEX."));
         }
-
         return output;
     }
 
     public void update(ApiMediationServiceConfig config) {
-        if (config.getCustomMetadata() == null) {
-            config.setCustomMetadata(new HashMap<>());
-        }
-
-        update(config.getCustomMetadata());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void update(Map<String, Object> customMetadata) {
-        Map<String, Object> defaultMetadata = getDefaultCustomMetadata();
-        for (Map.Entry<String, Object> entry : defaultMetadata.entrySet()) {
-            customMetadata.putIfAbsent(entry.getKey(), entry.getValue());
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

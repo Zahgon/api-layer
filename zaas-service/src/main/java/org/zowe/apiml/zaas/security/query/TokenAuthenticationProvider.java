@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.query;
 
 import org.zowe.apiml.security.common.token.TokenAuthentication;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class TokenAuthenticationProvider implements AuthenticationProvider {
+
     private final AuthenticationService authenticationService;
 
     /**
@@ -33,12 +33,11 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) {
-        TokenAuthentication tokenAuthentication = (TokenAuthentication) authentication;
-        return authenticationService.validateJwtToken(tokenAuthentication);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return TokenAuthentication.class.isAssignableFrom(authentication);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

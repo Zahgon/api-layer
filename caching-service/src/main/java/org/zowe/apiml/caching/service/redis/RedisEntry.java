@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +21,9 @@ import org.zowe.apiml.caching.service.redis.exceptions.RedisEntryException;
  */
 @AllArgsConstructor
 public class RedisEntry {
+
     private final String serviceId;
+
     private final KeyValue entry;
 
     private final ObjectMapper mapper;
@@ -49,11 +50,11 @@ public class RedisEntry {
     }
 
     public String getServiceId() {
-        return serviceId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public KeyValue getEntry() {
-        return entry;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -61,10 +62,6 @@ public class RedisEntry {
      * @throws RedisEntryException thrown if the KeyValue entry cannot be serialized.
      */
     public String getEntryAsString() throws RedisEntryException {
-        try {
-            return mapper.writeValueAsString(this.entry);
-        } catch (Exception e) {
-            throw new RedisEntryException("Failure serializing the entry as a String", e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

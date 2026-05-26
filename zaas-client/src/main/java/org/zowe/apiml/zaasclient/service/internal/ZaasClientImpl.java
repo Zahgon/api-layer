@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaasclient.service.internal;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +19,6 @@ import org.zowe.apiml.zaasclient.exception.ZaasConfigurationException;
 import org.zowe.apiml.zaasclient.oidc.ZaasOidcValidationResult;
 import org.zowe.apiml.zaasclient.service.ZaasClient;
 import org.zowe.apiml.zaasclient.service.ZaasToken;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,15 +27,17 @@ import java.util.Objects;
 public class ZaasClientImpl implements ZaasClient, Closeable {
 
     private final TokenService tokens;
+
     private final PassTicketService passTickets;
+
     private final CloseableHttpClient httpClientWithoutCert;
+
     private final CloseableHttpClient httpClient;
 
     public ZaasClientImpl(ConfigProperties configProperties) throws ZaasConfigurationException {
         if (!configProperties.isHttpOnly() && (configProperties.getKeyStorePath() == null)) {
             throw new ZaasConfigurationException(ZaasConfigurationErrorCodes.KEY_STORE_NOT_PROVIDED);
         }
-
         if (configProperties.isHttpOnly()) {
             httpClient = new ZaasHttpClientProvider().getHttpClient();
             httpClientWithoutCert = new ZaasHttpClientProvider().getHttpClient();
@@ -45,9 +45,7 @@ public class ZaasClientImpl implements ZaasClient, Closeable {
             httpClient = new ZaasHttpsClientProvider(configProperties).getHttpClient();
             httpClientWithoutCert = new ZaasHttpsClientProvider(configProperties.withoutKeyStore()).getHttpClient();
         }
-
-        String baseUrl = String.format("%s://%s:%s%s", getScheme(configProperties.isHttpOnly()), configProperties.getApimlHost(), configProperties.getApimlPort(),
-            configProperties.getApimlBaseUrl());
+        String baseUrl = String.format("%s://%s:%s%s", getScheme(configProperties.isHttpOnly()), configProperties.getApimlHost(), configProperties.getApimlPort(), configProperties.getApimlBaseUrl());
         tokens = new ZaasJwtService(httpClientWithoutCert, baseUrl, configProperties);
         passTickets = new PassTicketServiceImpl(httpClient, baseUrl, configProperties);
     }
@@ -69,94 +67,56 @@ public class ZaasClientImpl implements ZaasClient, Closeable {
 
     @Override
     public String login(String userId, String password, String newPassword) throws ZaasClientException {
-        char[] passwordChars = password == null ? null : password.toCharArray();
-        char[] newPasswordChars = newPassword == null ? null : newPassword.toCharArray();
-        try {
-            return login(userId, passwordChars, newPasswordChars);
-        } finally {
-            if (passwordChars != null) {
-                Arrays.fill(passwordChars, (char) 0);
-            }
-            if (newPasswordChars != null) {
-                Arrays.fill(newPasswordChars, (char) 0);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String login(String userId, String password) throws ZaasClientException {
-        char[] passwordChars = password == null ? null : password.toCharArray();
-        try {
-            return login(userId, passwordChars);
-        } finally {
-            if (passwordChars != null) {
-                Arrays.fill(passwordChars, (char) 0);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String login(String userId, char[] password, char[] newPassword) throws ZaasClientException {
-        if (userId == null || password == null || newPassword == null || userId.isEmpty() || password.length == 0 || newPassword.length == 0) {
-            throw new ZaasClientException(ZaasClientErrorCodes.EMPTY_NULL_USERNAME_PASSWORD);
-        }
-        return tokens.login(userId, password, newPassword);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String login(String userId, char[] password) throws ZaasClientException {
-        if (userId == null || password == null || userId.isEmpty() || password.length == 0) {
-            throw new ZaasClientException(ZaasClientErrorCodes.EMPTY_NULL_USERNAME_PASSWORD);
-        }
-        return tokens.login(userId, password);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String login(String authorizationHeader) throws ZaasClientException {
-        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
-            throw new ZaasClientException(ZaasClientErrorCodes.EMPTY_NULL_AUTHORIZATION_HEADER);
-        }
-        return tokens.login(authorizationHeader);
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public ZaasToken query(String token) throws ZaasClientException {
-        return tokens.query(token);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public ZaasToken query(HttpServletRequest request) throws ZaasClientException {
-        return tokens.query(request);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String passTicket(String jwtToken, String applicationId) throws ZaasClientException, ZaasConfigurationException {
-        if (Objects.isNull(applicationId) || applicationId.isEmpty()) {
-            throw new ZaasClientException(ZaasClientErrorCodes.APPLICATION_NAME_NOT_FOUND);
-        }
-        if (Objects.isNull(jwtToken) || jwtToken.isEmpty()) {
-            throw new ZaasClientException(ZaasClientErrorCodes.TOKEN_NOT_PROVIDED);
-        }
-        return passTickets.passTicket(jwtToken, applicationId);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void logout(String jwtToken) throws ZaasConfigurationException, ZaasClientException {
-        tokens.logout(jwtToken);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void close() throws IOException {
-        httpClient.close();
-        httpClientWithoutCert.close();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public ZaasOidcValidationResult validateOidc(String token) throws ZaasClientException {
-        if (token == null || token.isEmpty()) {
-            throw new ZaasClientException(ZaasClientErrorCodes.TOKEN_NOT_PROVIDED);
-        }
-        return tokens.validateOidc(token);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -32,70 +31,38 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.zowe.apiml.security.common.error.ServiceNotAccessibleException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
-
 import static org.zowe.apiml.product.constants.CoreService.ZAAS;
 
 @Slf4j
 @Configuration("gatewaySwaggerConfig")
 @ConditionalOnMissingBean(name = "modulithConfig")
 @RequiredArgsConstructor
-@OpenAPIDefinition(
-    security = {
-        @SecurityRequirement(name = "LoginBasicAuth"),
-        @SecurityRequirement(name = "ClientCert")
-    },
-    info = @Info(title = "API Gateway", description = """
-        REST API for the API Gateway, which is a component of the API Mediation Layer.
-        Use this API to perform tasks such as logging in with the mainframe credentials and checking authorization to mainframe resources.
-        """)
-)
-@SecurityScheme(
-    name = "LoginBasicAuth",
-    type = SecuritySchemeType.HTTP,
-    scheme = "basic"
-)
-@SecurityScheme(
-    type = SecuritySchemeType.MUTUALTLS,
-    name = "ClientCert",
-    description = "Client certificate X509"
-)
+@OpenAPIDefinition(security = { @SecurityRequirement(name = "LoginBasicAuth"), @SecurityRequirement(name = "ClientCert") }, info = @Info(title = "API Gateway", description = """
+    REST API for the API Gateway, which is a component of the API Mediation Layer.
+    Use this API to perform tasks such as logging in with the mainframe credentials and checking authorization to mainframe resources.
+    """))
+@SecurityScheme(name = "LoginBasicAuth", type = SecuritySchemeType.HTTP, scheme = "basic")
+@SecurityScheme(type = SecuritySchemeType.MUTUALTLS, name = "ClientCert", description = "Client certificate X509")
 public class SwaggerConfig {
 
     @Value("${server.attlsClient.enabled:false}")
     private boolean isClientAttlsenabled;
 
     private final EurekaClient eurekaClient;
+
     private final WebClient webClient;
 
     private URI zaasUri;
 
     @PostConstruct
     void initEurekaListener() {
-        eurekaClient.registerEventListener(event -> {
-            Optional.ofNullable(eurekaClient.getApplication(ZAAS.getServiceId()))
-                .map(apps -> apps.getInstances())
-                .filter(apps -> !apps.isEmpty())
-                .map(apps -> apps.get(0))
-                .ifPresent(app -> {
-                    try {
-                        zaasUri = new URIBuilder()
-                            .setScheme(app.isPortEnabled(InstanceInfo.PortType.SECURE) && !isClientAttlsenabled ? "https" : "http")
-                            .setHost(app.getHostName())
-                            .setPort(app.isPortEnabled(InstanceInfo.PortType.SECURE) ? app.getSecurePort() : app.getPort())
-                            .setPath("/v3/api-docs/auth")
-                            .build();
-                    } catch (URISyntaxException e) {
-                        log.error("Cannot construct Swagger URL on ZAAS", e);
-                    }
-                });
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String updateUrlFromZaas(String zaasUrl) {
@@ -103,70 +70,15 @@ public class SwaggerConfig {
     }
 
     void updatePaths(OpenAPI openApi, String pathToMatch) {
-        String basePath = pathToMatch.replaceAll("[*]", "");
-
-        if (openApi.getServers() == null) {
-            openApi.setServers(new LinkedList<>());
-        }
-        openApi.getServers().forEach(server -> {
-            String url = server.getUrl();
-            if (!url.endsWith("/")) {
-                url += '/';
-            }
-            url += basePath.substring(1);
-            server.setUrl(url);
-        });
-
-        if (openApi.getPaths() == null) {
-            openApi.setPaths(new Paths());
-        }
-        Paths paths = new Paths();
-        openApi.getPaths().forEach((url, schema) ->
-            paths.addPathItem(url.replace(basePath, basePath.endsWith("/") ? "/" : ""), schema)
-        );
-        openApi.setPaths(paths);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     String download(URI uri) {
-        return webClient
-            .get().uri(uri)
-            .retrieve()
-            .bodyToMono(String.class).share().block();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public OpenApiCustomizer servletEndpoints(@Value("${springdoc.pathsToMatch:/}") String pathToMatch) {
-        return (openApi) -> {
-            if (zaasUri == null) {
-                throw new ServiceNotAccessibleException("ZAAS is not available yet");
-            }
-
-            OpenAPI servletEndpoints = new OpenAPIV3Parser().readContents(download(zaasUri)).getOpenAPI();
-
-            for (var entry : servletEndpoints.getPaths().entrySet()) {
-                if (openApi.getPaths() == null) {
-                    openApi.setPaths(new Paths());
-                }
-                openApi.getPaths().addPathItem(updateUrlFromZaas(entry.getKey()), entry.getValue());
-            }
-
-            if (openApi.getComponents() == null) {
-                openApi.setComponents(new Components());
-            }
-            if (openApi.getComponents().getSchemas() == null) {
-                openApi.getComponents().setSchemas(new HashMap<>());
-            }
-            openApi.getComponents().getSchemas().putAll(
-                servletEndpoints.getComponents().getSchemas()
-            );
-
-            if (openApi.getTags() == null) {
-                openApi.setTags(new ArrayList<>());
-            }
-            openApi.getTags().addAll(servletEndpoints.getTags());
-
-            updatePaths(openApi, pathToMatch);
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

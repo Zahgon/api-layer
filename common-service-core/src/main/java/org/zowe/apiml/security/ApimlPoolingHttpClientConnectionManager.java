@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security;
 
 import lombok.NonNull;
@@ -22,7 +21,6 @@ import org.apache.hc.core5.pool.PoolStats;
 import org.apache.hc.core5.util.TimeValue;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
-
 import java.io.IOException;
 
 /**
@@ -41,25 +39,11 @@ public class ApimlPoolingHttpClientConnectionManager extends PoolingHttpClientCo
      */
     @Override
     public void connect(final ConnectionEndpoint endpoint, final TimeValue timeout, final HttpContext context) throws IOException {
-        super.connect(endpoint, timeout, context);
-
-        int totalLimit = super.getMaxTotal();
-        PoolStats totalStats = super.getTotalStats();
-        int totalConnections = totalStats.getLeased();
-        if (totalConnections >= totalLimit) {
-            apimlLog.log("org.zowe.apiml.common.totalConnectionLimitReached", totalLimit);
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public LeaseRequest lease(String id, HttpRoute route, Object state) {
-        int routeLimit = super.getMaxPerRoute(route);
-        PoolStats routeStats = super.getStats(route);
-        int routeConnections = routeStats.getLeased();
-        if (routeConnections >= routeLimit) {
-            apimlLog.log("org.zowe.apiml.common.gatewayRouteConnectionLimitReached", routeLimit, route.toString());
-        }
-        return super.lease(id, route, state);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.config;
 
 import lombok.Data;
@@ -29,25 +28,25 @@ import org.zowe.apiml.product.web.TomcatAcceptFixConfig;
 import org.zowe.apiml.product.web.TomcatKeyringFix;
 
 @Configuration
-@Import({TomcatKeyringFix.class, TomcatAcceptFixConfig.class, ApimlTomcatCustomizer.class, AttlsHttpHandler.class, WebServerSecurityConfig.class, ServerAddressPropertiesUpdater.class, NonModulithApplicationInfoConfig.class})
+@Import({ TomcatKeyringFix.class, TomcatAcceptFixConfig.class, ApimlTomcatCustomizer.class, AttlsHttpHandler.class, WebServerSecurityConfig.class, ServerAddressPropertiesUpdater.class, NonModulithApplicationInfoConfig.class })
 @Data
 @ToString
 public class GeneralConfig implements WebMvcConfigurer {
 
     @Value("${caching.storage.evictionStrategy:reject}")
     private String evictionStrategy;
+
     @Value("${caching.storage.size:100}")
     private int maxDataSize;
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.setUseTrailingSlashMatch(true);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "modulithConfig")
     ServiceStartupEventHandler serviceStartupEventHandler() {
-        return new ServiceStartupEventHandler();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

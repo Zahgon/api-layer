@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.error;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.message.core.MessageService;
-
 import java.util.function.BiConsumer;
 
 /**
@@ -25,9 +23,11 @@ import java.util.function.BiConsumer;
  */
 @RequiredArgsConstructor
 public abstract class AbstractExceptionHandler {
+
     protected static final String MESSAGE_FORMAT = "Status Code {}, error message: {}";
 
     protected final MessageService messageService;
+
     protected final ObjectMapper mapper;
 
     /**
@@ -48,9 +48,7 @@ public abstract class AbstractExceptionHandler {
      * @param status     Http response status
      * @param response   Update response with message and status
      */
-    protected void writeErrorResponse(String messageKey, HttpStatus status, BiConsumer<ApiMessageView, HttpStatus> response, Object...arguments) {
-        final ApiMessageView message = messageService.createMessage(messageKey, arguments).mapToView();
-        response.accept(message, status);
+    protected void writeErrorResponse(String messageKey, HttpStatus status, BiConsumer<ApiMessageView, HttpStatus> response, Object... arguments) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

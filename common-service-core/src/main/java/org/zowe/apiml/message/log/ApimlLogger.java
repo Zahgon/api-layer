@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.message.log;
 
 import org.zowe.apiml.message.core.Message;
@@ -29,7 +28,9 @@ import org.slf4j.MarkerFactory;
 public final class ApimlLogger {
 
     private final MessageService messageService;
+
     private final Logger logger;
+
     private static final Marker marker = MarkerFactory.getMarker("APIML-LOGGER");
 
     public ApimlLogger(Class<?> clazz, MessageService messageService) {
@@ -44,9 +45,8 @@ public final class ApimlLogger {
      * @param messageService used to produce the message
      * @return {@link ApimlLogger}
      */
-    public static ApimlLogger of(Class<?> clazz,
-                                 MessageService messageService) {
-        return new ApimlLogger(clazz, messageService);
+    public static ApimlLogger of(Class<?> clazz, MessageService messageService) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -56,7 +56,7 @@ public final class ApimlLogger {
      * @return {@link ApimlLogger}
      */
     public static ApimlLogger empty() {
-        return new ApimlLogger(ApimlLogger.class, null);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -66,20 +66,7 @@ public final class ApimlLogger {
      * @param parameters for message
      */
     public Message log(String key, Object... parameters) {
-        Message message;
-        if (key == null) {
-            message = Message.invalidKeyMessage(null);
-        } else {
-            ObjectUtil.requireNotNull(parameters, "parameters can't be null");
-
-            if (messageService == null) {
-                logger.warn(marker, "Logger is not properly initialized, unable to log custom error messages with key '{}' and arguments {}", key, parameters);
-                return null;
-            }
-            message = messageService.createMessage(key, parameters);
-        }
-        log(message);
-        return message;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -88,15 +75,7 @@ public final class ApimlLogger {
      * @param message the message
      */
     public void log(Message message) {
-        try {
-            ObjectUtil.requireNotNull(message, "message can't be null");
-            ObjectUtil.requireNotNull(message.getMessageTemplate(), "message template can't be null");
-        } catch (IllegalArgumentException e) {
-            logInvalidArguments(e, message);
-            return;
-        }
-
-        log(message.getMessageTemplate().getType(), message.mapToLogMessage());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -109,36 +88,7 @@ public final class ApimlLogger {
      */
     @SuppressWarnings("squid:S2629")
     public void log(MessageType messageType, String text, Object... arguments) {
-        try {
-            ObjectUtil.requireNotNull(messageType, "messageType can't be null");
-            ObjectUtil.requireNotNull(text, "text can't be null");
-            ObjectUtil.requireNotNull(arguments, "arguments can't be null");
-        } catch (IllegalArgumentException e) {
-            logInvalidArguments(e, messageType, text, arguments);
-            return;
-        }
-
-        switch (messageType) {
-            case TRACE:
-                logger.trace(marker, text, arguments);
-                break;
-            case DEBUG:
-                logger.debug(marker, text, arguments);
-                break;
-            case INFO:
-                logger.info(marker, text, arguments);
-                break;
-            case WARNING:
-                logger.warn(marker, text, arguments);
-                break;
-            case ERROR:
-                logger.error(marker, text, arguments);
-                break;
-            default:
-                logger.warn(marker, "The following message contains invalid message type.");
-                logger.info(marker, text, arguments);
-                break;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void logInvalidArguments(IllegalArgumentException e, Object... arguments) {
@@ -148,5 +98,4 @@ public final class ApimlLogger {
             logger.warn(marker, "Invalid log message cannot be logged: {}, enable debug for stack trace: {}", arguments, e.getMessage());
         }
     }
-
 }

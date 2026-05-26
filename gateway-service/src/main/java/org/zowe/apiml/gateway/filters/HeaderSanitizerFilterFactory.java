@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-
 import java.util.Arrays;
 
 /**
@@ -35,19 +33,17 @@ public class HeaderSanitizerFilterFactory implements WebFilter, GlobalFilter, Or
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        var request = updateHeaders(exchange);
-        return chain.filter(exchange.mutate().request(request).build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE + 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        var request = updateHeaders(exchange);
-        return chain.filter(exchange.mutate().request(request).build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ServerHttpRequest updateHeaders(ServerWebExchange exchange) {
@@ -55,5 +51,4 @@ public class HeaderSanitizerFilterFactory implements WebFilter, GlobalFilter, Or
             Arrays.stream(headersToBeCleared).forEach(headers::remove);
         }).build();
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.config;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.zowe.apiml.zaas.security.login.LoginProvider;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
-
 import java.util.Arrays;
 import java.util.Map;
 
@@ -30,22 +28,26 @@ import java.util.Map;
 public class CompoundAuthProvider implements AuthenticationProvider {
 
     public static final String ORG_ZOWE_APIML_SECURITY_INVALID_AUTHENTICATION_PROVIDER = "org.zowe.apiml.security.invalidAuthenticationProvider";
+
     public static final String ORG_ZOWE_APIML_SECURITY_LOGIN_ENDPOINT_IN_DUMMY_MODE = "org.zowe.apiml.security.loginEndpointInDummyMode";
+
     public static final String DUMMY = "dummy";
 
     private final ApimlLogger apimlLog = ApimlLogger.of(CompoundAuthProvider.class, YamlMessageServiceInstance.getInstance());
 
     private final Map<String, AuthenticationProvider> authProvidersMap;
+
     private final Environment environment;
+
     private final LoginProvider defaultProvider;
+
     private LoginProvider loginProvider;
 
     public CompoundAuthProvider(Map<String, AuthenticationProvider> authProvidersMap, Environment environment, @Value("${apiml.security.auth.provider:zosmf}") String defaultProviderName) {
         this.authProvidersMap = authProvidersMap;
         this.environment = environment;
         warnForDummyProvider(defaultProviderName);
-        defaultProvider = loginProvider =
-            LoginProvider.getLoginProvider(defaultProviderName);
+        defaultProvider = loginProvider = LoginProvider.getLoginProvider(defaultProviderName);
         if (loginProvider == null) {
             apimlLog.log(ORG_ZOWE_APIML_SECURITY_INVALID_AUTHENTICATION_PROVIDER, defaultProviderName);
         }
@@ -70,22 +72,12 @@ public class CompoundAuthProvider implements AuthenticationProvider {
     }
 
     public synchronized String getLoginAuthProviderName() {
-        return loginProvider.getValue();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public synchronized void setLoginAuthProvider(String provider) {
-        if ((environment != null) && Arrays.asList(environment.getActiveProfiles()).contains("diag")) {
-            LoginProvider newProvider = LoginProvider.getLoginProvider(provider);
-            if (newProvider == null) {
-                newProvider = defaultProvider;
-            }
-            this.loginProvider = newProvider;
-            warnForDummyProvider(newProvider.getValue());
-        } else {
-            log.warn("Login Authentication provider can't be changed at runtime in the current profile.");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * Performs authentication with the same contract as
@@ -102,11 +94,7 @@ public class CompoundAuthProvider implements AuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) {
-        AuthenticationProvider configuredLoginAuthProvider = getConfiguredLoginAuthProvider();
-        if (configuredLoginAuthProvider != null) {
-            return configuredLoginAuthProvider.authenticate(authentication);
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -131,10 +119,6 @@ public class CompoundAuthProvider implements AuthenticationProvider {
      */
     @Override
     public boolean supports(Class<?> authentication) {
-        AuthenticationProvider configuredLoginAuthProvider = getConfiguredLoginAuthProvider();
-        if (configuredLoginAuthProvider != null) {
-            return configuredLoginAuthProvider.supports(authentication);
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

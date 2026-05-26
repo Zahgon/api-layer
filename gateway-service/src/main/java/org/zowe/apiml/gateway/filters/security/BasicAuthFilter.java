@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters.security;
 
 import lombok.RequiredArgsConstructor;
@@ -21,10 +20,8 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import org.zowe.apiml.gateway.service.BasicAuthProvider;
 import reactor.core.publisher.Mono;
-
 import java.util.Base64;
 import java.util.Optional;
-
 import static org.zowe.apiml.security.common.token.TokenAuthentication.createAuthenticatedFromHeader;
 
 @RequiredArgsConstructor
@@ -34,44 +31,10 @@ public class BasicAuthFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        var authHeaderOpt = resolveAuth(exchange.getRequest());
-
-        if (authHeaderOpt.isEmpty()) {
-            return chain.filter(exchange); // no basic auth header, skip processing
-        }
-
-        var header = authHeaderOpt.get();
-        String encodedCredentials = header.substring(6); // Remove "Basic "
-
-        String decodedCredentials;
-        try {
-            decodedCredentials = new String(Base64.getDecoder().decode(encodedCredentials));
-        } catch (IllegalArgumentException e) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete(); // Explicit 401 if decoding fails
-        }
-
-        if (!decodedCredentials.contains(":")) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete(); // Malformed header without colon
-        }
-
-        return basicAuthProvider.getToken(header)
-            .flatMap(token -> {
-                if (StringUtils.isEmpty(token)) {
-                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                    return exchange.getResponse().setComplete(); // Invalid credentials
-                }
-                var auth = createAuthenticatedFromHeader(token, header);
-                return chain.filter(exchange)
-                    .contextWrite(context -> ReactiveSecurityContextHolder.withAuthentication(auth));
-            });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Optional<String> resolveAuth(ServerHttpRequest request) {
-        return Optional.ofNullable(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
-            .filter(header -> StringUtils.startsWith(header, "Basic "));
+        return Optional.ofNullable(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).filter(header -> StringUtils.startsWith(header, "Basic "));
     }
-
 }
-

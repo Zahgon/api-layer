@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import lombok.Data;
@@ -28,7 +27,6 @@ import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.product.opentelemetry.OtelRequestContext;
 import org.zowe.apiml.ticket.TicketResponse;
 import reactor.core.publisher.Mono;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
@@ -52,79 +50,33 @@ public class PassticketFilterFactory extends AbstractAuthSchemeFactory<Passticke
 
     @Override
     protected AuthenticationScheme getAuthenticationScheme() {
-        return AuthenticationScheme.HTTP_BASIC_PASSTICKET;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Function<RequestCredentials, Mono<AuthorizationResponse<TicketResponse>>> getAuthorizationResponseTransformer(ServerWebExchange exchange) {
-        return requestCredentials -> zaasSchemeTransform.passticket(requestCredentials, exchange);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected RequestCredentials.RequestCredentialsBuilder createRequestCredentials(ServerWebExchange exchange, Config config) {
-        return super.createRequestCredentials(exchange, config)
-            .applId(config.getApplicationName());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Mono<Void> processResponse(ServerWebExchange exchange, GatewayFilterChain chain, AuthorizationResponse<TicketResponse> ticketResponse) {
-        var otelContext = OtelRequestContext.of(exchange);
-        otelContext.authMethod(AuthenticationScheme.HTTP_BASIC_PASSTICKET);
-
-        ServerHttpRequest request;
-        var response = ticketResponse.getBody();
-        if (response != null) {
-            Optional.ofNullable(response).map(TicketResponse::getUserId).ifPresent(otelContext::userId);
-            Optional.ofNullable(response).map(TicketResponse::getDistributedIds).ifPresent(otelContext::distributedIds);
-            Optional.ofNullable(response).map(TicketResponse::getAuthSourceType).ifPresent(otelContext::authSourceType);
-
-            request = cleanHeadersOnAuthSuccess(exchange);
-
-            String encodedCredentials = Base64.getEncoder().encodeToString((response.getUserId() + ":" + response.getTicket()).getBytes(StandardCharsets.UTF_8));
-
-            var requestSpec = request.mutate();
-            requestSpec = requestSpec.header(HttpHeaders.AUTHORIZATION, "Basic " + encodedCredentials);
-            if (StringUtils.isNotEmpty(customUserHeader) && StringUtils.isNotEmpty(customPassTicketHeader)) {
-                requestSpec = requestSpec.header(customUserHeader, response.getUserId());
-                requestSpec = requestSpec.header(customPassTicketHeader, response.getTicket());
-            }
-            request = requestSpec.build();
-        } else {
-            var oidcToken = Optional.ofNullable(ticketResponse.getHeaders())
-                .map(ClientResponse.Headers::asHttpHeaders)
-                .map(httpHeaders -> httpHeaders.getFirst(ApimlConstants.HEADER_OIDC_TOKEN));
-            String failureHeader = Optional.of(ticketResponse)
-                .map(AuthorizationResponse::getHeaders)
-                .map(headers -> headers.header(ApimlConstants.AUTH_FAIL_HEADER.toLowerCase()))
-                .filter(list -> !list.isEmpty())
-                .map(list -> list.get(0))
-                .orElse(messageService.createMessage("org.zowe.apiml.security.ticket.generateFailed", "Invalid or missing authentication").mapToLogMessage());
-            if (oidcToken.isPresent()) {
-                request = cleanHeadersOnAuthSuccess(exchange);
-                //In case ZAAS will return 401, and there is OIDC token that used for authentication. See use case with valid OIDC token, but missing user mapping.
-                request = request.mutate().headers(httpHeaders -> {
-                    httpHeaders.add(ApimlConstants.HEADER_OIDC_TOKEN, oidcToken.get());
-                    httpHeaders.add(ApimlConstants.AUTH_FAIL_HEADER, failureHeader);
-                }).build();
-                exchange.getResponse().getHeaders().add(ApimlConstants.AUTH_FAIL_HEADER, failureHeader);
-            } else {
-                request = cleanHeadersOnAuthFail(exchange, failureHeader);
-            }
-        }
-
-        exchange = exchange.mutate().request(request).build();
-        return chain.filter(exchange);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public GatewayFilter apply(Config config) {
-        return createGatewayFilter(config);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class Config extends AbstractAuthSchemeFactory.AbstractConfig {
+
         private String applicationName;
     }
-
 }

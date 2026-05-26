@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -31,7 +30,6 @@ import org.zowe.apiml.product.opentelemetry.OtelRequestContext;
 import org.zowe.apiml.security.common.util.X509Util;
 import org.zowe.apiml.util.CookieUtil;
 import reactor.core.publisher.Mono;
-
 import java.net.HttpCookie;
 import java.security.cert.CertificateEncodingException;
 import java.util.AbstractMap;
@@ -42,7 +40,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
 import static org.zowe.apiml.constants.ApimlConstants.PAT_COOKIE_AUTH_NAME;
 import static org.zowe.apiml.constants.ApimlConstants.PAT_HEADER_NAME;
 import static org.zowe.apiml.gateway.x509.ForwardClientCertFilterFactory.CLIENT_CERT_HEADER;
@@ -107,39 +104,20 @@ import static org.zowe.apiml.security.SecurityUtils.COOKIE_AUTH_NAME;
 @Slf4j
 public abstract class AbstractAuthSchemeFactory<T extends AbstractAuthSchemeFactory.AbstractConfig, R> extends AbstractGatewayFilterFactory<T> {
 
-    private static final String[] CERTIFICATE_HEADERS = {
-        "X-Certificate-Public",
-        "X-Certificate-DistinguishedName",
-        "X-Certificate-CommonName"
-    };
+    private static final String[] CERTIFICATE_HEADERS = { "X-Certificate-Public", "X-Certificate-DistinguishedName", "X-Certificate-CommonName" };
 
-    private static final Predicate<String> CERTIFICATE_HEADERS_TEST = headerName ->
-        Strings.CI.equals(headerName, CERTIFICATE_HEADERS[0]) ||
-            Strings.CI.equals(headerName, CERTIFICATE_HEADERS[1]) ||
-            Strings.CI.equals(headerName, CERTIFICATE_HEADERS[2]);
+    private static final Predicate<String> CERTIFICATE_HEADERS_TEST = headerName -> Strings.CI.equals(headerName, CERTIFICATE_HEADERS[0]) || Strings.CI.equals(headerName, CERTIFICATE_HEADERS[1]) || Strings.CI.equals(headerName, CERTIFICATE_HEADERS[2]);
 
-    private static final Predicate<HttpCookie> CREDENTIALS_COOKIE_INPUT = cookie ->
-        Strings.CI.equals(cookie.getName(), PAT_COOKIE_AUTH_NAME) ||
-            Strings.CI.equals(cookie.getName(), COOKIE_AUTH_NAME) ||
-            Strings.CI.startsWith(cookie.getName(), COOKIE_AUTH_NAME + ".");
+    private static final Predicate<HttpCookie> CREDENTIALS_COOKIE_INPUT = cookie -> Strings.CI.equals(cookie.getName(), PAT_COOKIE_AUTH_NAME) || Strings.CI.equals(cookie.getName(), COOKIE_AUTH_NAME) || Strings.CI.startsWith(cookie.getName(), COOKIE_AUTH_NAME + ".");
 
-    private static final Predicate<HttpCookie> CREDENTIALS_COOKIE = cookie ->
-        CREDENTIALS_COOKIE_INPUT.test(cookie) ||
-            Strings.CI.equals(cookie.getName(), "jwtToken") ||
-            Strings.CI.equals(cookie.getName(), "LtpaToken2");
+    private static final Predicate<HttpCookie> CREDENTIALS_COOKIE = cookie -> CREDENTIALS_COOKIE_INPUT.test(cookie) || Strings.CI.equals(cookie.getName(), "jwtToken") || Strings.CI.equals(cookie.getName(), "LtpaToken2");
 
-    private static final Predicate<String> CREDENTIALS_HEADER_INPUT = headerName ->
-        Strings.CI.equals(headerName, HttpHeaders.AUTHORIZATION) ||
-            Strings.CI.equals(headerName, PAT_HEADER_NAME);
+    private static final Predicate<String> CREDENTIALS_HEADER_INPUT = headerName -> Strings.CI.equals(headerName, HttpHeaders.AUTHORIZATION) || Strings.CI.equals(headerName, PAT_HEADER_NAME);
 
-    private static final Predicate<String> CREDENTIALS_HEADER = headerName ->
-        CREDENTIALS_HEADER_INPUT.test(headerName) ||
-            CERTIFICATE_HEADERS_TEST.test(headerName) ||
-            Strings.CI.equals(headerName, "X-SAF-Token") ||
-            Strings.CI.equals(headerName, CLIENT_CERT_HEADER) ||
-            Strings.CI.equals(headerName, HttpHeaders.COOKIE);
+    private static final Predicate<String> CREDENTIALS_HEADER = headerName -> CREDENTIALS_HEADER_INPUT.test(headerName) || CERTIFICATE_HEADERS_TEST.test(headerName) || Strings.CI.equals(headerName, "X-SAF-Token") || Strings.CI.equals(headerName, CLIENT_CERT_HEADER) || Strings.CI.equals(headerName, HttpHeaders.COOKIE);
 
     protected final InstanceInfoService instanceInfoService;
+
     protected final MessageService messageService;
 
     protected AbstractAuthSchemeFactory(Class<T> configClazz, InstanceInfoService instanceInfoService, MessageService messageService) {
@@ -166,38 +144,12 @@ public abstract class AbstractAuthSchemeFactory<T extends AbstractAuthSchemeFact
      * @param response          response body from the ZAAS containing new credentials or and empty object
      * @return response of chain evaluation (`return chain.filter(exchange)`)
      */
-    @SuppressWarnings("squid:S2092")    // the cookie is used just for internal purposes (off the browser)
+    // the cookie is used just for internal purposes (off the browser)
+    @SuppressWarnings("squid:S2092")
     protected abstract Mono<Void> processResponse(ServerWebExchange clientCallBuilder, GatewayFilterChain chain, AuthorizationResponse<R> response);
 
     protected RequestCredentials.RequestCredentialsBuilder createRequestCredentials(ServerWebExchange exchange, T config) {
-        var headers = exchange.getRequest().getHeaders();
-
-        var zaasRequestBuilder = RequestCredentials.builder()
-            .serviceId(config.getServiceId());
-
-        // get all current cookies
-        List<HttpCookie> cookies = CookieUtil.readCookies(headers).toList();
-
-        // set in the request to ZAAS all cookies and headers that contain credentials
-        headers.entrySet().stream()
-            .filter(e -> CREDENTIALS_HEADER_INPUT.test(e.getKey()))
-            .forEach(e -> zaasRequestBuilder.addHeader(e.getKey(), e.getValue().toArray(new String[0])));
-        cookies.stream()
-            .filter(CREDENTIALS_COOKIE_INPUT)
-            .forEach(c -> zaasRequestBuilder.addCookie(c.getName(), c.getValue()));
-
-        try {
-            String encodedCertificate = X509Util.getEncodedClientCertificate(exchange.getRequest().getSslInfo());
-            if (encodedCertificate != null) {
-                zaasRequestBuilder.x509Certificate(encodedCertificate);
-            }
-        } catch (CertificateEncodingException e) {
-            exchange.getResponse().getHeaders().add(ApimlConstants.AUTH_FAIL_HEADER, "Invalid client certificate in request. Error message: " + e.getMessage());
-        }
-
-        zaasRequestBuilder.requestURI(exchange.getRequest().getURI().toString());
-
-        return zaasRequestBuilder;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -212,19 +164,7 @@ public abstract class AbstractAuthSchemeFactory<T extends AbstractAuthSchemeFact
      * @return mutated request
      */
     protected ServerHttpRequest cleanHeadersOnAuthFail(ServerWebExchange exchange, String errorMessage) {
-        var otelContext = OtelRequestContext.of(exchange);
-        otelContext.authenticationFailed();
-        otelContext.authErrorMessage(errorMessage);
-        Optional.ofNullable(getAuthenticationScheme()).ifPresent(otelContext::authMethod);
-
-        return exchange.getRequest().mutate().headers(headers -> {
-            // update original request - to remove all potential headers and cookies with credentials
-            Arrays.stream(CERTIFICATE_HEADERS).forEach(headers::remove);
-
-            // set error header in both side (request to the service, response to the user)
-            headers.add(ApimlConstants.AUTH_FAIL_HEADER, errorMessage);
-            exchange.getResponse().getHeaders().add(ApimlConstants.AUTH_FAIL_HEADER, errorMessage);
-        }).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -235,45 +175,19 @@ public abstract class AbstractAuthSchemeFactory<T extends AbstractAuthSchemeFact
      * @return mutated request
      */
     protected ServerHttpRequest cleanHeadersOnAuthSuccess(ServerWebExchange exchange) {
-        OtelRequestContext.of(exchange).authenticationSuccess();
-
-        return exchange.getRequest().mutate().headers(headers -> {
-            // get all current cookies
-            List<HttpCookie> cookies = CookieUtil.readCookies(headers).toList();
-
-            // update original request - to remove all potential headers and cookies with credentials
-            Stream<Map.Entry<String, String>> nonCredentialHeaders = headers.entrySet().stream()
-                .filter(entry -> !CREDENTIALS_HEADER.test(entry.getKey()))
-                .flatMap(entry -> entry.getValue().stream().map(v -> new AbstractMap.SimpleEntry<>(entry.getKey(), v)));
-            Stream<Map.Entry<String, String>> nonCredentialCookies = cookies.stream()
-                .filter(c -> !CREDENTIALS_COOKIE.test(c))
-                .map(c -> new AbstractMap.SimpleEntry<>(HttpHeaders.COOKIE, c.toString()));
-            List<Map.Entry<String, String>> newHeaders = Stream.concat(
-                nonCredentialHeaders,
-                nonCredentialCookies
-            ).toList();
-
-            headers.clear();
-            newHeaders.forEach(newHeader -> headers.add(newHeader.getKey(), newHeader.getValue()));
-        }).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected GatewayFilter createGatewayFilter(T config) {
-        return (exchange, chain) -> getAuthorizationResponseTransformer(exchange)
-            .apply(createRequestCredentials(exchange, config).build())
-            .flatMap(response -> processResponse(exchange, chain, response));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected ServerHttpRequest addRequestHeader(ServerWebExchange exchange, String key, String value) {
-        return exchange.getRequest().mutate()
-            .headers(headers -> headers.add(key, value))
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected ServerHttpRequest updateHeadersForError(ServerWebExchange exchange, String errorMessage) {
-        ServerHttpRequest request = addRequestHeader(exchange, ApimlConstants.AUTH_FAIL_HEADER, errorMessage);
-        exchange.getResponse().getHeaders().add(ApimlConstants.AUTH_FAIL_HEADER, errorMessage);
-        return request;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
@@ -281,7 +195,6 @@ public abstract class AbstractAuthSchemeFactory<T extends AbstractAuthSchemeFact
 
         // service ID of the target service
         private String serviceId;
-
     }
 
     @AllArgsConstructor
@@ -289,8 +202,7 @@ public abstract class AbstractAuthSchemeFactory<T extends AbstractAuthSchemeFact
     public static class AuthorizationResponse<R> {
 
         private ClientResponse.Headers headers;
+
         private R body;
-
     }
-
 }

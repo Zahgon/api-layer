@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.auth.saf;
 
 import java.lang.reflect.Field;
@@ -23,11 +22,17 @@ public class PlatformReturnedHelper<T> {
     private static final String STRUCTURE_CHANGE_MSG = "Unknown structure of PlatformReturned class";
 
     private final Field successField;
+
     private final Field rcField;
+
     private final Field errnoField;
+
     private final Field errno2Field;
+
     private final Field errnoMsgField;
+
     private final Field stringRetField;
+
     private final Field objectRetField;
 
     /**
@@ -52,21 +57,6 @@ public class PlatformReturnedHelper<T> {
      * @throws IllegalArgumentException if type of a field is not matching
      */
     public PlatformReturned convert(T o) {
-        if (o == null) return null;
-
-        try {
-            return PlatformReturned.builder()
-                .success(successField.getBoolean(o))
-                .rc(rcField.getInt(o))
-                .errno(errnoField.getInt(o))
-                .errno2(errno2Field.getInt(o))
-                .errnoMsg((String) errnoMsgField.get(o))
-                .stringRet((String) stringRetField.get(o))
-                .objectRet(objectRetField.get(o))
-                .build();
-        } catch (IllegalAccessException iae) {
-            throw new IllegalArgumentException(STRUCTURE_CHANGE_MSG);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -35,7 +34,6 @@ import org.zowe.apiml.security.HttpsConfig;
 import org.zowe.apiml.security.HttpsConfigError;
 import org.zowe.apiml.security.SecurityUtils;
 import org.zowe.apiml.zaas.security.login.Providers;
-
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
@@ -77,14 +75,19 @@ public class JwtSecurity {
     private int timeout;
 
     private JWSAlgorithm signatureAlgorithm;
+
     private PrivateKey jwtSecret;
+
     private PublicKey jwtPublicKey;
+
     private JWSVerifier jwtVerifier;
 
     private Optional<JsonWebKey> jwkPublicKey = Optional.empty();
 
     private final Providers providers;
+
     private final ZosmfListener zosmfListener;
+
     private final String zosmfServiceId;
 
     private final Set<String> events = Collections.synchronizedSet(new HashSet<>());
@@ -99,7 +102,6 @@ public class JwtSecurity {
     @VisibleForTesting
     JwtSecurity(Providers providers, String keyAlias, String keyStore, char[] keyStorePassword, char[] keyPassword, EurekaClient eurekaClient) {
         this(providers, eurekaClient);
-
         this.keyStore = keyStore;
         this.keyStorePassword = keyStorePassword;
         this.keyPassword = keyPassword;
@@ -111,10 +113,7 @@ public class JwtSecurity {
     private ApimlLogger apimlLog = ApimlLogger.empty();
 
     void updateStorePaths() {
-        if (SecurityUtils.isKeyring(keyStore)) {
-            keyStore = SecurityUtils.formatKeyringUrl(keyStore);
-            if (keyStorePassword == null) keyStorePassword = "password".toCharArray();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -126,28 +125,7 @@ public class JwtSecurity {
      */
     @PostConstruct
     public void loadAppropriateJwtKeyOrFail() {
-        updateStorePaths();
-        JwtProducer used = actualJwtProducer(providers.isZosmfConfigurationSetToLtpa());
-        loadJwtSecret();
-        switch (used) {
-            case ZOSMF:
-                log.info("z/OSMF instance {} is used as the JWT producer", zosmfServiceId);
-                events.add(String.format("z/OSMF instance %s is recognized as authentication provider.", zosmfServiceId));
-                validateInitializationAgainstZosmf();
-                break;
-            case APIML:
-                log.info("API ML is used as the JWT producer");
-                events.add("API ML is recognized as authentication provider.");
-                validateJwtSecret();
-                break;
-            case UNKNOWN:
-                log.info("z/OSMF instance {} is probably used as the JWT producer but isn't available yet.", zosmfServiceId);
-                events.add(String.format("Wait for z/OSMF instance %s to come online before deciding who provides JWT tokens.", zosmfServiceId));
-                validateInitializationWhenZosmfIsAvailable();
-                break;
-            default:
-                log.warn("Unknown error when deciding who is providing the JWT token.");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -157,21 +135,11 @@ public class JwtSecurity {
      * @return Currently used JWT Producer or Unknown.
      */
     public JwtProducer actualJwtProducer() {
-        return actualJwtProducer(providers.isZosmfConfigurationSetToLtpa() || !providers.zosmfSupportsJwt());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public JwtProducer actualJwtProducer(boolean isLtpaSupported) {
-        if (!providers.isZosfmUsed()) {
-            return JwtProducer.APIML;
-        } else {
-            if (isLtpaSupported) {
-                return JwtProducer.APIML;
-            } else if (providers.isZosmfAvailableAndOnline()) {
-                return JwtProducer.ZOSMF;
-            } else {
-                return JwtProducer.UNKNOWN; // TODO remove autoconfiguration of zOSMF JWT
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -179,7 +147,6 @@ public class JwtSecurity {
      */
     private void loadJwtSecret() {
         signatureAlgorithm = JWSAlgorithm.RS256;
-
         HttpsConfig config = currentConfig();
         try {
             jwtSecret = SecurityUtils.loadKey(config);
@@ -198,7 +165,6 @@ public class JwtSecurity {
     private void validateJwtSecret() {
         if (jwtSecret == null || jwtPublicKey == null) {
             apimlLog.log("org.zowe.apiml.zaas.jwtKeyMissing", keyAlias, keyStore);
-
             String errorMessage = String.format("Not found '%s' key alias in the keystore '%s'.", keyAlias, keyStore);
             HttpsConfig config = currentConfig();
             throw new HttpsConfigError(errorMessage, HttpsConfigError.ErrorCode.WRONG_KEY_ALIAS, config);
@@ -206,13 +172,7 @@ public class JwtSecurity {
     }
 
     private HttpsConfig currentConfig() {
-        return HttpsConfig.builder()
-            .keyAlias(keyAlias)
-            .keyStore(keyStore)
-            .keyPassword(keyPassword)
-            .keyStorePassword(keyStorePassword)
-            .keyStoreType(keyStoreType)
-            .build();
+        return HttpsConfig.builder().keyAlias(keyAlias).keyStore(keyStore).keyPassword(keyPassword).keyStorePassword(keyStorePassword).keyStoreType(keyStoreType).build();
     }
 
     /**
@@ -234,76 +194,41 @@ public class JwtSecurity {
      */
     @VisibleForTesting
     public JWSAlgorithm getSignatureAlgorithm() {
-        return signatureAlgorithm;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public PrivateKey getJwtSecret() {
-        return jwtSecret;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public PublicKey getJwtPublicKey() {
-        return jwtPublicKey;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getJwtAlgorithm() {
-        if (jwtPublicKey instanceof ECPublicKey) {
-            return AlgorithmIdentifiers.ECDSA_USING_P256_CURVE_AND_SHA256;
-        }
-        return AlgorithmIdentifiers.RSA_USING_SHA256;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public JWSVerifier getJwtVerifier() {
-        return jwtVerifier;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @VisibleForTesting
     JWSVerifier buildVerifier(PublicKey publicKey) {
-        try {
-            if (publicKey instanceof RSAPublicKey rsaPublicKey) {
-                log.debug("Creating RSASSAVerifier for public key");
-                return new RSASSAVerifier(rsaPublicKey);
-            } else if (publicKey instanceof ECPublicKey ecPublicKey) {
-                log.debug("Creating ECDSAVerifier for public key");
-                return new ECDSAVerifier(ecPublicKey);
-            } else {
-                log.warn("Unsupported public key type for JWT verification: {}", publicKey == null ? null : publicKey.getClass());
-                return null;
-            }
-        } catch (com.nimbusds.jose.JOSEException e) {
-            log.warn("Failed to create JWT verifier for key type {}: {}", publicKey == null ? null : publicKey.getClass(), e.getMessage());
-            return null;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public JsonWebKeySet getPublicKeyInSet() {
-        List<JsonWebKey> keys = new ArrayList<>();
-
-        var publicKeyOptional = getJwkPublicKey();
-        publicKeyOptional.ifPresent(keys::add);
-        return new JsonWebKeySet(keys);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Optional<JsonWebKey> getJwkPublicKey() {
-        if (jwkPublicKey.isPresent()) return jwkPublicKey;
-        if (jwtPublicKey instanceof RSAPublicKey rsaPublicKey) {
-            try {
-                var jwk = JsonWebKey.Factory.newJwk(rsaPublicKey);
-                jwk.setKeyId(jwk.calculateBase64urlEncodedThumbprint("SHA-256"));
-                jwkPublicKey = Optional.of(jwk);
-                return jwkPublicKey;
-            } catch (JoseException e) {
-                log.debug("Unable to create JWK {}", e.getMessage(), e);
-            }
-        } else {
-            log.debug("Unsupported type of public key: {}", jwtPublicKey == null ? null : jwtPublicKey.getClass());
-        }
-
-        return Optional.empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
+
     /*
      * End of the actual API for the security class
      */
-
     /**
      * Register event listener
      */
@@ -311,19 +236,13 @@ public class JwtSecurity {
         zosmfListener.register();
         events.add("Started waiting for z/OSMF instance " + zosmfServiceId + " to be registered and known by the discovery service");
         log.debug("Waiting for z/OSMF instance {} to be registered and known by the Discovery Service.", zosmfServiceId);
-
         new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if (!zosmfListener.isZosmfReady()) {
-                        synchronized (events) {
-                            apimlLog.log("org.zowe.apiml.zaas.jwtProducerConfigError", StringUtils.join(events, "\n"));
-                        }
-                        apimlLog.log("org.zowe.apiml.security.zosmfInstanceNotFound", zosmfServiceId);
-                    }
-                }
-            }, Duration.ofMinutes(1).toMillis()
-        );
+
+            @Override
+            public void run() {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }, Duration.ofMinutes(1).toMillis());
     }
 
     /**
@@ -331,11 +250,13 @@ public class JwtSecurity {
      */
     @VisibleForTesting
     public ZosmfListener getZosmfListener() {
-        return zosmfListener;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public class ZosmfListener {
+
         private boolean isZosmfReady = false;
+
         private final EurekaClient eurekaClient;
 
         private ZosmfListener(EurekaClient eurekaClient) {
@@ -344,54 +265,31 @@ public class JwtSecurity {
 
         // instance variable so can create an accessor for unit testing purposes
         private final EurekaEventListener zosmfRegisteredListener = new EurekaEventListener() {
+
             @Override
             public void onEvent(EurekaEvent event) {
-                if (!(event instanceof CacheRefreshedEvent)) {
-                    return;
-                }
-
-                events.add("Discovery Service Cache was updated.");
-                log.debug("Trying to reach the z/OSMF instance " + zosmfServiceId + ".");
-                if (providers.isZosmfAvailableAndOnline()) {
-                    events.add("z/OSMF instance " + zosmfServiceId + " is available and online.");
-                    log.debug("The z/OSMF instance {} was reached.", zosmfServiceId);
-
-                    eurekaClient.unregisterEventListener(this); // only need to see zosmf up once to validate jwt secret
-                    isZosmfReady = true;
-
-                    try {
-                        validateInitializationAgainstZosmf();
-                    } catch (HttpsConfigError e) {
-                        synchronized (events) {
-                            apimlLog.log("org.zowe.apiml.zaas.jwtProducerConfigError", StringUtils.join(events, "\n"));
-                        }
-                        System.exit(1); // TODO remove
-                    }
-                } else {
-                    events.add("z/OSMF instance " + zosmfServiceId + " is not available and online yet.");
-                }
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
         };
 
         public void register() {
-            eurekaClient.registerEventListener(zosmfRegisteredListener);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public boolean isZosmfReady() {
-            return isZosmfReady;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
          * Only for unit testing the event listener.
          */
         public EurekaEventListener getZosmfRegisteredListener() {
-            return zosmfRegisteredListener;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 
     public enum JwtProducer {
-        ZOSMF,
-        APIML,
-        UNKNOWN
+
+        ZOSMF, APIML, UNKNOWN
     }
 }

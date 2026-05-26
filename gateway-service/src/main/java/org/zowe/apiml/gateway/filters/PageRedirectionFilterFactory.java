@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import lombok.Data;
@@ -31,7 +30,6 @@ import org.zowe.apiml.product.routing.ServiceType;
 import org.zowe.apiml.product.routing.transform.TransformService;
 import org.zowe.apiml.product.routing.transform.URLTransformationException;
 import reactor.core.publisher.Mono;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +38,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * PageRedirectionFilterFactory is a Spring Cloud Gateway Filter Factory that adapts a response from a routed service
  * to handle 3xx status codes, and applies the headers to the response object.
- *
  */
 @Component
 @Slf4j
@@ -54,12 +51,10 @@ public class PageRedirectionFilterFactory extends AbstractGatewayFilterFactory<P
     private static final EurekaMetadataParser EUREKA_METADATA_PARSER = new EurekaMetadataParser();
 
     private final TransformService transformService;
+
     private final DiscoveryClient discoveryClient;
 
-    public PageRedirectionFilterFactory(
-        GatewayClient gatewayClient,
-        DiscoveryClient discoveryClient
-    ) {
+    public PageRedirectionFilterFactory(GatewayClient gatewayClient, DiscoveryClient discoveryClient) {
         super(Config.class);
         this.transformService = new TransformService(gatewayClient);
         this.discoveryClient = discoveryClient;
@@ -67,42 +62,26 @@ public class PageRedirectionFilterFactory extends AbstractGatewayFilterFactory<P
 
     @Override
     public GatewayFilter apply(Config config) {
-        Optional<ServiceInstance> instance = discoveryClient.getInstances(config.serviceId).stream()
-            .filter(i -> config.getInstanceId().equalsIgnoreCase(i.getInstanceId()))
-            .findFirst();
-        return (exchange, chain) -> chain.filter(exchange)
-            .then(Mono.defer(() -> processNewLocationUrl(exchange, config, instance)));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private URI getHostAndPortUri(ServiceInstance instance) {
-        return UriComponentsBuilder.newInstance()
-            .host(instance.getHost())
-            .port(instance.getPort())
-            .build().toUri();
+        return UriComponentsBuilder.newInstance().host(instance.getHost()).port(instance.getPort()).build().toUri();
     }
 
     private URI getHostAndPortUri(URI uri) {
-        return UriComponentsBuilder.newInstance()
-            .host(uri.getHost())
-            .port(uri.getPort())
-            .build().toUri();
+        return UriComponentsBuilder.newInstance().host(uri.getHost()).port(uri.getPort()).build().toUri();
     }
 
     private Optional<ServiceInstance> getInstance(URI locationUri, Optional<ServiceInstance> instance) {
         if (locationUri.getHost() == null) {
             return instance;
         }
-
         var locationHostAndPortUri = getHostAndPortUri(locationUri);
         if (matchesInstance(instance, locationHostAndPortUri)) {
             return instance;
         }
-
-        return discoveryClient.getServices().stream()
-            .map(discoveryClient::getInstances)
-            .flatMap(List::stream)
-            .filter(i -> locationHostAndPortUri.equals(getHostAndPortUri(i)))
-            .findFirst();
+        return discoveryClient.getServices().stream().map(discoveryClient::getInstances).flatMap(List::stream).filter(i -> locationHostAndPortUri.equals(getHostAndPortUri(i))).findFirst();
     }
 
     /**
@@ -138,7 +117,6 @@ public class PageRedirectionFilterFactory extends AbstractGatewayFilterFactory<P
         if (!isRedirect) {
             return Mono.empty();
         }
-
         var location = response.getHeaders().getFirst(HttpHeaders.LOCATION);
         if (StringUtils.isBlank(location)) {
             log.debug("Location header is empty");
@@ -152,75 +130,58 @@ public class PageRedirectionFilterFactory extends AbstractGatewayFilterFactory<P
             return Mono.empty();
         }
         var defaultRoute = config.getRoutedService();
-
         AtomicReference<String> newUrl = new AtomicReference<>();
         if (targetInstance == instance && isMatching(defaultRoute, locationUri)) {
             // try the preferable route on the same instance (the same as in the original request)
             try {
-                newUrl.set(transformService.transformAbsoluteURL(
-                    StringUtils.toRootLowerCase(config.serviceId),
-                    UriComponentsBuilder.fromPath(locationUri.getPath()).query(locationUri.getRawQuery()).build().toUriString(),
-                    defaultRoute
-                ));
+                newUrl.set(transformService.transformAbsoluteURL(StringUtils.toRootLowerCase(config.serviceId), UriComponentsBuilder.fromPath(locationUri.getPath()).query(locationUri.getRawQuery()).build().toUriString(), defaultRoute));
                 log.debug("Location is matching service URL. New Location header value is: {}", newUrl.get());
             } catch (URLTransformationException e) {
                 log.debug("Cannot transform URL on the same route", e);
                 return Mono.empty();
             }
         }
-
         if (newUrl.get() == null) {
             // try to find a matching routing for the service instance
             targetInstance.ifPresent(i -> {
                 var routes = EUREKA_METADATA_PARSER.parseRoutes(i.getMetadata());
-
                 try {
-                    newUrl.set(transformService.transformURL(
-                        ServiceType.ALL,
-                        StringUtils.toRootLowerCase(config.serviceId),
-                        location,
-                        routes,
-                        false
-                    ));
+                    newUrl.set(transformService.transformURL(ServiceType.ALL, StringUtils.toRootLowerCase(config.serviceId), location, routes, false));
                     log.debug("Target instance: {}. New Location header value is: {}", i.getInstanceId(), newUrl.get());
                 } catch (URLTransformationException e) {
                     log.debug("Cannot transform URL", e);
                 }
             });
         }
-
         if (newUrl.get() != null) {
             // if the new URL was defined, decorate (scheme by AT-TLS) and set
             if (isServerAttlsEnabled && newUrl.get().startsWith("http://")) {
                 newUrl.set(UriComponentsBuilder.fromUriString(newUrl.get()).scheme("https").build().toUriString());
                 log.debug("AT-TLS server is enabled. Location url was updated with: {}", newUrl.get());
             }
-
             exchange.getResponse().getHeaders().set(HttpHeaders.LOCATION, newUrl.toString());
         }
-
         // in case url was not transformed leave it as it is (routing could be outside the Zowe)
         return Mono.empty();
     }
 
     boolean isGateway(Optional<ServiceInstance> targetInstance) {
-        return targetInstance.filter(target -> CoreService.GATEWAY.getServiceId().equalsIgnoreCase(target.getServiceId()))
-            .isPresent();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
     public static class Config {
 
         private String serviceId;
+
         private String instanceId;
 
         private String gatewayUrl;
+
         private String serviceUrl;
 
         RoutedService getRoutedService() {
-            return new RoutedService("used", gatewayUrl, serviceUrl);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters.proxyheaders;
 
 import com.google.common.cache.Cache;
@@ -23,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.product.constants.CoreService;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Duration;
@@ -35,7 +33,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
@@ -49,7 +46,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * The primary purpose of this class is to retain the IP addresses of other APIML gateways, so they
  * can be used to evaluate trusted proxy headers.
  */
-
 @Component
 @Slf4j
 public class AdditionalRegistrationGatewayRegistry {
@@ -59,34 +55,20 @@ public class AdditionalRegistrationGatewayRegistry {
 
     @Getter
     AtomicReference<Set<String>> additionalGatewayIpAddressesReference = new AtomicReference<>(Collections.emptySet());
+
     Cache<String, List<String>> knownAdditionalGateways;
 
     @PostConstruct
     public void init() {
-        knownAdditionalGateways = CacheBuilder.newBuilder().expireAfterWrite(registryExpiration.toMillis(), MILLISECONDS).build();
-        log.debug("AdditionalRegistrationGatewayRegistry initialized");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void registerCacheRefreshEventListener(DiscoveryClient additionalApimlRegistration) {
-        additionalApimlRegistration.registerEventListener(
-            event -> cacheRefreshEventHandler(event, additionalApimlRegistration));
-        log.debug("AdditionalRegistrationGatewayRegistry refresh registered for additional registration: {}",
-            additionalApimlRegistration.getEurekaClientConfig().getEurekaServerServiceUrls(null));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void cacheRefreshEventHandler(EurekaEvent event, DiscoveryClient additionalApimlRegistration) {
-        if (event instanceof CacheRefreshedEvent) {
-            Set<String> additionalGateways = Stream.of(
-                    additionalApimlRegistration.getApplication(CoreService.GATEWAY.getServiceId())
-                )
-                .filter(Objects::nonNull)
-                .map(Application::getInstances)
-                .flatMap(List::stream)
-                .flatMap(this::processInstanceInfoForIpAddresses)
-                .collect(Collectors.toSet());
-            log.debug("Additional registrations gateway ip addresses resolved: {}", additionalGateways);
-            additionalGatewayIpAddressesReference.set(additionalGateways);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private InetAddress[] getInetAddressesByName(String instanceId, String networkName) {
@@ -101,23 +83,13 @@ public class AdditionalRegistrationGatewayRegistry {
     private Stream<String> processInstanceInfoForIpAddresses(InstanceInfo instanceInfo) {
         try {
             return knownAdditionalGateways.get(instanceInfo.getInstanceId(), () -> {
-                    List<String> addresses = Stream.of(
-                            getInetAddressesByName(instanceInfo.getInstanceId(), instanceInfo.getHostName()),
-                            getInetAddressesByName(instanceInfo.getInstanceId(), instanceInfo.getIPAddr())
-                        )
-                        .filter(Objects::nonNull)
-                        .flatMap(Stream::of)
-                        .map(InetAddress::getHostAddress)
-                        .distinct()
-                        .collect(Collectors.toList());
-                    log.debug("Additional registrations gateway ip addresses for instance {} resolved: {}", instanceInfo.getInstanceId(), addresses);
-                    return addresses;
-                }
-            ).stream();
+                List<String> addresses = Stream.of(getInetAddressesByName(instanceInfo.getInstanceId(), instanceInfo.getHostName()), getInetAddressesByName(instanceInfo.getInstanceId(), instanceInfo.getIPAddr())).filter(Objects::nonNull).flatMap(Stream::of).map(InetAddress::getHostAddress).distinct().collect(Collectors.toList());
+                log.debug("Additional registrations gateway ip addresses for instance {} resolved: {}", instanceInfo.getInstanceId(), addresses);
+                return addresses;
+            }).stream();
         } catch (ExecutionException e) {
             log.debug("Unable to update additional gateway registry for instance {}.", instanceInfo, e);
             return Stream.empty();
         }
     }
 }
-

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client.config;
 
 import lombok.*;
@@ -81,7 +80,6 @@ public class ApiMediationServiceConfig {
      *
      *   **Tip:** We recommend that service developer provides a default value of the `title`.
      *         Use a title that describes the service instance so that the end user knows the specific purpose of the service instance.
-     *
      */
     private String title;
 
@@ -116,7 +114,6 @@ public class ApiMediationServiceConfig {
      *       - **<instanceId>{instanceId}</instanceId>**
      *       - **<dataCenterInfo><name>MyOwn</name></dataCenterInfo>**
      *
-     *
      *     **Example in _YAML_:**
      *     * `https://host:port/servicename` for HTTPS service
      *
@@ -133,7 +130,6 @@ public class ApiMediationServiceConfig {
      *    {@link Authentication} defines authentication scheme and application id. This parameters are optional. The default scheme is BYPASS.
      */
     private Authentication authentication;
-
 
     /**
      * *  **serviceIpAddress** (_Optional_)
@@ -155,8 +151,6 @@ public class ApiMediationServiceConfig {
      *     * `homePageRelativeUrl: /`
      *
      *         This service has a home page with URL `${baseUrl}/`
-     *
-     *
      */
     private String homePageRelativeUrl;
 
@@ -211,7 +205,6 @@ public class ApiMediationServiceConfig {
 
     /**
      * {@link Catalog} instances contain API ML catalog UI description. API ML catalog displays services information in tiles.
-     *
      */
     private Catalog catalog;
 
@@ -219,7 +212,6 @@ public class ApiMediationServiceConfig {
      *  {@link Ssl} provides configuration parameters for SSL / TLS security of the service.
      */
     private Ssl ssl;
-
 
     private boolean preferIpAddress;
 
@@ -231,12 +223,11 @@ public class ApiMediationServiceConfig {
     private int connectTimeout = 5;
 
     /**
-    *  Read timeout interval, in seconds.
+     *  Read timeout interval, in seconds.
      * The value MUST be an instance convertible to Integer. A value of zero (0) is equivalent to an interval of infinity.
      * {@link org.glassfish.jersey.client.ClientProperties.READ_TIMEOUT}
      */
     private int readTimeout = 8;
-
 
     /**
      *  Generic attribute for adding arbitrary metadata to either configure Api Mediation Layer or for consumption by other
@@ -249,7 +240,7 @@ public class ApiMediationServiceConfig {
      * @throws ServiceDefinitionException
      */
     @PostConstruct
-    public void setIpAddressIfNotPresents ()throws ServiceDefinitionException {
-        ApiMediationServiceConfigReader.setServiceIpAddress(this);
+    public void setIpAddressIfNotPresents() throws ServiceDefinitionException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

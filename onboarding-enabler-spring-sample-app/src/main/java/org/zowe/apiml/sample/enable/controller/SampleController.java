@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.sample.enable.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,25 +30,9 @@ import java.util.List;
 public class SampleController {
 
     @GetMapping(value = "/samples", produces = "application/json")
-    @Operation(summary = "Retrieve all samples",
-        description = "Simple method to demonstrate how to expose an API endpoint with Open API information")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "404", description = "URI not found"),
-        @ApiResponse(responseCode = "500", description = "Internal Error"),
-    })
+    @Operation(summary = "Retrieve all samples", description = "Simple method to demonstrate how to expose an API endpoint with Open API information")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "404", description = "URI not found"), @ApiResponse(responseCode = "500", description = "Internal Error") })
     public ResponseEntity<List<Sample>> list() {
-        List<Sample> samples;
-        try {
-            samples = new ArrayList<>();
-            samples.add(new Sample("one", "first one", 1));
-            samples.add(new Sample("two", "second one", 2));
-            samples.add(new Sample("three", "third one", 3));
-            samples.add(new Sample("four", "fourth one", 4));
-            return new ResponseEntity<>(samples, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Something bad happened: " + e.getMessage(), e);
-            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

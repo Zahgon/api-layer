@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.security;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.util.Arrays;
 
 /**
@@ -29,11 +27,6 @@ public class WebServerSecurityConfig {
 
     @Bean
     public TomcatConnectorCustomizer servletContainerCustomizer() {
-        return connector -> {
-            AbstractHttp11Protocol<?> abstractProtocol = (AbstractHttp11Protocol<?>) connector.getProtocolHandler();
-            Arrays.stream(abstractProtocol.findSslHostConfigs()).forEach(sslHost -> sslHost.setHonorCipherOrder(true));
-            log.debug("servletContainerCustomizer initialized");
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

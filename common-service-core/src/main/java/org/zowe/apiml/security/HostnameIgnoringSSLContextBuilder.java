@@ -7,17 +7,14 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
 import java.security.KeyManagementException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -30,25 +27,11 @@ import java.util.Collection;
 public class HostnameIgnoringSSLContextBuilder extends ApimlSSLContextBuilder {
 
     @Override
-    protected void initSSLContext(SSLContext sslContext, Collection<KeyManager> keyManagers,
-            Collection<TrustManager> trustManagers, SecureRandom secureRandom) throws KeyManagementException {
-
-        Collection<TrustManager> laxTrustManager = new ArrayList<>();
-        if (trustManagers != null) {
-            trustManagers.forEach(tm -> {
-                if (tm instanceof X509TrustManager x509tm) {
-                    laxTrustManager.add(new HostnameIgnoringTrustManager(x509tm));
-                } else {
-                    laxTrustManager.add(tm);
-                }
-            });
-        }
-
-        super.initSSLContext(sslContext, keyManagers, laxTrustManager, secureRandom);
+    protected void initSSLContext(SSLContext sslContext, Collection<KeyManager> keyManagers, Collection<TrustManager> trustManagers, SecureRandom secureRandom) throws KeyManagementException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static HostnameIgnoringSSLContextBuilder create() {
-        return new HostnameIgnoringSSLContextBuilder();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

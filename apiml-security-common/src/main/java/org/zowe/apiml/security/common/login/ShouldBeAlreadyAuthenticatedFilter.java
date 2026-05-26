@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.login;
 
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -15,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,11 +35,11 @@ public class ShouldBeAlreadyAuthenticatedFilter extends AbstractAuthenticationPr
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        throw new AuthenticationCredentialsNotFoundException("Authentication credentials not found");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        failureHandler.onAuthenticationFailure(request, response, failed);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.zowe.apiml.client.model.RedirectLocation;
-
 import jakarta.servlet.http.HttpServletResponse;
-
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 /**
@@ -43,22 +40,11 @@ public class PageRedirectionController {
      * @param response         return the same data as request body
      * @return
      */
-    @PostMapping(
-        value = "/api/v1/redirect",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(value = "/api/v1/redirect", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.TEMPORARY_REDIRECT)
-    @Operation(
-        summary = "/redirect",
-        description = "Redirect to location")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "307", description = "Redirect to specified location")
-    })
-    public RedirectLocation redirectPage(@Parameter(description = "Location that need to be redirected to", required = true, example = "https://host:port/context/path")
-                                         @RequestBody RedirectLocation redirectLocation,
-                                         HttpServletResponse response) {
-        response.setHeader(LOCATION, redirectLocation.getLocation());
-        return redirectLocation;
+    @Operation(summary = "/redirect", description = "Redirect to location")
+    @ApiResponses(value = { @ApiResponse(responseCode = "307", description = "Redirect to specified location") })
+    public RedirectLocation redirectPage(@Parameter(description = "Location that need to be redirected to", required = true, example = "https://host:port/context/path") @RequestBody RedirectLocation redirectLocation, HttpServletResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +25,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.zowe.apiml.filter.AttlsFilter;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -39,44 +37,16 @@ public class SecurityConfiguration {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        HttpSecurity newConf = http.csrf(AbstractHttpConfigurer::disable) // NOSONAR
-            .authorizeHttpRequests(requests -> requests
-//                .requestMatchers("/api/v3/graphql/**").authenticated()
-                .requestMatchers("/ws/**").authenticated()
-                .requestMatchers("/**").permitAll())
-            .httpBasic(withDefaults());
-
-        if (isServerAttlsEnabled) {
-            newConf.addFilterBefore(new AttlsFilter(), UsernamePasswordAuthenticationFilter.class);
-        }
-        return newConf.build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     @Bean
     InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-            .username("user").password("pass").authorities(new SimpleGrantedAuthority("ADMIN"))
-            .build();
-        return new InMemoryUserDetailsManager(user);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
-        StrictHttpFirewall firewall = new StrictHttpFirewall();
-        firewall.setAllowUrlEncodedSlash(true);
-        firewall.setAllowUrlEncodedDoubleSlash(true);
-        firewall.setAllowBackSlash(true);
-        firewall.setAllowUrlEncodedPercent(true);
-        firewall.setAllowUrlEncodedPeriod(true);
-        firewall.setAllowSemicolon(true);
-
-        return web -> {
-            web.httpFirewall(firewall);
-            web.ignoring().requestMatchers("/api/v1/**");
-        };
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

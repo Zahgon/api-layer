@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.cache;
 
 import lombok.RequiredArgsConstructor;
 import org.zowe.apiml.cache.Storage;
 import org.zowe.apiml.caching.model.KeyValue;
 import org.zowe.apiml.security.HttpsConfig;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,57 +25,53 @@ public class LocalCachingClient implements CachingClient {
 
     @Override
     public void create(CachingServiceClient.KeyValue kv) {
-
-        var serviceId = getServiceId();
-        storage.create(serviceId, new KeyValue(kv.getKey(), kv.getValue()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void appendList(String mapKey, CachingServiceClient.KeyValue kv) {
-        storage.storeMapItem(getServiceId(), mapKey, convert(kv));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Map<String, Map<String, String>> readAllMaps() {
-        return storage.getAllMaps(getServiceId());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void evictTokens(String key) {
-        storage.removeNonRelevantTokens(getServiceId(), key);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void evictRules(String key) {
-        storage.removeNonRelevantRules(getServiceId(), key);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public CachingServiceClient.KeyValue read(String key) {
-        return convert(storage.read(getServiceId(), key));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void update(CachingServiceClient.KeyValue kv) {
-        storage.update(getServiceId(), convert(kv));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void delete(String key) {
-        storage.delete(getServiceId(), key);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     KeyValue convert(CachingServiceClient.KeyValue kv) {
-        return new KeyValue(kv.getKey(), kv.getValue());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     CachingServiceClient.KeyValue convert(KeyValue kv) {
-        return new CachingServiceClient.KeyValue(kv.getKey(), kv.getValue());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     String getServiceId() {
-        return Optional.ofNullable(httpsConfig.getCertificate())
-            .map(certificate -> certificate.getSubjectX500Principal().getName())
-            .orElse("apiml service");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

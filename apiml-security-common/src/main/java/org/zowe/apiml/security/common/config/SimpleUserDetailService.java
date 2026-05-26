@@ -7,13 +7,11 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.config;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-
 import java.util.Collections;
 
 /**
@@ -28,11 +26,11 @@ public class SimpleUserDetailService implements AuthenticationUserDetailsService
 
     @Override
     public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
-        return constructUserDetails(token.getPrincipal().toString());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return constructUserDetails(username);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

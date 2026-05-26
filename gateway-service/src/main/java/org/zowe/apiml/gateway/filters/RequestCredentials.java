@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import lombok.Builder;
 import lombok.Value;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +21,13 @@ import java.util.Map;
 public class RequestCredentials {
 
     private final String serviceId;
+
     private final String applId;
+
     private final Map<String, String> cookies;
+
     private final Map<String, String[]> headers;
+
     private final String x509Certificate;
 
     private final String requestURI;
@@ -33,23 +35,11 @@ public class RequestCredentials {
     public static class RequestCredentialsBuilder {
 
         RequestCredentialsBuilder addCookie(String key, String value) {
-            if (this.cookies == null) {
-                this.cookies = new HashMap<>();
-            }
-            this.cookies.put(key, value);
-
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         RequestCredentialsBuilder addHeader(String name, String[] value) {
-            if (this.headers == null) {
-                this.headers = new HashMap<>();
-            }
-            this.headers.merge(StringUtils.lowerCase(name), value, (a, b) -> ArrayUtils.addAll(a, b));
-
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

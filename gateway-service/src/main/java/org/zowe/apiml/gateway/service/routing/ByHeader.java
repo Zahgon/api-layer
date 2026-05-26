@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service.routing;
 
 import org.springframework.cloud.client.ServiceInstance;
@@ -35,26 +34,16 @@ public class ByHeader extends RouteDefinitionProducer {
 
     @Override
     protected void setCondition(RouteDefinition routeDefinition, ServiceInstance serviceInstance, RoutedService routedService) {
-        PredicateDefinition predicate = new PredicateDefinition();
-
-        predicate.setName("Header");
-        predicate.addArg("header", TARGET_HEADER_NAME);
-        predicate.addArg("regexp", serviceInstance.getServiceId() + "(/.*)?");
-
-        routeDefinition.getPredicates().add(predicate);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void setFilters(RouteDefinition routeDefinition, ServiceInstance serviceInstance, RoutedService routedService) {
-        FilterDefinition filter = new FilterDefinition();
-        filter.setName("HeaderRouteStepFilterFactory");
-        filter.addArg("header", TARGET_HEADER_NAME);
-        routeDefinition.getFilters().add(filter);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

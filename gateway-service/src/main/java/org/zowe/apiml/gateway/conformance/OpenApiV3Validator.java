@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.conformance;
 
 import io.swagger.v3.oas.models.PathItem;
@@ -16,12 +15,11 @@ import io.swagger.v3.parser.OpenAPIV3Parser;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import org.springframework.http.HttpMethod;
 import org.zowe.apiml.product.instance.ServiceAddress;
-
 import java.util.*;
 
 public class OpenApiV3Validator extends AbstractSwaggerValidator {
-    private final SwaggerParseResult swagger;
 
+    private final SwaggerParseResult swagger;
 
     public OpenApiV3Validator(String swaggerDoc, Map<String, String> metadata, ServiceAddress gatewayServiceAddress, String serviceId) {
         super(metadata, gatewayServiceAddress, serviceId);
@@ -29,24 +27,11 @@ public class OpenApiV3Validator extends AbstractSwaggerValidator {
     }
 
     public List<String> getMessages() {
-        ArrayList<String> result = new ArrayList<>();
-        for (String message : swagger.getMessages()) {
-            result.add("Problem with swagger documentation: " + message);
-        }
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-
     public Set<Endpoint> getAllEndpoints() {
-        HashSet<Endpoint> result = new HashSet<>();
-        for (Map.Entry<String, PathItem> pathEntry : swagger.getOpenAPI().getPaths().entrySet()) {
-            Set<HttpMethod> methods = getMethod(pathEntry.getValue());
-            String url = generateUrlForEndpoint(pathEntry.getKey());
-            HashMap<String, Set<String>> validResponses = getValidResponses(pathEntry.getValue());
-            Endpoint currentEndpoint = new Endpoint(url, serviceId, methods, validResponses);
-            result.add(currentEndpoint);
-        }
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private HashMap<String, Set<String>> getValidResponses(PathItem value) {
@@ -54,19 +39,16 @@ public class OpenApiV3Validator extends AbstractSwaggerValidator {
         for (HttpMethod httpMethod : getMethod(value)) {
             ApiResponses apiResponses = value.readOperationsMap().get(convertSpringHttpToSwagger(httpMethod)).getResponses();
             if (!apiResponses.isEmpty()) {
-            result.put(httpMethod.name(), apiResponses.keySet());
+                result.put(httpMethod.name(), apiResponses.keySet());
             }
         }
         return result;
     }
 
     private String generateUrlForEndpoint(String endpoint) {
-
         String baseUrl = gatewayServiceAddress.getScheme() + "://" + gatewayServiceAddress.getHostname();
-
         String version = searchMetadata(metadata, "apiml", "routes", "gatewayUrl");
         String serviceUrl = searchMetadata(metadata, "apiml", "routes", "serviceUrl");
-
         String endOfUrl;
         if (endpoint.contains("/api/")) {
             endOfUrl = serviceUrl + endpoint;
@@ -103,7 +85,7 @@ public class OpenApiV3Validator extends AbstractSwaggerValidator {
     }
 
     private PathItem.HttpMethod convertSpringHttpToSwagger(HttpMethod input) {
-        switch (input.name()) {
+        switch(input.name()) {
             case "GET":
                 return PathItem.HttpMethod.GET;
             case "HEAD":
@@ -123,5 +105,3 @@ public class OpenApiV3Validator extends AbstractSwaggerValidator {
         }
     }
 }
-
-

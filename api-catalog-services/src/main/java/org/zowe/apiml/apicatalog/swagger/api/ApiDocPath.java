@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.swagger.api;
 
 import lombok.Getter;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -19,19 +17,22 @@ import java.util.TreeSet;
 
 @Getter
 public class ApiDocPath<T> {
+
     private final Map<String, T> shortPaths = new TreeMap<>();
+
     private final Map<String, T> longPaths = new TreeMap<>();
+
     private final Set<String> prefixes = new TreeSet<>();
 
     public void addPrefix(String prefix) {
-        getPrefixes().add(prefix);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void addShortPath(String name, T path) {
-        getShortPaths().put(name, path);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void addLongPath(String name, T path) {
-        getLongPaths().put(name, path);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

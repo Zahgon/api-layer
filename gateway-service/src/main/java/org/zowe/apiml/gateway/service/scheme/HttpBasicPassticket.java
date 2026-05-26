@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service.scheme;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,27 +24,11 @@ public class HttpBasicPassticket implements SchemeHandler {
 
     @Override
     public AuthenticationScheme getAuthenticationScheme() {
-        return AuthenticationScheme.HTTP_BASIC_PASSTICKET;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void apply(ServiceInstance serviceInstance, RouteDefinition routeDefinition, Authentication auth) {
-        if (StringUtils.isEmpty(auth.getApplid())) {
-            log.debug("Service {} does not have configured APPLID (httpBasicPassTicket scheme). The authorization scheme will be ignored", serviceInstance.getServiceId());
-
-            FilterDefinition filterDef = new FilterDefinition();
-            filterDef.setName("RoutingConfigurationErrorFilterFactory");
-            filterDef.addArg("serviceId", StringUtils.lowerCase(serviceInstance.getServiceId()));
-            filterDef.addArg("message", "APPLID is not configured");
-            filterDef.addArg("authenticationScheme", AuthenticationScheme.HTTP_BASIC_PASSTICKET.getScheme());
-            routeDefinition.getFilters().add(filterDef);
-        } else {
-            FilterDefinition filterDef = new FilterDefinition();
-            filterDef.setName("PassticketFilterFactory");
-            filterDef.addArg("applicationName", auth.getApplid());
-            filterDef.addArg("serviceId", StringUtils.lowerCase(serviceInstance.getServiceId()));
-            routeDefinition.getFilters().add(filterDef);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

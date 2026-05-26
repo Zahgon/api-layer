@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.client.config;
 
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -23,17 +22,11 @@ import org.zowe.apiml.product.instance.lookup.InstanceLookupExecutor;
  * General configuration of security client
  */
 @Configuration
-@ComponentScan({"org.zowe.apiml.security", "org.zowe.apiml.product.gateway", "org.zowe.apiml.gateway.security.login"})
+@ComponentScan({ "org.zowe.apiml.security", "org.zowe.apiml.product.gateway", "org.zowe.apiml.gateway.security.login" })
 public class SecurityServiceConfiguration {
 
     @Bean
-    GatewayInstanceInitializer gatewayInstanceInitializer(
-        DiscoveryClient discoveryClient,
-        ApplicationEventPublisher applicationEventPublisher,
-        GatewayClient gatewayClient) {
-        return new GatewayInstanceInitializer(
-            new InstanceLookupExecutor(discoveryClient),
-            applicationEventPublisher,
-            gatewayClient);
+    GatewayInstanceInitializer gatewayInstanceInitializer(DiscoveryClient discoveryClient, ApplicationEventPublisher applicationEventPublisher, GatewayClient gatewayClient) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

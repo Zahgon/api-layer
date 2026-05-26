@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.handlers;
 
 import lombok.RequiredArgsConstructor;
@@ -22,14 +21,13 @@ import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.message.core.Message;
 import org.zowe.apiml.message.core.MessageService;
 import reactor.core.publisher.Mono;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
  * This class creates responses for exceptional behavior of the ApiCatalogController
  */
 @Order(0)
-@ControllerAdvice(assignableTypes = {ServicesController.class})
+@ControllerAdvice(assignableTypes = { ServicesController.class })
 @RequiredArgsConstructor
 public class ApiCatalogControllerExceptionHandler {
 
@@ -43,11 +41,6 @@ public class ApiCatalogControllerExceptionHandler {
      */
     @ExceptionHandler(ContainerStatusRetrievalException.class)
     public Mono<ResponseEntity<ApiMessageView>> handleServiceNotFoundException(ContainerStatusRetrievalException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.apicatalog.containerStatusRetrievalException", exception.getMessage());
-        return Mono.just(ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(APPLICATION_JSON)
-            .body(message.mapToView()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

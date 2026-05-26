@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.zowe.apiml.eurekaservice.client.config.Route;
 import org.zowe.apiml.eurekaservice.client.config.Ssl;
 import org.zowe.apiml.eurekaservice.client.impl.ApiMediationClientImpl;
 import org.zowe.apiml.exception.ServiceDefinitionException;
-
 import java.util.Collections;
 
 /**
@@ -31,8 +29,11 @@ import java.util.Collections;
  */
 @Service
 public class ApiMediationClientService {
+
     private static final String PORT = "10013";
+
     private static final String SERVICE_ID = "registrationtest";
+
     private static final String GATEWAY_URL = "api/v1";
 
     private final DiscoverableClientConfig dcConfig;
@@ -45,41 +46,14 @@ public class ApiMediationClientService {
     }
 
     public boolean register() throws ServiceDefinitionException {
-        ApiInfo apiInfo = new ApiInfo(SERVICE_ID, GATEWAY_URL, "1.0.0", null, null, null);
-        Authentication authentication = new Authentication("bypass", null, null);
-        Ssl ssl = new Ssl(dcConfig.isSslEnabled(), dcConfig.isVerifyCerts(), dcConfig.isNonStrictVerifyCerts(), dcConfig.getSslProtocol(), dcConfig.getKeyAlias(),
-            dcConfig.getKeyPassword().toCharArray(), dcConfig.getKeyStore(), dcConfig.getKeyStorePassword().toCharArray(),
-            dcConfig.getKeyStoreType(), dcConfig.getTrustStore(), dcConfig.getTrustStorePassword().toCharArray(), dcConfig.getTrustStoreType());
-        Route apiRoute = new Route(GATEWAY_URL, "/" + SERVICE_ID + "/" + GATEWAY_URL);
-
-        ApiMediationServiceConfig apiConfig = ApiMediationServiceConfig.builder()
-            .apiInfo(Collections.singletonList(apiInfo))
-            .authentication(authentication)
-            .routes(Collections.singletonList(apiRoute))
-            .description("Example for API Mediation Client registration")
-            .title("API Mediation Client Registration")
-            .serviceId(SERVICE_ID)
-            .baseUrl(dcConfig.getScheme() + "://" + dcConfig.getHostname() + ":" + PORT)
-            .healthCheckRelativeUrl("")
-            .homePageRelativeUrl("")
-            .statusPageRelativeUrl("")
-            .discoveryServiceUrls(dcConfig.getDiscoveryServiceUrls())
-            .ssl(ssl)
-            .preferIpAddress(false)
-            .serviceIpAddress("0.0.0.0") //use hostname instead of IP address
-            .connectTimeout(dcConfig.getConnectTimeout())
-            .readTimeout(dcConfig.getReadTimeout())
-            .build();
-        apiMediationClient.register(apiConfig);
-        return true; // indicates success, successful unless exception thrown. Used to assert success in unit tests.
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean unregister() {
-        apiMediationClient.unregister();
-        return true; // indicates success, successful unless exception thrown. Used to assert success in unit tests.
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean isRegistered() {
-        return apiMediationClient.isRegistered();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

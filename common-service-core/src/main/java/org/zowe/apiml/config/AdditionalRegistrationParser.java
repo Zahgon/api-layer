@@ -7,44 +7,27 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class AdditionalRegistrationParser {
 
-
     public static final String ADDITIONAL_REGISTRATION_INDEX_GROUP_NAME = "index";
+
     public static final Pattern DISCOVERYSERVICEURLS_PATTERN = Pattern.compile("^ZWE_CONFIGS_APIML_SERVICE_ADDITIONALREGISTRATION_(?<index>\\d+)_DISCOVERYSERVICEURLS$", Pattern.CASE_INSENSITIVE);
+
     public static final Pattern ROUTE_SERVICEURL_PATTERN = Pattern.compile("^ZWE_CONFIGS_APIML_SERVICE_ADDITIONALREGISTRATION_(?<index>\\d+)_ROUTES_(?<routeIndex>\\d+)_SERVICEURL$", Pattern.CASE_INSENSITIVE);
+
     public static final Pattern ROUTE_GATEWAYURL_PATTERN = Pattern.compile("^ZWE_CONFIGS_APIML_SERVICE_ADDITIONALREGISTRATION_(?<index>\\d+)_ROUTES_(?<routeIndex>\\d+)_GATEWAYURL$", Pattern.CASE_INSENSITIVE);
 
     public List<AdditionalRegistration> extractAdditionalRegistrations(Map<String, String> allProperties) {
-        if (allProperties == null) {
-            return new ArrayList<>();
-        }
-        final Map<Integer, AdditionalRegistration> map = new TreeMap<>();
-        for (Map.Entry<String, String> entry : allProperties.entrySet()) {
-            matchDiscoveryUrl(entry.getKey()).ifPresent(index -> putAdditionalRegistration(map, index, entry.getValue()));
-        }
-        for (Map.Entry<String, String> entry : allProperties.entrySet()) {
-            parseServiceUrl(entry.getKey()).ifPresent(pair -> putRouteServiceUrl(map, pair, entry.getValue()));
-        }
-
-        for (Map.Entry<String, String> entry : allProperties.entrySet()) {
-            parseGatewayUrl(entry.getKey()).ifPresent(pair -> putRouteGatewayUrl(map, pair, entry.getValue()));
-        }
-        map.values().forEach(registration -> registration.setRoutes(registration.getRoutes().stream()
-            .filter(AdditionalRegistrationParser::isRouteDefined).toList()));
-        return new ArrayList<>(map.values());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static void putRouteServiceUrl(Map<Integer, AdditionalRegistration> map, Pair<Integer, Long> pair, String value) {
@@ -76,33 +59,15 @@ public class AdditionalRegistrationParser {
     }
 
     public static Optional<Integer> matchDiscoveryUrl(String line) {
-        Matcher matcher = DISCOVERYSERVICEURLS_PATTERN.matcher(line);
-        if (matcher.matches()) {
-            String index = matcher.group(ADDITIONAL_REGISTRATION_INDEX_GROUP_NAME);
-            return Optional.ofNullable(index).map(Integer::parseInt);
-        }
-        return Optional.empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static Optional<Pair<Integer, Long>> parseServiceUrl(String line) {
-        Matcher matcher = ROUTE_SERVICEURL_PATTERN.matcher(line);
-        if (matcher.matches()) {
-
-            String index = matcher.group(ADDITIONAL_REGISTRATION_INDEX_GROUP_NAME);
-            String routeIndex = matcher.group("routeIndex");
-            return Optional.of(Pair.of(Integer.decode(index), Long.decode(routeIndex)));
-        }
-        return Optional.empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static Optional<Pair<Integer, Long>> parseGatewayUrl(String line) {
-        Matcher matcher = ROUTE_GATEWAYURL_PATTERN.matcher(line);
-        if (matcher.matches()) {
-            String index = matcher.group(ADDITIONAL_REGISTRATION_INDEX_GROUP_NAME);
-            String routeIndex = matcher.group("routeIndex");
-            return Optional.of(Pair.of(Integer.decode(index), Long.decode(routeIndex)));
-        }
-        return Optional.empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static boolean isRouteDefined(AdditionalRegistration.Route route) {

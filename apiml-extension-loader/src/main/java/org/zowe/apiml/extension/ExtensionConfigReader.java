@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.extension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.zowe.apiml.extension.ExtensionDefinition.ApimlServices;
-
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Slf4j
@@ -37,21 +34,13 @@ public class ExtensionConfigReader {
     }
 
     public String[] getBasePackages() {
-        return getEnabledExtensions()
-            .stream()
-            .map(ExtensionDefinition::getApimlServices)
-            .filter(Objects::nonNull)
-            .map(ApimlServices::getBasePackage)
-            .filter(Objects::nonNull)
-            .toList()
-            .toArray(new String[0]);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private List<ExtensionDefinition> getEnabledExtensions() {
         List<String> installedComponents = environment.getInstalledComponents();
         List<String> enabledComponents = environment.getEnabledComponents();
         List<ExtensionDefinition> extensions = new ArrayList<>();
-
         for (String installedComponent : installedComponents) {
             if (enabledComponents.contains(installedComponent)) {
                 try {
@@ -68,13 +57,11 @@ public class ExtensionConfigReader {
         String parentPath = environment.getWorkspaceDirectory() + File.separator + installedComponent;
         Path manifestYamlPath = Paths.get(parentPath + File.separator + "manifest.yaml");
         Path manifestJsonPath = Paths.get(parentPath + File.separator + "manifest.json");
-
         Optional<ExtensionDefinition> definition = readComponentManifestWithCharset(Charset.defaultCharset(), manifestYamlPath, manifestJsonPath);
         if (definition.isPresent()) {
             return definition.get();
         } else {
-            return readComponentManifestWithCharset(Charset.forName("IBM1047"), manifestYamlPath, manifestJsonPath)
-                .orElseThrow(() -> new ExtensionManifestReadException("Could not read manifest in either " + Charset.defaultCharset() + " nor in IBM1047 encoding"));
+            return readComponentManifestWithCharset(Charset.forName("IBM1047"), manifestYamlPath, manifestJsonPath).orElseThrow(() -> new ExtensionManifestReadException("Could not read manifest in either " + Charset.defaultCharset() + " nor in IBM1047 encoding"));
         }
     }
 

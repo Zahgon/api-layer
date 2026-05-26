@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.util;
 
 import lombok.Value;
@@ -20,12 +19,10 @@ import org.springframework.security.web.authentication.preauth.x509.SubjectDnX50
 import org.springframework.security.web.authentication.preauth.x509.X509PrincipalExtractor;
 import org.zowe.apiml.security.common.token.X509AuthenticationToken;
 import reactor.core.publisher.Mono;
-
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Collections;
-
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
 @Slf4j
@@ -33,41 +30,22 @@ import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 public class X509Util {
 
     public String getEncodedClientCertificate(SslInfo sslInfo) throws CertificateEncodingException {
-        if (sslInfo == null) return null;
-
-        X509Certificate[] certificates = sslInfo.getPeerCertificates();
-        if (isEmpty(certificates)) return null;
-
-        return Base64.getEncoder().encodeToString(certificates[0].getEncoded());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public X509PrincipalExtractor x509PrincipalExtractor() {
-        return new SubjectDnX509PrincipalExtractor() {
-            @Override
-            public Object extractPrincipal(X509Certificate clientCert) {
-                return new X509Principal(clientCert, (String) super.extractPrincipal(clientCert));
-            }
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public ReactiveAuthenticationManager x509ReactiveAuthenticationManager() {
-        return authentication -> {
-            X509Principal principal = (X509Principal) authentication.getPrincipal();
-            var authorization = new X509AuthenticationToken(
-                Collections.singleton(new SimpleGrantedAuthority("TRUSTED_CERTIFICATE")),
-                new X509Certificate[] { principal.getX509Certificate() }
-            );
-            authorization.setAuthenticated(true);
-            return Mono.just(authorization);
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Value
     public static class X509Principal {
 
         private final X509Certificate x509Certificate;
+
         private final String username;
-
     }
-
 }

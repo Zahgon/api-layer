@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.conformance;
 
 import io.swagger.models.Path;
@@ -16,9 +15,7 @@ import io.swagger.parser.SwaggerParser;
 import io.swagger.parser.util.SwaggerDeserializationResult;
 import org.springframework.http.HttpMethod;
 import org.zowe.apiml.product.instance.ServiceAddress;
-
 import java.util.*;
-
 
 public class OpenApiV2Validator extends AbstractSwaggerValidator {
 
@@ -30,25 +27,11 @@ public class OpenApiV2Validator extends AbstractSwaggerValidator {
     }
 
     public List<String> getMessages() {
-        ArrayList<String> result = new ArrayList<>();
-        for (String message : swagger.getMessages()) {
-            result.add("Problem with swagger documentation: " + message);
-        }
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Set<Endpoint> getAllEndpoints() {
-        HashSet<Endpoint> result = new HashSet<>();
-        for (Map.Entry<String, Path> pathEntry : swagger.getSwagger().getPaths().entrySet()) {
-            Path currentPath = pathEntry.getValue();
-            String currentKey = pathEntry.getKey();
-            Set<HttpMethod> methods = getMethod(currentPath);
-            String url = generateUrlForEndpoint(currentKey);
-            HashMap<String, Set<String>> validResponses = getValidResponses(currentPath);
-            Endpoint currentEndpoint = new Endpoint(url, serviceId, methods, validResponses);
-            result.add(currentEndpoint);
-        }
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private HashMap<String, Set<String>> getValidResponses(Path value) {
@@ -63,14 +46,10 @@ public class OpenApiV2Validator extends AbstractSwaggerValidator {
     }
 
     private String generateUrlForEndpoint(String endpoint) {
-
         String baseUrl = gatewayServiceAddress.getScheme() + "://" + gatewayServiceAddress.getHostname();
-
         String version = searchMetadata(metadata, "apiml", "routes", "gatewayUrl");
         String serviceUrl = searchMetadata(metadata, "apiml", "routes", "serviceUrl");
-
         String baseEndpointPath = swagger.getSwagger().getBasePath();
-
         String endOfUrl;
         if (endpoint.contains("/api/")) {
             if (endpoint.indexOf("/api/") > 2) {
@@ -81,7 +60,6 @@ public class OpenApiV2Validator extends AbstractSwaggerValidator {
         } else {
             endOfUrl = serviceUrl + version + baseEndpointPath + endpoint;
         }
-
         if (!endOfUrl.contains(serviceId)) {
             endOfUrl = "/" + serviceId + "/" + endOfUrl;
         }
@@ -114,9 +92,8 @@ public class OpenApiV2Validator extends AbstractSwaggerValidator {
         return result;
     }
 
-
     private io.swagger.models.HttpMethod convertSpringHttpToSwagger(HttpMethod input) {
-        switch (input.name()) {
+        switch(input.name()) {
             case "GET":
                 return io.swagger.models.HttpMethod.GET;
             case "HEAD":

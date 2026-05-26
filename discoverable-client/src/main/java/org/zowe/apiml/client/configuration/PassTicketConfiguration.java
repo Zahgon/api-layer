@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.configuration;
 
 import org.zowe.apiml.passticket.PassTicketService;
@@ -19,6 +18,6 @@ public class PassTicketConfiguration {
 
     @Bean
     public PassTicketService passTicketService() {
-        return new PassTicketService();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

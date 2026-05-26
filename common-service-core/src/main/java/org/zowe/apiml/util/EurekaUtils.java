@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -18,10 +17,8 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.zowe.apiml.constants.EurekaMetadataDefinition;
 import org.zowe.apiml.exception.InvalidServiceIdException;
 import org.zowe.apiml.exception.MetadataValidationException;
-
 import java.util.Optional;
 import java.util.regex.Pattern;
-
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.APIML_ID;
 import static org.zowe.apiml.product.constants.CoreService.GATEWAY;
 
@@ -40,20 +37,7 @@ public class EurekaUtils {
      * @return second part, it means serviceId. If it doesn't exist return null;
      */
     public String getServiceIdFromInstanceId(String instanceId) {
-        if (StringUtils.isBlank(instanceId)) {
-            return null;
-        }
-        String[] parts = instanceId.split(":");
-        if (parts.length != 3) {
-            return null;
-        }
-
-        String serviceId = parts[1].trim();
-        if (serviceId.isEmpty()) {
-            return null;
-        }
-
-        return serviceId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -62,16 +46,7 @@ public class EurekaUtils {
      * @throws MetadataValidationException exception if the service ID is not conformant
      */
     public void validateServiceId(String serviceId) {
-        if (StringUtils.isBlank(serviceId)) {
-            throw new MetadataValidationException("The serviceId must not be null or empty. The service will not be registered in future releases.");
-        }
-        if (!SERVICE_ID_PATTERN.matcher(serviceId).matches()) {
-            String message = String.format(
-                "Invalid serviceId [%s]: must comply with RFC 952/1123 (only lowercase letters, digits, hyphens, max 63 chars). The service will not be registered in future releases.",
-                serviceId
-            );
-            throw new InvalidServiceIdException(message);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -80,30 +55,15 @@ public class EurekaUtils {
      * @return URL to the instance
      */
     public String getUrl(InstanceInfo instanceInfo) {
-        if (instanceInfo.getSecurePort() == 0 || !instanceInfo.isPortEnabled(InstanceInfo.PortType.SECURE)) {
-            return "http://" + instanceInfo.getHostName() + ":" + instanceInfo.getPort();
-        } else {
-            return "https://" + instanceInfo.getHostName() + ":" + instanceInfo.getSecurePort();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Optional<ServiceInstance> getPrimaryInstanceInfo(DiscoveryClient discoveryClient, String serviceId) {
-        return Optional.ofNullable(discoveryClient.getInstances(serviceId))
-            .map(instances -> instances.stream()
-                .filter(instance -> EurekaMetadataDefinition.RegistrationType.of(instance.getMetadata()).isPrimary())
-                .findFirst()
-                .orElse(null)
-            );
+        return Optional.ofNullable(discoveryClient.getInstances(serviceId)).map(instances -> instances.stream().filter(instance -> EurekaMetadataDefinition.RegistrationType.of(instance.getMetadata()).isPrimary()).findFirst().orElse(null));
     }
 
     private Optional<ServiceInstance> getSecondaryInstanceInfo(DiscoveryClient discoveryClient, String apimlId) {
-        return Optional.ofNullable(discoveryClient.getInstances(GATEWAY.getServiceId()))
-            .map(instances -> instances.stream()
-                .filter(instance -> EurekaMetadataDefinition.RegistrationType.of(instance.getMetadata()).isAdditional())
-                .filter(instance -> apimlId.equals(instance.getMetadata().get(APIML_ID)))
-                .findFirst()
-                .orElse(null)
-            );
+        return Optional.ofNullable(discoveryClient.getInstances(GATEWAY.getServiceId())).map(instances -> instances.stream().filter(instance -> EurekaMetadataDefinition.RegistrationType.of(instance.getMetadata()).isAdditional()).filter(instance -> apimlId.equals(instance.getMetadata().get(APIML_ID))).findFirst().orElse(null));
     }
 
     /**
@@ -114,11 +74,6 @@ public class EurekaUtils {
      * @return instance or empty Optional object
      */
     public Optional<ServiceInstance> getInstanceInfo(DiscoveryClient discoveryClient, String id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-        return getPrimaryInstanceInfo(discoveryClient, id)
-            .or(() -> getSecondaryInstanceInfo(discoveryClient, id));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

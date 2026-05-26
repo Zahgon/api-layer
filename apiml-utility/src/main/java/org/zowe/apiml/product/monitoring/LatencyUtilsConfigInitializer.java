@@ -7,12 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.monitoring;
 
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-
 import jakarta.annotation.Nonnull;
 
 /**
@@ -20,11 +18,11 @@ import jakarta.annotation.Nonnull;
  * This needs to be done before Spring context starts to initialize
  */
 public class LatencyUtilsConfigInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
     private static final String PROPERTY_KEY = "LatencyUtils.useActualTime";
+
     @Override
     public void initialize(@Nonnull ConfigurableApplicationContext applicationContext) {
-        if (System.getProperties().getProperty(PROPERTY_KEY) == null) {
-            System.getProperties().setProperty(PROPERTY_KEY, "false");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

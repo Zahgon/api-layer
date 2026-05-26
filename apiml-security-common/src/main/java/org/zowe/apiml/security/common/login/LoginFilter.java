@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +33,6 @@ import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.error.AuthMethodNotSupportedException;
 import org.zowe.apiml.security.common.error.ResourceAccessExceptionHandler;
 import org.zowe.apiml.security.common.handler.ServletErrorUtils;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -47,20 +45,19 @@ import java.util.function.BiConsumer;
  * Filter to process authentication requests with the username and password in JSON format.
  */
 public class LoginFilter extends NonCompulsoryAuthenticationProcessingFilter {
+
     private final AuthenticationSuccessHandler successHandler;
+
     private final AuthenticationFailureHandler failureHandler;
+
     private final ResourceAccessExceptionHandler resourceAccessExceptionHandler;
+
     private final ObjectMapper mapper;
+
     @InjectApimlLogger
     private final ApimlLogger apimlLog = ApimlLogger.empty();
 
-    public LoginFilter(
-        String authEndpoint,
-        AuthenticationSuccessHandler successHandler,
-        AuthenticationFailureHandler failureHandler,
-        ObjectMapper mapper,
-        AuthenticationManager authenticationManager,
-        ResourceAccessExceptionHandler resourceAccessExceptionHandler) {
+    public LoginFilter(String authEndpoint, AuthenticationSuccessHandler successHandler, AuthenticationFailureHandler failureHandler, ObjectMapper mapper, AuthenticationManager authenticationManager, ResourceAccessExceptionHandler resourceAccessExceptionHandler) {
         super(authEndpoint);
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
@@ -80,67 +77,27 @@ public class LoginFilter extends NonCompulsoryAuthenticationProcessingFilter {
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        if (!request.getMethod().equals(HttpMethod.POST.name())) {
-            throw new AuthMethodNotSupportedException(request.getMethod());
-        }
-
-        Optional<LoginRequest> credentialFromHeader = getCredentialFromAuthorizationHeader(request);
-        Optional<LoginRequest> credentialsFromBody = getCredentialsFromBody(request);
-        LoginRequest loginRequest = credentialFromHeader.orElse(credentialsFromBody.orElse(null));
-        return doAuth(request, response, loginRequest);
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Authentication doAuth(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest) {
-
-        if (loginRequest == null) {
-            return null;
-        }
-
-        try {
-            if (StringUtils.isBlank(loginRequest.getUsername()) || ArrayUtils.isEmpty(loginRequest.getPassword())) {
-                throw new AuthenticationCredentialsNotFoundException("Username or password not provided.");
-            }
-
-            UsernamePasswordAuthenticationToken authentication
-                = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest);
-
-            Authentication auth = null;
-
-            try {
-                auth = this.getAuthenticationManager().authenticate(authentication);
-            } catch (RuntimeException ex) {
-                var consumer = ServletErrorUtils.createApiErrorWriter(response, apimlLog);
-                var addHeader = (BiConsumer<String, String>) response::addHeader;
-                resourceAccessExceptionHandler.handleException(request.getRequestURI(), consumer, addHeader, ex);
-            }
-            return auth;
-        } finally {
-            loginRequest.evictSensitiveData();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * Calls successful login handler
      */
     @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
-        successHandler.onAuthenticationSuccess(request, response, authResult);
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Calls unauthorized handler
      */
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request,
-                                              HttpServletResponse response,
-                                              AuthenticationException failed) throws IOException, ServletException {
-        SecurityContextHolder.clearContext();
-        failureHandler.onAuthenticationFailure(request, response, failed);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -150,22 +107,12 @@ public class LoginFilter extends NonCompulsoryAuthenticationProcessingFilter {
      * @return the decoded credentials
      */
     public static Optional<LoginRequest> getCredentialFromAuthorizationHeader(HttpServletRequest request) {
-        var headers = Optional.ofNullable(
-            request.getHeader(HttpHeaders.AUTHORIZATION)
-        );
-        return getCredentialFromAuthorizationHeader(headers);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static Optional<LoginRequest> getCredentialFromAuthorizationHeader(Optional<String> headers) {
-        return headers.filter(
-                header -> header.startsWith(ApimlConstants.BASIC_AUTHENTICATION_PREFIX)
-            ).map(
-                header -> header.replaceFirst(ApimlConstants.BASIC_AUTHENTICATION_PREFIX, "").trim()
-            )
-            .filter(base64Credentials -> !base64Credentials.isEmpty())
-            .map(LoginFilter::mapBase64Credentials);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * Decode the encoded credentials
@@ -193,17 +140,15 @@ public class LoginFilter extends NonCompulsoryAuthenticationProcessingFilter {
                 for (int i = 0; i < password.length; i++) {
                     passwordChars[i] = (char) password[i];
                 }
-
                 if (StringUtils.isBlank(username) || passwordChars.length == 0) {
                     throw new AuthenticationCredentialsNotFoundException("Username or password not provided.");
                 }
-
                 return new LoginRequest(username, passwordChars);
             } finally {
-                    if (password != null) {
-                        Arrays.fill(password, (byte) 0);
-                    }
+                if (password != null) {
+                    Arrays.fill(password, (byte) 0);
                 }
+            }
         } catch (IllegalArgumentException e) {
             throw new BadCredentialsException("Invalid base64 encoding.", e);
         } finally {
@@ -222,10 +167,8 @@ public class LoginFilter extends NonCompulsoryAuthenticationProcessingFilter {
      */
     private Optional<LoginRequest> getCredentialsFromBody(HttpServletRequest request) {
         // method available could return 0 even there are some data, depends on the implementation
-        try (
-            var is = request.getInputStream();
-            var bis = new BufferedInputStream(is)
-        ) {
+        try (var is = request.getInputStream();
+            var bis = new BufferedInputStream(is)) {
             if (is.isFinished()) {
                 logger.trace("The input stream is already closed");
                 return Optional.empty();

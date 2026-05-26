@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 /*
  * Copyright 2013-2022 the original author or authors.
  *
@@ -23,7 +22,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.zowe.apiml;
 
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -42,7 +40,6 @@ import org.springframework.web.reactive.result.view.RequestContext;
 import org.springframework.web.reactive.result.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -58,22 +55,15 @@ public class EurekaDashboardController {
     private final TemplateProcessor templateProcessor;
 
     private final Template statusTemplate;
+
     private final Template lastnTemplate;
 
     @Autowired
-    public EurekaDashboardController(
-        ApplicationInfoManager applicationInfoManager,
-        EurekaProperties eurekaProperties,
-        FreeMarkerConfigurer freeMarkerConfigurer,
-        MessageSource messageSource) throws IOException {
+    public EurekaDashboardController(ApplicationInfoManager applicationInfoManager, EurekaProperties eurekaProperties, FreeMarkerConfigurer freeMarkerConfigurer, MessageSource messageSource) throws IOException {
         this(new EurekaController(applicationInfoManager, eurekaProperties), freeMarkerConfigurer, messageSource, new TemplateProcessor());
     }
 
-    EurekaDashboardController(
-        EurekaController original,
-        FreeMarkerConfigurer freeMarkerConfigurer,
-        MessageSource messageSource,
-        TemplateProcessor processor) throws IOException {
+    EurekaDashboardController(EurekaController original, FreeMarkerConfigurer freeMarkerConfigurer, MessageSource messageSource, TemplateProcessor processor) throws IOException {
         this.original = original;
         this.messageSource = messageSource;
         this.templateProcessor = processor;
@@ -83,31 +73,19 @@ public class EurekaDashboardController {
     }
 
     @GetMapping
-    public Mono<String> status(
-        ServerWebExchange serverWebExchange,
-        Map<String, Object> model
-    ) throws TemplateException, IOException {
-        original.status(null, model);
-        model.put("springMacroRequestContext", new RequestContext(serverWebExchange, model, messageSource));
-        return Mono.just(templateProcessor.process(statusTemplate, model));
+    public Mono<String> status(ServerWebExchange serverWebExchange, Map<String, Object> model) throws TemplateException, IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/lastn")
-    public Mono<String> lastn(
-        ServerWebExchange serverWebExchange,
-        Map<String, Object> model
-    ) throws TemplateException, IOException {
-        original.status(null, model);
-        model.put("springMacroRequestContext", new RequestContext(serverWebExchange, model, messageSource));
-        return Mono.just(templateProcessor.process(lastnTemplate, model));
+    public Mono<String> lastn(ServerWebExchange serverWebExchange, Map<String, Object> model) throws TemplateException, IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static class TemplateProcessor {
 
         String process(Template template, Map<String, Object> model) throws IOException, TemplateException {
-            return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

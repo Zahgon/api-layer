@@ -7,12 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.message.storage;
 
 import org.zowe.apiml.message.template.MessageTemplate;
 import org.zowe.apiml.message.template.MessageTemplates;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -21,8 +19,8 @@ import java.util.Optional;
  * Message template storage class
  */
 public class MessageTemplateStorage {
-    private final Map<String, MessageTemplate> messageTemplateMap = new HashMap<>();
 
+    private final Map<String, MessageTemplate> messageTemplateMap = new HashMap<>();
 
     /**
      * Retrieves message template from the storage using 'key' parameter
@@ -31,9 +29,8 @@ public class MessageTemplateStorage {
      * @return message template
      */
     public Optional<MessageTemplate> getMessageTemplate(String key) {
-        return Optional.ofNullable(messageTemplateMap.get(key));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * Method for adding message templates to storage
@@ -41,7 +38,7 @@ public class MessageTemplateStorage {
      * @param messages Message templates
      */
     public void addMessageTemplates(MessageTemplates messages) {
-        messages.getMessages().forEach(this::addMessageTemplateToStorage);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void addMessageTemplateToStorage(MessageTemplate message) {

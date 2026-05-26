@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.auth;
 
 import java.util.Collections;
@@ -15,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AuthenticationSchemes {
+
     private final Map<String, AuthenticationScheme> schemeToEnum;
 
     public AuthenticationSchemes() {
@@ -26,6 +26,6 @@ public class AuthenticationSchemes {
     }
 
     public AuthenticationScheme map(String schemeName) {
-        return schemeToEnum.get(schemeName);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

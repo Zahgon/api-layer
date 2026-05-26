@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
 import org.zowe.apiml.security.HttpsConfig;
 import org.zowe.apiml.security.HttpsConfigError;
 import org.zowe.apiml.security.SecurityUtils;
-
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -32,35 +30,19 @@ import java.security.cert.Certificate;
 @RequiredArgsConstructor
 @Slf4j
 public class CertificateChainService {
+
     private static final ApimlLogger apimlLog = ApimlLogger.of(CertificateChainService.class, YamlMessageServiceInstance.getInstance());
+
     Certificate[] certificates;
 
     private final HttpsConfig config;
 
     public String getCertificatesInPEMFormat() {
-        StringWriter stringWriter = new StringWriter();
-        if (certificates != null && certificates.length > 0) {
-            try (JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(stringWriter)) {
-                for (Certificate cert : certificates) {
-                    jcaPEMWriter.writeObject(cert);
-                }
-            } catch (IOException e) {
-                log.error("Failed to convert a certificate to PEM format. {}", e.getMessage());
-                return null;
-            }
-        }
-
-        return stringWriter.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostConstruct
     void loadCertChain() {
-        try {
-            certificates = SecurityUtils.loadCertificateChain(config);
-        } catch (Exception e) {
-            apimlLog.log("org.zowe.apiml.common.sslContextInitializationError", e.getMessage());
-            throw new HttpsConfigError("Error initializing SSL Context: " + e.getMessage(),
-                e, HttpsConfigError.ErrorCode.HTTP_CLIENT_INITIALIZATION_FAILED, config);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

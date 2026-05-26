@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.loadbalancer;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -20,9 +19,10 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 @LoadBalancerClients(defaultConfiguration = CustomLoadBalancerConfiguration.class)
 public class LoadBalancerConfiguration {
+
     @Bean
     @LoadBalanced
     public WebClient.Builder loadBalancedWebClientBuilder() {
-        return WebClient.builder();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

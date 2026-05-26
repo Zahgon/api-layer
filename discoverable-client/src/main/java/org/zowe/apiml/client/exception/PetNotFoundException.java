@@ -7,20 +7,21 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.exception;
 
 /**
  * An exception is thrown when the pet is not found
  */
 public class PetNotFoundException extends RuntimeException {
+
     private final Long id;
+
     public PetNotFoundException(String message, Long id) {
         super(message);
         this.id = id;
     }
 
     public Long getId() {
-        return id;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

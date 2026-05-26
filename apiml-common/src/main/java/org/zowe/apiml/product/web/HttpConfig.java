@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.web;
 
 import lombok.Getter;
@@ -35,10 +34,8 @@ import org.zowe.apiml.security.HttpsConfig;
 import org.zowe.apiml.security.HttpsConfigError;
 import org.zowe.apiml.security.HttpsFactory;
 import org.zowe.apiml.security.SecurityUtils;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-
 import java.security.cert.X509Certificate;
 import java.util.Set;
 import java.util.Timer;
@@ -113,131 +110,53 @@ public class HttpConfig implements InitializingBean {
     private final Timer connectionManagerTimer = new Timer("ApimlHttpClientConfiguration.connectionManagerTimer", true);
 
     private CloseableHttpClient secureHttpClient;
+
     private CloseableHttpClient secureHttpClientWithoutKeystore;
+
     private HttpsConfig httpsConfig;
+
     private HttpsFactory httpsFactory;
+
     private SSLContext secureSslContext;
+
     private SSLContext secureSslContextWithoutKeystore;
+
     private HostnameVerifier secureHostnameVerifier;
+
     private Set<String> publicKeyCertificatesBase64;
+
     private final ApplicationContext context;
 
     void updateStorePaths() {
-        if (SecurityUtils.isKeyring(keyStorePath)) {
-            keyStorePath = SecurityUtils.formatKeyringUrl(keyStorePath);
-            if (keyStorePassword == null) keyStorePassword = KEYRING_PASSWORD;
-        }
-        if (SecurityUtils.isKeyring(trustStorePath)) {
-            trustStorePath = SecurityUtils.formatKeyringUrl(trustStorePath);
-            if (trustStorePassword == null) trustStorePassword = KEYRING_PASSWORD;
-        }
-
-        ServerProperties serverProperties = context.getBean(ServerProperties.class);
-        if (serverProperties.getSsl() != null) {
-            String serverKeyStore = serverProperties.getSsl().getKeyStore();
-            if (SecurityUtils.isKeyring(serverKeyStore)) {
-                serverProperties.getSsl().setKeyStore(SecurityUtils.formatKeyringUrl(serverKeyStore));
-            }
-            String serverTrustStore = serverProperties.getSsl().getTrustStore();
-            if (SecurityUtils.isKeyring(serverTrustStore)) {
-                serverProperties.getSsl().setTrustStore(SecurityUtils.formatKeyringUrl(serverTrustStore));
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        init();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void init() {
-        updateStorePaths();
-
-        try {
-            X509Certificate certificate = null;
-            if (StringUtils.isNotBlank(keyStorePath)) {
-                var ks = SecurityUtils.loadKeyStore(keyStoreType, keyStorePath, keyStorePassword);
-                certificate = (X509Certificate) ks.getCertificate(keyAlias);
-            }
-            Supplier<HttpsConfig.HttpsConfigBuilder> httpsConfigSupplier = () ->
-                HttpsConfig.builder()
-                    .protocol(protocol).enabledProtocols(supportedProtocols).cipherSuite(ciphers)
-                    .trustStore(trustStorePath).trustStoreType(trustStoreType)
-                    .trustStorePassword(trustStorePassword).trustStoreRequired(trustStoreRequired)
-                    .verifySslCertificatesOfServices(verifySslCertificatesOfServices)
-                    .nonStrictVerifySslCertificatesOfServices(nonStrictVerifySslCertificatesOfServices)
-                    .maxConnectionsPerRoute(maxConnectionsPerRoute).maxTotalConnections(maxTotalConnections)
-                    .idleConnTimeoutSeconds(idleConnTimeoutSeconds).requestConnectionTimeout(requestConnectionTimeout)
-                    .timeToLive(timeToLive);
-
-            httpsConfig = httpsConfigSupplier.get()
-                .keyAlias(keyAlias).keyStore(keyStorePath).keyPassword(keyPassword)
-                .keyStorePassword(keyStorePassword).keyStoreType(keyStoreType).certificate(certificate)
-                .build();
-
-            HttpsConfig httpsConfigWithoutKeystore = httpsConfigSupplier.get().build();
-
-            log.debug("Using HTTPS configuration: {}", httpsConfig.toString());
-
-            httpsFactory = new HttpsFactory(httpsConfig);
-            ApimlPoolingHttpClientConnectionManager secureConnectionManager = getConnectionManager(httpsFactory);
-            secureHttpClient = httpsFactory.buildHttpClient(secureConnectionManager);
-            secureSslContext = httpsFactory.getSslContext();
-            secureHostnameVerifier = httpsFactory.getHostnameVerifier();
-            HttpsFactory factoryWithoutKeystore = new HttpsFactory(httpsConfigWithoutKeystore);
-            ApimlPoolingHttpClientConnectionManager connectionManagerWithoutKeystore = getConnectionManager(factoryWithoutKeystore);
-            secureHttpClientWithoutKeystore = factoryWithoutKeystore.buildHttpClient(connectionManagerWithoutKeystore);
-            secureSslContextWithoutKeystore = factoryWithoutKeystore.getSslContext();
-
-            publicKeyCertificatesBase64 = SecurityUtils.loadCertificateChainBase64(httpsConfig);
-        } catch (HttpsConfigError e) {
-            log.error("Invalid configuration of HTTPs: {}", e.getMessage());
-            System.exit(1);
-        } catch (Exception e) {
-            log.error("Cannot construct configuration of HTTPs: {}", e.getMessage());
-            System.exit(1);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public ApimlPoolingHttpClientConnectionManager getConnectionManager(HttpsFactory factory) {
-        RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder = RegistryBuilder
-            .<ConnectionSocketFactory>create().register("http", PlainConnectionSocketFactory.getSocketFactory());
-        socketFactoryRegistryBuilder.register("https", factory.createSslSocketFactory());
-        Registry<ConnectionSocketFactory> socketFactoryRegistry = socketFactoryRegistryBuilder.build();
-        ApimlPoolingHttpClientConnectionManager connectionManager = new ApimlPoolingHttpClientConnectionManager(socketFactoryRegistry, timeToLive);
-        ConnectionConfig connConfig = ConnectionConfig.custom()
-            .setConnectTimeout(Timeout.ofMilliseconds(requestConnectionTimeout))
-            .setSocketTimeout(Timeout.ofMilliseconds(requestConnectionTimeout))
-            .setTimeToLive(Timeout.ofMilliseconds(timeToLive))
-            .build();
-        this.connectionManagerTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                connectionManager.closeExpired();
-                connectionManager.closeIdle(Timeout.ofSeconds(idleConnTimeoutSeconds));
-            }
-        }, 30000, 30000);
-
-        connectionManager.setDefaultConnectionConfig(connConfig);
-        connectionManager.setDefaultMaxPerRoute(maxConnectionsPerRoute);
-        connectionManager.setMaxTotal(maxTotalConnections);
-
-        return connectionManager;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     Set<String> publicKeyCertificatesBase64() {
-        return publicKeyCertificatesBase64;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public HttpsConfig httpsConfig() {
-        return httpsConfig;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public HttpsFactory httpsFactory() {
-        return httpsFactory;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -249,10 +168,7 @@ public class HttpConfig implements InitializingBean {
     @Bean
     @Primary
     RestTemplate restTemplateWithKeystore() {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(secureHttpClient);
-        factory.setConnectionRequestTimeout(requestConnectionTimeout);
-        factory.setConnectTimeout(requestConnectionTimeout);
-        return new RestTemplate(factory);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -264,10 +180,7 @@ public class HttpConfig implements InitializingBean {
      */
     @Bean
     RestTemplate restTemplateWithoutKeystore() {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(secureHttpClientWithoutKeystore);
-        factory.setConnectionRequestTimeout(requestConnectionTimeout);
-        factory.setConnectTimeout(requestConnectionTimeout);
-        return new RestTemplate(factory);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -276,7 +189,7 @@ public class HttpConfig implements InitializingBean {
     @Bean("secureHttpClientWithKeystore")
     @Primary
     CloseableHttpClient secureHttpClient() {
-        return secureHttpClient;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -284,22 +197,21 @@ public class HttpConfig implements InitializingBean {
      */
     @Bean
     CloseableHttpClient secureHttpClientWithoutKeystore() {
-        return secureHttpClientWithoutKeystore;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public SSLContext secureSslContext() {
-        return secureSslContext;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     SSLContext secureSslContextWithoutKeystore() {
-        return secureSslContextWithoutKeystore;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     HostnameVerifier secureHostnameVerifier() {
-        return secureHostnameVerifier;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.compatibility;
 
 import com.netflix.appinfo.HealthCheckHandler;
@@ -22,7 +21,6 @@ import org.springframework.context.Lifecycle;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,6 +40,7 @@ import java.util.Set;
  */
 @Component
 public class ApimlHealthCheckHandler implements HealthCheckHandler, ApplicationContextAware, InitializingBean, Ordered, Lifecycle {
+
     private static final Map<Status, InstanceInfo.InstanceStatus> STATUS_MAPPING = new HashMap<>();
 
     static {
@@ -52,75 +51,48 @@ public class ApimlHealthCheckHandler implements HealthCheckHandler, ApplicationC
     }
 
     private final StatusAggregator statusAggregator;
+
     private final Map<String, HealthContributor> healthContributors = new HashMap<>();
+
     private final Map<String, ReactiveHealthContributor> reactiveHealthContributors = new HashMap<>();
 
     /**
      * {@code true} until the context is stopped.
      */
     private boolean running = true;
+
     private ApplicationContext applicationContext;
 
     public ApimlHealthCheckHandler(StatusAggregator statusAggregator) {
         this.statusAggregator = statusAggregator;
         Assert.notNull(statusAggregator, "StatusAggregator must not be null");
-
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void afterPropertiesSet() {
-        populateHealthContributors(applicationContext.getBeansOfType(HealthContributor.class));
-        reactiveHealthContributors.putAll(applicationContext.getBeansOfType(ReactiveHealthContributor.class));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void populateHealthContributors(Map<String, HealthContributor> healthContributors) {
-        for (Map.Entry<String, HealthContributor> entry : healthContributors.entrySet()) {
-            // ignore EurekaHealthIndicator and flatten the rest of the composite
-            // otherwise there is a never ending cycle of down. See gh-643
-            if (entry.getValue() instanceof ApimlDiscoveryCompositeHealthContributor) {
-                ApimlDiscoveryCompositeHealthContributor indicator = (ApimlDiscoveryCompositeHealthContributor) entry.getValue();
-                indicator.getIndicators().forEach((name, discoveryHealthIndicator) -> {
-                    if (!(discoveryHealthIndicator instanceof EurekaHealthIndicator)) {
-                        this.healthContributors.put(name, (HealthIndicator) discoveryHealthIndicator::health);
-                    }
-                });
-            } else {
-                this.healthContributors.put(entry.getKey(), entry.getValue());
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public InstanceInfo.InstanceStatus getStatus(InstanceInfo.InstanceStatus instanceStatus) {
-        if (running) {
-            return getHealthStatus();
-        } else {
-            // Return nothing if the context is not running, so the status held by the
-            // InstanceInfo remains unchanged.
-            // See gh-1571
-            return null;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected InstanceInfo.InstanceStatus getHealthStatus() {
-        Status status = getStatus(statusAggregator);
-        return mapToInstanceStatus(status);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected Status getStatus(StatusAggregator statusAggregator) {
-        Set<Status> statusSet = new HashSet<>();
-        for (HealthContributor contributor : healthContributors.values()) {
-            processContributor(statusSet, contributor);
-        }
-        for (ReactiveHealthContributor contributor : reactiveHealthContributors.values()) {
-            processContributor(statusSet, contributor);
-        }
-        return statusAggregator.getAggregateStatus(statusSet);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void processContributor(Set<Status> statusSet, HealthContributor contributor) {
@@ -147,34 +119,26 @@ public class ApimlHealthCheckHandler implements HealthCheckHandler, ApplicationC
     }
 
     protected InstanceInfo.InstanceStatus mapToInstanceStatus(Status status) {
-        if (!STATUS_MAPPING.containsKey(status)) {
-            return InstanceInfo.InstanceStatus.UNKNOWN;
-        }
-        return STATUS_MAPPING.get(status);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getOrder() {
-        // registered with a high order priority so the close() method is invoked early
-        // and *BEFORE* EurekaAutoServiceRegistration
-        // (must be in effect when the registration is closed and the eureka replication
-        // triggered -> health check handler is
-        // consulted at that moment)
-        return Ordered.HIGHEST_PRECEDENCE;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void start() {
-        running = true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void stop() {
-        running = false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean isRunning() {
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

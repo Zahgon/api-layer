@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.swagger;
 
 import lombok.NonNull;
@@ -25,10 +24,8 @@ import org.zowe.apiml.config.ApiInfo;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 import java.util.function.UnaryOperator;
-
 import static org.apache.hc.core5.http.HttpHeaders.ACCEPT;
 import static org.apache.hc.core5.http.HttpStatus.SC_OK;
 
@@ -49,13 +46,7 @@ public class ApiDocRetrievalServiceRest {
     private ApimlLogger apimlLogger = ApimlLogger.empty();
 
     public Mono<ApiDocInfo> retrieveApiDoc(ServiceInstance serviceInstance, ApiInfo apiInfo) {
-        String serviceId = StringUtils.lowerCase(serviceInstance.getServiceId());
-        log.debug("Retrieving API doc for '{} {}'", serviceId, apiInfo.getVersion());
-
-        String apiDocUrl = apiInfo.getSwaggerUrl();
-
-        return getApiDocContentByUrl(serviceId, apiDocUrl)
-            .map(content -> ApiDocInfo.builder().apiInfo(apiInfo).apiDocContent(content).build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -67,23 +58,10 @@ public class ApiDocRetrievalServiceRest {
      * @throws ApiDocNotFoundException if the response is error
      */
     private Mono<String> getApiDocContentByUrl(@NonNull String serviceId, String apiDocUrl) {
-        return webClient.get()
-            .uri(apiDocUrl)
-            .header(ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-            .retrieve()
-            .onStatus(httpStatusCode -> httpStatusCode.value() != SC_OK, response -> Mono.error(
-                new ApiDocNotFoundException(
-                    String.format("No API Documentation was retrieved due to %s server error: %d", serviceId, response.statusCode().value())
-                )
-            ))
-            .bodyToMono(String.class)
-            .onErrorResume(IOException.class, e -> {
-                apimlLogger.log("org.zowe.apiml.apicatalog.apiDocHostCommunication", serviceId, e.getMessage());
-                log.debug("Error retrieving api doc for '{}'", serviceId, e);
-                return Mono.error(new ApiDocNotFoundException(
-                    exceptionMessage.apply(serviceId) + " Root cause: " + e.getMessage(), e
-                ));
-            });
+        return webClient.get().uri(apiDocUrl).header(ACCEPT, MediaType.APPLICATION_JSON_VALUE).retrieve().onStatus(httpStatusCode -> httpStatusCode.value() != SC_OK, response -> Mono.error(new ApiDocNotFoundException(String.format("No API Documentation was retrieved due to %s server error: %d", serviceId, response.statusCode().value())))).bodyToMono(String.class).onErrorResume(IOException.class, e -> {
+            apimlLogger.log("org.zowe.apiml.apicatalog.apiDocHostCommunication", serviceId, e.getMessage());
+            log.debug("Error retrieving api doc for '{}'", serviceId, e);
+            return Mono.error(new ApiDocNotFoundException(exceptionMessage.apply(serviceId) + " Root cause: " + e.getMessage(), e));
+        });
     }
-
 }

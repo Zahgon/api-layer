@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,25 +30,18 @@ public class BeanConfig {
     @Primary
     @ConditionalOnMissingBean(name = "modulithConfig")
     public MessageService messageServiceCatalog() {
-        MessageService messageService = YamlMessageServiceInstance.getInstance();
-        messageService.loadMessages("/security-client-log-messages.yml");
-        messageService.loadMessages("/utility-log-messages.yml");
-        messageService.loadMessages("/common-log-messages.yml");
-        messageService.loadMessages("/security-common-log-messages.yml");
-        messageService.loadMessages("/apicatalog-log-messages.yml");
-        return messageService;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @Lazy
     public TransformService transformService(GatewayClient gatewayClient) {
-        return new TransformService(gatewayClient);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @ConditionalOnMissingBean
     public ApplicationInfo applicationInfo() {
-        return ApplicationInfo.builder().isModulith(false).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

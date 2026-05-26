@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.health;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.product.constants.CoreService;
 import org.zowe.apiml.zaas.security.login.Providers;
-
 import static org.springframework.boot.actuate.health.Status.DOWN;
 import static org.springframework.boot.actuate.health.Status.UP;
 
@@ -28,29 +26,16 @@ import static org.springframework.boot.actuate.health.Status.UP;
 @Slf4j
 @Component
 public class ZaasHealthIndicator extends AbstractHealthIndicator {
+
     private final Providers loginProviders;
 
     public ZaasHealthIndicator(Providers providers) {
         this.loginProviders = providers;
     }
 
-
     @Override
     protected void doHealthCheck(Health.Builder builder) {
-
-        boolean authUp = true;
-        if (loginProviders.isZosfmUsed()) {
-            try {
-                authUp = loginProviders.isZosmfAvailableAndOnline();
-            } catch (AuthenticationServiceException ex) {
-                log.error("The authentication service is not registered. Verify that it's properly configured and available.");
-                System.exit(-1);
-            }
-        }
-
-        builder.status(toStatus(authUp))
-            .withDetail(CoreService.AUTH.getServiceId(), toStatus(authUp).getCode());
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Status toStatus(boolean up) {

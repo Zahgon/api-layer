@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.vsam;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +16,6 @@ import org.zowe.apiml.caching.model.KeyValue;
 import org.zowe.apiml.caching.service.Messages;
 import org.zowe.apiml.cache.StorageException;
 import org.zowe.apiml.caching.service.vsam.config.VsamConfig;
-
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -29,7 +27,6 @@ import java.io.UnsupportedEncodingException;
  * Constructors provide ways to create record from raw bytes or from POJOs.
  * Provides methods to serialize to bytes in platform's encoding.
  */
-
 public class VsamRecord {
 
     private final VsamConfig config;
@@ -37,6 +34,7 @@ public class VsamRecord {
     private String serviceId;
 
     private VsamKey key;
+
     private KeyValue keyValue;
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -53,7 +51,6 @@ public class VsamRecord {
     public VsamRecord(VsamConfig config, byte[] recordData) throws VsamRecordException {
         this.config = config;
         this.key = new VsamKey(config);
-
         try {
             String recordString = new String(recordData, config.getEncoding());
             this.keyValue = mapper.readValue(recordString.substring(config.getKeyLength()).trim(), KeyValue.class);
@@ -63,50 +60,26 @@ public class VsamRecord {
         } catch (JsonProcessingException e) {
             throw new VsamRecordException("Failure deserializing the record value to KeyValue object", e);
         }
-
     }
 
     public byte[] getBytes() throws VsamRecordException {
-        try {
-            byte[] bytes = StringUtils.rightPad(key.getKey(serviceId, keyValue.getKey()) + mapper.writeValueAsString(keyValue), config.getRecordLength())
-                .getBytes(config.getEncoding());
-            if (bytes.length > config.getRecordLength()) {
-                throw new StorageException(Messages.PAYLOAD_TOO_LARGE.getKey(), Messages.PAYLOAD_TOO_LARGE.getStatus(), keyValue.getKey());
-            }
-
-            return bytes;
-
-
-        } catch (UnsupportedEncodingException e) {
-            throw new VsamRecordException(UNSUPPORTED_ENCODING_MESSAGE + config.getEncoding(), e);
-        } catch (JsonProcessingException e) {
-            throw new VsamRecordException("Failure serializing KeyValue object to Json: " + config.getEncoding(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public byte[] getKeyBytes() throws VsamRecordException {
-        try {
-            return key.getKeyBytes(serviceId, keyValue);
-        } catch (UnsupportedEncodingException e) {
-            throw new VsamRecordException(UNSUPPORTED_ENCODING_MESSAGE + config.getEncoding(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getServiceId() {
-        return serviceId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public KeyValue getKeyValue() {
-        return keyValue;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String toString() {
-        return "VsamRecord{" +
-            "config=" + config +
-            ", serviceId='" + serviceId + '\'' +
-            ", key=" + key.getKey(serviceId, keyValue.getKey()) +
-            ", keyValue=" + keyValue +
-            '}';
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

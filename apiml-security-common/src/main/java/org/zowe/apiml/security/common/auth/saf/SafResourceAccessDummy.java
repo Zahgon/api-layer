@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.auth.saf;
 
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.security.core.Authentication;
 import org.yaml.snakeyaml.Yaml;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
@@ -31,16 +29,12 @@ import java.util.Map;
 public class SafResourceAccessDummy implements SafResourceAccessVerifying {
 
     private static final String SAF_ACCESS = "safAccess";
+
     // Issue: it will read gateway/saf.yml even for the catalog if it exists
     // List of authorization files in the order according to the priority
     // Required for IDE (IntelliJ) which sets the root project directory as home dir
-    private static final String[] DEFAULT_FILE_LOCATIONS = {
-            "saf.yml",
-            "gateway-service/saf.yml",
-            "discovery-service/saf.yml",
-            "api-catalog-services/saf.yml",
-            "zaas-service/saf.yml"
-    };
+    private static final String[] DEFAULT_FILE_LOCATIONS = { "saf.yml", "gateway-service/saf.yml", "discovery-service/saf.yml", "api-catalog-services/saf.yml", "zaas-service/saf.yml" };
+
     private static final String DEFAULT_RESOURCE_LOCATION = "mock-saf.yml";
 
     private Map<ResourceUser, AccessLevel> resourceUserToAccessLevel = new HashMap<>();
@@ -48,10 +42,8 @@ public class SafResourceAccessDummy implements SafResourceAccessVerifying {
     public SafResourceAccessDummy() throws IOException {
         File file = getFile();
         if (file != null) {
-            try (
-                FileInputStream fis = new FileInputStream(file);
-                BufferedInputStream bis = new BufferedInputStream(fis)
-            ) {
+            try (FileInputStream fis = new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis)) {
                 loadDefinition(bis);
             }
         } else {
@@ -62,12 +54,7 @@ public class SafResourceAccessDummy implements SafResourceAccessVerifying {
     }
 
     protected File getFile() {
-        for (String fileName : DEFAULT_FILE_LOCATIONS) {
-            File file = new File(fileName);
-            if (file.exists()) return file;
-        }
-
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public SafResourceAccessDummy(InputStream inputStream) {
@@ -76,14 +63,7 @@ public class SafResourceAccessDummy implements SafResourceAccessVerifying {
 
     @Override
     public boolean hasSafResourceAccess(Authentication authentication, String resourceClass, String resourceName, String accessLevel) {
-        ResourceUser resourceUser = ResourceUser.builder()
-            .resourceClass(resourceClass)
-            .resourceName(resourceName)
-            .userId(authentication.getName())
-            .build();
-        AccessLevel currentLevel = resourceUserToAccessLevel.get(resourceUser);
-        if (currentLevel == null) return false;
-        return currentLevel.compareTo(AccessLevel.valueOf(accessLevel)) >= 0;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -123,27 +103,23 @@ public class SafResourceAccessDummy implements SafResourceAccessVerifying {
 
     private void set(String resourceClass, String resourceName, List<String> users, String levelName) {
         AccessLevel accessLevel = AccessLevel.valueOf(levelName);
-
         for (String userId : users) {
-            ResourceUser resourceUser = ResourceUser.builder()
-                .resourceClass(resourceClass)
-                .resourceName(resourceName)
-                .userId(userId)
-                .build();
+            ResourceUser resourceUser = ResourceUser.builder().resourceClass(resourceClass).resourceName(resourceName).userId(userId).build();
             set(resourceUser, accessLevel);
         }
     }
 
     private <T> T getSafAccess(Map<String, Object> data) {
-        if (data == null) return null;
+        if (data == null)
+            return null;
         return (T) data.get(SAF_ACCESS);
     }
 
     private void loadDefinition(Map<String, Object> data) {
         Map<String, Map<String, Map<String, List<String>>>> classes = getSafAccess(data);
-        if (classes == null) return;
-
-        for (Map.Entry<String, Map<String, Map<String, List<String>>>> clazz :  classes.entrySet()) {
+        if (classes == null)
+            return;
+        for (Map.Entry<String, Map<String, Map<String, List<String>>>> clazz : classes.entrySet()) {
             String resourceClass = clazz.getKey();
             for (Map.Entry<String, Map<String, List<String>>> resource : clazz.getValue().entrySet()) {
                 String resourceName = resource.getKey();
@@ -161,9 +137,9 @@ public class SafResourceAccessDummy implements SafResourceAccessVerifying {
     private static class ResourceUser {
 
         String resourceClass;
+
         String resourceName;
+
         String userId;
-
     }
-
 }

@@ -7,13 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.conformance;
-
 
 import lombok.Data;
 import org.springframework.http.HttpMethod;
-
 import java.util.HashMap;
 import java.util.Set;
 
@@ -22,25 +19,28 @@ import java.util.Set;
  */
 @Data
 public class Endpoint {
+
     /**
      * Url of the endpoint in the gateway
      */
     private final String url;
+
     /**
      * ServiceId of the service that owns the endpoint
      */
     private final String serviceId;
+
     /**
      * Methods which the endpoint accepts
      */
     private final Set<HttpMethod> httpMethods;
+
     /**
      * Documented responses that the API can return, taken from the swagger, they are either of the form "400", "401"... or "default"
      */
     private final HashMap<String, Set<String>> validResponses;
 
     public boolean isResponseCodeForMethodDocumented(String responseCode, HttpMethod httpMethod) {
-        String method = httpMethod.toString();
-        return getValidResponses().get(method).contains(responseCode) || getValidResponses().get(method).contains("default");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

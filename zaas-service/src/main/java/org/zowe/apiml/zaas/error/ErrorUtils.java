@@ -7,32 +7,32 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.error;
 
 import org.springframework.http.HttpStatus;
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class ErrorUtils {
+
     static final String UNEXPECTED_ERROR_OCCURRED = "Unexpected error occurred";
+
     static final String ATTR_ERROR_STATUS_CODE = "jakarta.servlet.error.status_code";
+
     public static final String ATTR_ERROR_EXCEPTION = "jakarta.servlet.error.exception";
 
-    private ErrorUtils() {}
+    private ErrorUtils() {
+    }
 
     public static int getErrorStatus(HttpServletRequest request) {
-        Integer statusCode = (Integer) request.getAttribute(ATTR_ERROR_STATUS_CODE);
-        return statusCode != null ? statusCode : HttpStatus.INTERNAL_SERVER_ERROR.value();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static String getErrorMessage(HttpServletRequest request) {
-        final Throwable exc = (Throwable) request.getAttribute(ATTR_ERROR_EXCEPTION);
-        return exc != null ? exc.getMessage() : UNEXPECTED_ERROR_OCCURRED;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static String getForwardUri(HttpServletRequest request) {
-        return (String) request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

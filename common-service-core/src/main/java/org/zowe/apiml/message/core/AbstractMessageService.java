@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.message.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.zowe.apiml.message.storage.MessageTemplateStorage;
 import org.zowe.apiml.message.template.MessageTemplate;
 import org.zowe.apiml.message.template.MessageTemplates;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,7 +26,6 @@ import java.util.stream.Collectors;
 public abstract class AbstractMessageService implements MessageService {
 
     private final MessageTemplateStorage messageTemplateStorage;
-
 
     /**
      * Constructor loads messages from a file.
@@ -49,19 +46,7 @@ public abstract class AbstractMessageService implements MessageService {
      */
     @Override
     public Message createMessage(String key, Object... parameters) {
-        MessageTemplate messageTemplate = validateMessageTemplate(key);
-
-        try {
-            return Message.of(key, messageTemplate, parameters);
-        } catch (IllegalArgumentException exception) {
-            if (log.isDebugEnabled()) {
-                log.debug("Internal error: Invalid message format was used", exception);
-            } else {
-                log.warn("Internal error: Invalid message format was used for key: {}, enable debug for stack trace: {}", key, exception.getMessage());
-            }
-            messageTemplate = validateMessageTemplate(Message.INVALID_MESSAGE_TEXT_FORMAT);
-            return Message.of(key, messageTemplate, parameters);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -73,10 +58,7 @@ public abstract class AbstractMessageService implements MessageService {
      */
     @Override
     public List<Message> createMessage(String key, List<Object[]> parameters) {
-        return parameters.stream()
-            .filter(Objects::nonNull)
-            .map(ob -> createMessage(key, ob))
-            .toList();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -85,8 +67,7 @@ public abstract class AbstractMessageService implements MessageService {
      * @param messageTemplates the list of message templates
      */
     protected final void addMessageTemplates(MessageTemplates messageTemplates) {
-        validateMessageTemplates(messageTemplates);
-        messageTemplateStorage.addMessageTemplates(messageTemplates);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -99,20 +80,7 @@ public abstract class AbstractMessageService implements MessageService {
      */
     private void validateMessageTemplates(MessageTemplates messageTemplates) {
         Objects.requireNonNull(messageTemplates);
-        String existedMessageTemplates = messageTemplates.getMessages()
-            .stream()
-            .collect(
-                Collectors.groupingBy(
-                    MessageTemplate::getNumber,
-                    Collectors.counting()
-                )
-            )
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getValue() > 1)
-            .map(Map.Entry::getKey)
-            .collect(Collectors.joining(","));
-
+        String existedMessageTemplates = messageTemplates.getMessages().stream().collect(Collectors.groupingBy(MessageTemplate::getNumber, Collectors.counting())).entrySet().stream().filter(entry -> entry.getValue() > 1).map(Map.Entry::getKey).collect(Collectors.joining(","));
         if (!existedMessageTemplates.isEmpty()) {
             String exceptionMessage = String.format("Message template with number [%s] already exists", existedMessageTemplates);
             throw new DuplicateMessageException(exceptionMessage);
@@ -127,12 +95,10 @@ public abstract class AbstractMessageService implements MessageService {
      * @return {@link MessageTemplate}
      */
     private MessageTemplate validateMessageTemplate(String key) {
-        return messageTemplateStorage.getMessageTemplate(key)
-            .orElseGet(() -> {
-                log.debug("Invalid message key '{}' was used. Please resolve this problem.", key);
-                return messageTemplateStorage.getMessageTemplate(Message.INVALID_KEY_MESSAGE).orElseGet(
-                    this::getInvalidMessageTemplate);
-            });
+        return messageTemplateStorage.getMessageTemplate(key).orElseGet(() -> {
+            log.debug("Invalid message key '{}' was used. Please resolve this problem.", key);
+            return messageTemplateStorage.getMessageTemplate(Message.INVALID_KEY_MESSAGE).orElseGet(this::getInvalidMessageTemplate);
+        });
     }
 
     /**
@@ -141,7 +107,6 @@ public abstract class AbstractMessageService implements MessageService {
      * @return {@link MessageTemplate}
      */
     private MessageTemplate getInvalidMessageTemplate() {
-        return new MessageTemplate(Message.INVALID_KEY_MESSAGE, "ZWEAM102", MessageType.ERROR,
-            Message.INVALID_KEY_MESSAGE_TEXT);
+        return new MessageTemplate(Message.INVALID_KEY_MESSAGE, "ZWEAM102", MessageType.ERROR, Message.INVALID_KEY_MESSAGE_TEXT);
     }
 }

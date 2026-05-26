@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,11 +24,6 @@ public class MessageServiceConfiguration {
 
     @Bean
     MessageService messageService() {
-        MessageService messageService = YamlMessageServiceInstance.getInstance();
-        messageService.loadMessages("/utility-log-messages.yml");
-        messageService.loadMessages("/common-log-messages.yml");
-        messageService.loadMessages("/security-common-log-messages.yml");
-        messageService.loadMessages("/zaas-log-messages.yml");
-        return messageService;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client;
 
 import com.netflix.appinfo.InstanceInfo;
 import org.zowe.apiml.eurekaservice.client.config.ApiMediationServiceConfig;
 import org.zowe.apiml.exception.ServiceDefinitionException;
 import com.netflix.discovery.EurekaClient;
-
 
 /**
  * Defines {@link ApiMediationClient} methods for registering and unregistering REST service with API Mediation Layer
@@ -24,6 +22,7 @@ import com.netflix.discovery.EurekaClient;
  * has successfully registered with the Discovery Service.
  */
 public interface ApiMediationClient {
+
     /**
      * Register the service described by the ApiMediationServiceConfig configuration object.
      *
@@ -48,7 +47,6 @@ public interface ApiMediationClient {
      * @return boolean indicating if the Eureka client is registered with the Discovery Service.
      */
     default boolean isRegistered() {
-        EurekaClient eurekaClient = getEurekaClient();
-        return eurekaClient != null && eurekaClient.getInstanceRemoteStatus() != InstanceInfo.InstanceStatus.UNKNOWN;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

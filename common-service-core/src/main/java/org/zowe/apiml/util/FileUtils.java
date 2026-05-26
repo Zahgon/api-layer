@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -21,7 +19,9 @@ import java.nio.file.Paths;
 
 @Slf4j
 public class FileUtils {
-    private FileUtils() {}
+
+    private FileUtils() {
+    }
 
     /**
      * Searches for file with given name.
@@ -31,16 +31,7 @@ public class FileUtils {
      * @return the located file or null
      */
     public static File locateFile(String fileName) {
-        if (fileName == null) {
-            return null;
-        }
-
-        File aFile = locateFileOrDirectory(fileName);
-        if ((aFile != null) && aFile.isFile()) {
-            return aFile;
-        }
-
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -50,16 +41,7 @@ public class FileUtils {
      * @return the located directory or null
      */
     public static File locateDirectory(String directoryName) {
-        if (directoryName == null) {
-            return null;
-        }
-
-        File aFile = locateFileOrDirectory(directoryName);
-        if ((aFile != null) && aFile.isDirectory()) {
-            return aFile;
-        }
-
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -81,25 +63,21 @@ public class FileUtils {
         if (fileUrl != null) {
             return new File(fileUrl.getFile());
         }
-
         File file = null;
-            Path path = Paths.get(fileName);
+        Path path = Paths.get(fileName);
         if (path != null) {
             if (path.isAbsolute()) {
                 return path.toFile();
             }
-
             file = Paths.get(System.getProperty("user.dir")).resolve(path).toFile();
             if ((file != null) && file.canRead()) {
                 return file;
             }
-
             file = Paths.get(System.getProperty("user.home")).resolve(path).toFile();
             if ((file != null) && file.canRead()) {
                 return file;
             }
         }
-
         return file;
     }
 
@@ -107,7 +85,6 @@ public class FileUtils {
         URL fileUrl = FileUtils.class.getResource(fileName);
         if (fileUrl == null) {
             log.debug(String.format("File resource [%s] can't be found by this class classloader. We'll try with SystemClassLoader...", fileName));
-
             fileUrl = ClassLoader.getSystemResource(fileName);
             if (fileUrl == null) {
                 log.debug(String.format("File resource [%s] can't be found by SystemClassLoader.", fileName));
@@ -124,13 +101,6 @@ public class FileUtils {
      * @throws IOException - if file can't be read.
      */
     public static String readFile(String fileName) throws IOException {
-        String fileData = null;
-
-        File file = FileUtils.locateFile(fileName);
-        if (file != null) {
-            fileData = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-        }
-
-        return fileData;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

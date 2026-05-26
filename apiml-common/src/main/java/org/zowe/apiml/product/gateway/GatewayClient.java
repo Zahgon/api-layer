@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.gateway;
 
 import lombok.Setter;
@@ -36,11 +35,7 @@ public class GatewayClient {
      * @return GatewayConfigProperties object
      */
     public ServiceAddress getGatewayConfigProperties() {
-        if (gatewayConfigProperties == null) {
-            throw new GatewayNotAvailableException("No Gateway Instance is available at the moment");
-        }
-
-        return gatewayConfigProperties;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -49,6 +44,6 @@ public class GatewayClient {
      * @return true when GatewayConfigProperties are initialized
      */
     public boolean isInitialized() {
-        return gatewayConfigProperties != null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,10 +24,13 @@ import lombok.*;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Authentication implements Serializable {
+
     private static final long serialVersionUID = -4971506571102951057L;
 
     private AuthenticationScheme scheme;
+
     private String applid;
+
     private String headers;
 
     @JsonIgnore
@@ -38,30 +40,18 @@ public class Authentication implements Serializable {
     public Authentication(AuthenticationScheme scheme, String applid, String headers) {
         this(scheme, applid, headers, null);
     }
+
     public Authentication(AuthenticationScheme scheme, String applid) {
         this(scheme, applid, null);
     }
 
     @JsonProperty
     public boolean supportsSso() {
-        if (scheme == null) return supportsSso != null && supportsSso;
-
-        switch (scheme) {
-            case ZOWE_JWT:
-            case X509:
-            case HTTP_BASIC_PASSTICKET:
-            case SAF_IDT:
-            case ZOSMF:
-                return supportsSso == null || supportsSso;
-            case BYPASS:
-            default:
-                return supportsSso != null && supportsSso;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @JsonIgnore
     public boolean isEmpty() {
-        return (scheme == null) && (applid == null);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

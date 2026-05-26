@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.config;
 
 import com.nimbusds.jose.util.DefaultResourceRetriever;
@@ -27,13 +26,10 @@ import org.zowe.apiml.zaas.security.service.schema.source.X509AuthSourceService;
 import org.zowe.apiml.zaas.security.service.schema.source.X509CNAuthSourceService;
 import org.zowe.apiml.zaas.security.service.token.ApimlAccessTokenProvider;
 import org.zowe.apiml.zaas.security.service.zosmf.ZosmfService;
-
 import javax.net.ssl.SSLContext;
-
 import org.zowe.apiml.passticket.PassTicketService;
 import org.zowe.apiml.security.common.audit.RauditxService;
 import org.zowe.apiml.security.common.config.AuthConfigurationProperties;
-
 
 /**
  * Registers security related beans
@@ -46,7 +42,7 @@ public class ComponentsConfiguration {
      */
     @Bean
     BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -57,18 +53,13 @@ public class ComponentsConfiguration {
      */
     @Bean
     PassTicketService passTicketService() {
-        return new PassTicketService();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @Lazy
-    Providers loginProviders(
-        DiscoveryClient discoveryClient,
-        AuthConfigurationProperties authConfigurationProperties,
-        ZosmfService zosmfService,
-        @Lazy CompoundAuthProvider compoundAuthProvider
-    ) {
-        return new Providers(discoveryClient, authConfigurationProperties, compoundAuthProvider, zosmfService);
+    Providers loginProviders(DiscoveryClient discoveryClient, AuthConfigurationProperties authConfigurationProperties, ZosmfService zosmfService, @Lazy CompoundAuthProvider compoundAuthProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -77,7 +68,7 @@ public class ComponentsConfiguration {
      */
     @Bean("x509MFAuthSourceService")
     X509AuthSourceService getX509MFAuthSourceService(@Qualifier("x509Mapper") AuthenticationMapper mapper, TokenCreationService tokenCreationService, AuthenticationService authenticationService) {
-        return new X509AuthSourceService(mapper, tokenCreationService, authenticationService);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -87,17 +78,16 @@ public class ComponentsConfiguration {
      */
     @Bean("x509CNAuthSourceService")
     X509AuthSourceService getX509CNAuthSourceService(TokenCreationService tokenCreationService, AuthenticationService authenticationService) {
-        return new X509CNAuthSourceService(new X509CommonNameUserMapper(), tokenCreationService, authenticationService);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     SuccessfulAccessTokenHandler successfulAccessTokenHandler(ApimlAccessTokenProvider apimlAccessTokenProvider, RauditxService rauditxService) {
-        return new SuccessfulAccessTokenHandler(apimlAccessTokenProvider, rauditxService);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     DefaultResourceRetriever defaultResourceRetriever(@Qualifier("secureSslContextWithoutKeystore") SSLContext secureSslContextWithoutKeystore) {
-        return new DefaultResourceRetriever(
-                    0, 0, 0, true, secureSslContextWithoutKeystore.getSocketFactory());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

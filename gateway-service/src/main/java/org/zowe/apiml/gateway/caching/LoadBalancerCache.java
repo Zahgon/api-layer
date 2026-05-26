@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.caching;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -21,11 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import static reactor.core.publisher.Mono.*;
 
 @Component
@@ -35,15 +32,16 @@ public class LoadBalancerCache {
     private static final String CACHING_SERVICE_ID = "cachingservice";
 
     private final Map<String, LoadBalancerCacheRecord> localCache;
+
     private final CachingServiceClient remoteCache;
+
     private final EurekaClient eurekaClient;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     public static final String LOAD_BALANCER_KEY_PREFIX = "lb.";
 
-    public LoadBalancerCache(
-        EurekaClient eurekaClient,
-        CachingServiceClient cachingServiceClient) {
+    public LoadBalancerCache(EurekaClient eurekaClient, CachingServiceClient cachingServiceClient) {
         this.remoteCache = cachingServiceClient;
         this.eurekaClient = eurekaClient;
         localCache = new ConcurrentHashMap<>();
@@ -51,9 +49,7 @@ public class LoadBalancerCache {
     }
 
     private Mono<Boolean> cachingServiceAvailability() {
-        return Mono.fromCallable(() -> eurekaClient.getApplication(CACHING_SERVICE_ID))
-            .map(app -> !app.getInstances().isEmpty())
-            .switchIfEmpty(Mono.just(false));
+        return Mono.fromCallable(() -> eurekaClient.getApplication(CACHING_SERVICE_ID)).map(app -> !app.getInstances().isEmpty()).switchIfEmpty(Mono.just(false));
     }
 
     /**
@@ -66,16 +62,7 @@ public class LoadBalancerCache {
      * @return Mono success / error
      */
     public Mono<Void> store(String user, String service, LoadBalancerCacheRecord loadBalancerCacheRecord) {
-        return cachingServiceAvailability()
-            .flatMap(available -> {
-                if (Boolean.TRUE.equals(available)) {
-                    return storeToRemoteCache(user, service, loadBalancerCacheRecord);
-                } else {
-                    localCache.put(getKey(user, service), loadBalancerCacheRecord);
-                    log.debug("Stored record to local cache for user: {}, service: {}, record: {}", user, service, loadBalancerCacheRecord);
-                    return empty();
-                }
-            });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Mono<Void> storeToRemoteCache(String user, String service, LoadBalancerCacheRecord loadBalancerCacheRecord) {
@@ -90,22 +77,18 @@ public class LoadBalancerCache {
     }
 
     private Mono<Void> createToRemoteCache(String user, String service, LoadBalancerCacheRecord loadBalancerCacheRecord, CachingServiceClient.ApiKeyValue toStore) {
-        return remoteCache.create(toStore)
-            .onErrorResume(createException -> {
-                if (isCausedByCacheConflict(createException)) {
-                    return updateToRemoteCache(user, service, loadBalancerCacheRecord, toStore);
-                } else {
-                    log.debug("Failed to create record for user: {}, service: {}, record {}, with exception: ", user, service, loadBalancerCacheRecord, createException);
-                    return error(createException);
-                }
-            })
-            .doOnSuccess(v -> log.debug("Created record to remote cache for user: {}, service: {}, record: {}", user, service, loadBalancerCacheRecord));
+        return remoteCache.create(toStore).onErrorResume(createException -> {
+            if (isCausedByCacheConflict(createException)) {
+                return updateToRemoteCache(user, service, loadBalancerCacheRecord, toStore);
+            } else {
+                log.debug("Failed to create record for user: {}, service: {}, record {}, with exception: ", user, service, loadBalancerCacheRecord, createException);
+                return error(createException);
+            }
+        }).doOnSuccess(v -> log.debug("Created record to remote cache for user: {}, service: {}, record: {}", user, service, loadBalancerCacheRecord));
     }
 
     private Mono<Void> updateToRemoteCache(String user, String service, LoadBalancerCacheRecord loadBalancerCacheRecord, CachingServiceClient.ApiKeyValue toStore) {
-        return remoteCache.update(toStore)
-            .doOnSuccess(v -> log.debug("Updated record to remote cache for user: {}, service: {}, record: {}", user, service, loadBalancerCacheRecord))
-            .doOnError(updateException -> log.debug("Failed to update record for user: {}, service: {}, record {}, with exception: ", user, service, loadBalancerCacheRecord, updateException));
+        return remoteCache.update(toStore).doOnSuccess(v -> log.debug("Updated record to remote cache for user: {}, service: {}, record: {}", user, service, loadBalancerCacheRecord)).doOnError(updateException -> log.debug("Failed to update record for user: {}, service: {}, record {}, with exception: ", user, service, loadBalancerCacheRecord, updateException));
     }
 
     private boolean isCausedByCacheConflict(Throwable e) {
@@ -120,27 +103,7 @@ public class LoadBalancerCache {
      * @return Retrieved record containing the instance to use for this user and its creation time.
      */
     public Mono<LoadBalancerCacheRecord> retrieve(String user, String service) {
-        return cachingServiceAvailability()
-            .flatMap(available -> {
-                if (Boolean.TRUE.equals(available)) {
-                    return remoteCache.read(getKey(user, service))
-                        .handle((kv, sink) -> {
-                            LoadBalancerCacheRecord loadBalancerCacheRecord;
-                            try {
-                                loadBalancerCacheRecord = mapper.readValue(kv.getValue(), LoadBalancerCacheRecord.class);
-                            } catch (JsonProcessingException e) {
-                                sink.error(new LoadBalancerCacheException(e));
-                                return;
-                            }
-                            log.debug("Retrieved record from remote cache for user: {}, service: {}, record: {}", user, service, loadBalancerCacheRecord);
-                            sink.next(loadBalancerCacheRecord);
-                        });
-                } else {
-                    LoadBalancerCacheRecord loadBalancerCacheRecord = localCache.get(getKey(user, service));
-                    log.debug("Retrieved record from local cache for user: {}, service: {}, record: {}", user, service, loadBalancerCacheRecord);
-                    return loadBalancerCacheRecord == null ? empty() : just(loadBalancerCacheRecord);
-                }
-            });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -150,17 +113,7 @@ public class LoadBalancerCache {
      * @param service Service towards which is the user routed
      */
     public Mono<Void> delete(String user, String service) {
-        return cachingServiceAvailability()
-            .flatMap(available -> {
-                if (Boolean.TRUE.equals(available)) {
-                    return remoteCache.delete(getKey(user, service))
-                        .doOnSuccess(v -> log.debug("Deleted record from remote cache for user: {}, service: {}", user, service));
-                } else {
-                    localCache.remove(getKey(user, service));
-                    log.debug("Deleted record from local cache for user: {}, service: {}", user, service);
-                    return empty();
-                }
-            });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String getKey(String user, String service) {
@@ -176,6 +129,7 @@ public class LoadBalancerCache {
         public static final LoadBalancerCacheRecord NONE = new LoadBalancerCacheRecord(null, null);
 
         private final String instanceId;
+
         private final LocalDateTime creationTime;
 
         public LoadBalancerCacheRecord(String instanceId) {
@@ -183,13 +137,9 @@ public class LoadBalancerCache {
         }
 
         @JsonCreator
-        public LoadBalancerCacheRecord(
-                @JsonProperty("instanceId") String instanceId,
-                @JsonProperty("creationTime") LocalDateTime creationTime) {
+        public LoadBalancerCacheRecord(@JsonProperty("instanceId") String instanceId, @JsonProperty("creationTime") LocalDateTime creationTime) {
             this.instanceId = instanceId;
             this.creationTime = creationTime;
         }
-
     }
-
 }

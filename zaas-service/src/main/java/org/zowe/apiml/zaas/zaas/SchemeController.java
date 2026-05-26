@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.zaas;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,9 +26,7 @@ import org.zowe.apiml.zaas.security.service.TokenCreationService;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSource;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSourceService;
 import org.zowe.apiml.zaas.security.service.zosmf.ZosmfService;
-
 import javax.management.ServiceNotFoundException;
-
 import static org.zowe.apiml.security.SecurityUtils.COOKIE_AUTH_NAME;
 import static org.zowe.apiml.zaas.zaas.ExtractAuthSourceFilter.AUTH_SOURCE_ATTR;
 import static org.zowe.apiml.zaas.zaas.ExtractAuthSourceFilter.AUTH_SOURCE_PARSED_ATTR;
@@ -38,51 +35,34 @@ import static org.zowe.apiml.zaas.zaas.ExtractAuthSourceFilter.AUTH_SOURCE_PARSE
 @RestController
 @RequestMapping(value = SchemeController.CONTROLLER_PATH)
 public class SchemeController {
-    public static final String CONTROLLER_PATH = "/zaas/scheme"; // NOSONAR
+
+    // NOSONAR
+    public static final String CONTROLLER_PATH = "/zaas/scheme";
 
     private final AuthSourceService authSourceService;
+
     private final PassTicketService passTicketService;
+
     private final ZosmfService zosmfService;
+
     private final TokenCreationService tokenCreationService;
 
     @PostMapping(path = "ticket", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Provides PassTicket for authenticated user.")
-    public ResponseEntity<TicketResponse> getPassTicket(@RequestBody TicketRequest ticketRequest, @RequestAttribute(AUTH_SOURCE_PARSED_ATTR) AuthSource.Parsed authSourceParsed)
-        throws PassTicketException {
-
-        var ticket = passTicketService.generate(authSourceParsed.getUserId(), ticketRequest.getApplicationName());
-
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(TicketResponse.builder()
-                .ticket("")
-                .userId(authSourceParsed.getUserId())
-                .applicationName(ticketRequest.getApplicationName())
-                .ticket(ticket)
-                .build());
+    public ResponseEntity<TicketResponse> getPassTicket(@RequestBody TicketRequest ticketRequest, @RequestAttribute(AUTH_SOURCE_PARSED_ATTR) AuthSource.Parsed authSourceParsed) throws PassTicketException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(path = "zosmf", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Provides z/OSMF JWT or LTPA token for authenticated user.")
-    public ResponseEntity<ZaasTokenResponse> getZosmfToken(@RequestAttribute(AUTH_SOURCE_ATTR) AuthSource authSource,
-                                                           @RequestAttribute(AUTH_SOURCE_PARSED_ATTR) AuthSource.Parsed authSourceParsed) throws ServiceNotFoundException {
-
-        ZaasTokenResponse zaasTokenResponse = zosmfService.exchangeAuthenticationForZosmfToken(authSource.getRawSource().toString(), authSourceParsed);
-
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(zaasTokenResponse);
+    public ResponseEntity<ZaasTokenResponse> getZosmfToken(@RequestAttribute(AUTH_SOURCE_ATTR) AuthSource authSource, @RequestAttribute(AUTH_SOURCE_PARSED_ATTR) AuthSource.Parsed authSourceParsed) throws ServiceNotFoundException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(path = "zoweJwt", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Provides zoweJwt for authenticated user.")
     public ResponseEntity<ZaasTokenResponse> getZoweJwt(@RequestAttribute(AUTH_SOURCE_ATTR) AuthSource authSource) {
-
-        var token = authSourceService.getJWT(authSource);
-
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(ZaasTokenResponse.builder().cookieName(COOKIE_AUTH_NAME).token(token).build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -94,25 +74,12 @@ public class SchemeController {
      */
     @ExceptionHandler(NoMainframeIdentityException.class)
     public ResponseEntity<ZaasTokenResponse> handleNoMainframeIdException(@RequestAttribute(AUTH_SOURCE_ATTR) AuthSource authSource, NoMainframeIdentityException nmie) {
-        if (nmie.isValidToken() && authSource.getType() == AuthSource.AuthSourceType.OIDC) {
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(ZaasTokenResponse.builder().headerName(ApimlConstants.HEADER_OIDC_TOKEN).token(String.valueOf(authSource.getRawSource())).build());
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(path = "safIdt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Provides SAF Identity Token for authenticated user.")
-    public ResponseEntity<ZaasTokenResponse> getSafIdToken(@RequestBody TicketRequest ticketRequest, @RequestAttribute(AUTH_SOURCE_PARSED_ATTR) AuthSource.Parsed authSourceParsed)
-        throws PassTicketException {
-
-        var safIdToken = tokenCreationService.createSafIdTokenWithoutCredentials(authSourceParsed.getUserId(), ticketRequest.getApplicationName());
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(ZaasTokenResponse.builder().headerName(ApimlConstants.SAF_TOKEN_HEADER).token(safIdToken).build());
-
+    public ResponseEntity<ZaasTokenResponse> getSafIdToken(@RequestBody TicketRequest ticketRequest, @RequestAttribute(AUTH_SOURCE_PARSED_ATTR) AuthSource.Parsed authSourceParsed) throws PassTicketException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

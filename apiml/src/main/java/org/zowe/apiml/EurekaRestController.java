@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 /*
  * Copyright 2013-2022 the original author or authors.
  *
@@ -23,7 +22,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.zowe.apiml;
 
 import com.netflix.appinfo.EurekaAccept;
@@ -62,20 +60,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
 import static org.zowe.apiml.EurekaConfiguration.JACKSON_JSON;
 import static reactor.core.publisher.Mono.just;
 
-@SuppressWarnings("java:S1452") // Generic type wildcard needed due to legacy code usage
+// Generic type wildcard needed due to legacy code usage
+@SuppressWarnings("java:S1452")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/eureka", produces = {"application/xml", "application/json"})
+@RequestMapping(path = "/eureka", produces = { "application/xml", "application/json" })
 @DependsOn("modulithConfig")
 @Slf4j
 public class EurekaRestController {
@@ -83,11 +80,17 @@ public class EurekaRestController {
     private static final String EUREKA_VERSION = "v2";
 
     private final ApplicationsResource applicationsResource;
+
     private final VIPResource vipResource;
+
     private final ServerInfoResource serverInfoResource;
+
     private final SecureVIPResource secureVIPResource;
+
     private final InstancesResource instancesResource;
+
     private final ASGResource asgResource;
+
     private final PeerReplicationResource peerReplicationResource;
 
     private UriInfo getUriInfo(ServerWebExchange serverWebExchange) {
@@ -95,194 +98,87 @@ public class EurekaRestController {
     }
 
     private ResponseEntity<?> convertResponse(Response response) {
-        return ResponseEntity
-            .status(response.getStatus())
-            .headers(headers -> response.getHeaders().entrySet().forEach(
-                newHeader -> headers.addAll(newHeader.getKey(), newHeader.getValue().stream().map(String::valueOf).toList()))
-            )
-            .body(response.getEntity());
+        return ResponseEntity.status(response.getStatus()).headers(headers -> response.getHeaders().entrySet().forEach(newHeader -> headers.addAll(newHeader.getKey(), newHeader.getValue().stream().map(String::valueOf).toList()))).body(response.getEntity());
     }
 
-    @GetMapping(value = {"/apps", "/apps/"}, produces = {"application/xml", "application/json"})
-    public Mono<ResponseEntity<?>> getContainers(
-        ServerWebExchange serverWebExchange,
-        @Nullable @RequestHeader(ACCEPT) String acceptHeader,
-        @Nullable @RequestHeader(ACCEPT_ENCODING) String acceptEncoding,
-        @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
-        @Nullable @RequestParam("regions") String regionsStr
-    ) {
-        return just(convertResponse(applicationsResource.getContainers(
-            EUREKA_VERSION, acceptHeader, acceptEncoding, eurekaAccept, getUriInfo(serverWebExchange), regionsStr
-        )));
+    @GetMapping(value = { "/apps", "/apps/" }, produces = { "application/xml", "application/json" })
+    public Mono<ResponseEntity<?>> getContainers(ServerWebExchange serverWebExchange, @Nullable @RequestHeader(ACCEPT) String acceptHeader, @Nullable @RequestHeader(ACCEPT_ENCODING) String acceptEncoding, @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept, @Nullable @RequestParam("regions") String regionsStr) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/apps/delta")
-    public Mono<ResponseEntity<?>> getContainerDifferential(
-        ServerWebExchange serverWebExchange,
-        @Nullable @RequestHeader(ACCEPT) String acceptHeader,
-        @Nullable @RequestHeader(ACCEPT_ENCODING) String acceptEncoding,
-        @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
-        @Nullable @RequestParam("regions") String regionsStr
-    ) {
-        return just(convertResponse(applicationsResource.getContainerDifferential(
-            EUREKA_VERSION, acceptHeader, acceptEncoding, eurekaAccept, getUriInfo(serverWebExchange), regionsStr
-        )));
+    public Mono<ResponseEntity<?>> getContainerDifferential(ServerWebExchange serverWebExchange, @Nullable @RequestHeader(ACCEPT) String acceptHeader, @Nullable @RequestHeader(ACCEPT_ENCODING) String acceptEncoding, @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept, @Nullable @RequestParam("regions") String regionsStr) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/apps/{appId}")
-    public Mono<ResponseEntity<?>> getApplicationResource(
-        @Nullable @RequestHeader(ACCEPT) String acceptHeader,
-        @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
-
-        @PathVariable String appId
-    ) {
-        var app = applicationsResource.getApplicationResource(EUREKA_VERSION, appId);
-        return just(convertResponse(app.getApplication(EUREKA_VERSION, acceptHeader, eurekaAccept)));
+    public Mono<ResponseEntity<?>> getApplicationResource(@Nullable @RequestHeader(ACCEPT) String acceptHeader, @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept, @PathVariable String appId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping("/apps/{appId}")
-    public Mono<ResponseEntity<?>> addInstance(
-        @Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-
-        @RequestBody String instanceInfoString,
-        @PathVariable String appId
-    ) throws IOException {
-        var instanceInfo = JACKSON_JSON.decode(instanceInfoString, InstanceInfo.class);
-        var app = applicationsResource.getApplicationResource(EUREKA_VERSION, appId);
-
-        return just(ResponseEntity.ok())
-            .publishOn(Schedulers.boundedElastic())
-            .map(bodyBuilder -> {
-                var response = app.addInstance(instanceInfo, isReplication);
-                return convertResponse(response);
-            });
+    public Mono<ResponseEntity<?>> addInstance(@Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication, @RequestBody String instanceInfoString, @PathVariable String appId) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/apps/{appId}/{instanceId}")
-    public Mono<ResponseEntity<?>> getInstanceInfo(
-        @PathVariable String appId,
-        @PathVariable String instanceId
-    ) {
-        var app = applicationsResource.getApplicationResource(EUREKA_VERSION, appId);
-        var instance = app.getInstanceInfo(instanceId);
-        return just(convertResponse(instance.getInstanceInfo()));
+    public Mono<ResponseEntity<?>> getInstanceInfo(@PathVariable String appId, @PathVariable String instanceId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PutMapping("/apps/{appId}/{instanceId}")
-    public Mono<ResponseEntity<?>> renewLease(
-        @Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-        @Nullable @RequestParam("overriddenstatus") String overriddenStatus,
-        @Nullable @RequestParam String status,
-        @Nullable @RequestParam String lastDirtyTimestamp,
-
-        @PathVariable String appId,
-        @PathVariable String instanceId
-    ) {
-        var app = applicationsResource.getApplicationResource(EUREKA_VERSION, appId);
-        var instance = app.getInstanceInfo(instanceId);
-        return just(convertResponse(instance.renewLease(isReplication, overriddenStatus, status, lastDirtyTimestamp)));
+    public Mono<ResponseEntity<?>> renewLease(@Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication, @Nullable @RequestParam("overriddenstatus") String overriddenStatus, @Nullable @RequestParam String status, @Nullable @RequestParam String lastDirtyTimestamp, @PathVariable String appId, @PathVariable String instanceId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PutMapping("/apps/{appId}/{instanceId}/status")
-    public Mono<ResponseEntity<?>> statusUpdate(
-        @Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-        @Nullable @RequestParam("value") String newStatus,
-        @Nullable @RequestParam String lastDirtyTimestamp,
-
-        @PathVariable String appId,
-        @PathVariable String instanceId
-    ) {
-        var app = applicationsResource.getApplicationResource(EUREKA_VERSION, appId);
-        var instance = app.getInstanceInfo(instanceId);
-        return just(convertResponse(instance.statusUpdate(newStatus, isReplication, lastDirtyTimestamp)));
+    public Mono<ResponseEntity<?>> statusUpdate(@Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication, @Nullable @RequestParam("value") String newStatus, @Nullable @RequestParam String lastDirtyTimestamp, @PathVariable String appId, @PathVariable String instanceId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @DeleteMapping("/apps/{appId}/{instanceId}/status")
-    public Mono<ResponseEntity<?>> deleteStatusUpdate(
-        @Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-        @Nullable @RequestParam("value") String newStatusValue,
-        @Nullable @RequestParam String lastDirtyTimestamp,
-
-        @PathVariable String appId,
-        @PathVariable String instanceId
-    ) {
-        var app = applicationsResource.getApplicationResource(EUREKA_VERSION, appId);
-        var instance = app.getInstanceInfo(instanceId);
-        return just(convertResponse(instance.deleteStatusUpdate(isReplication, newStatusValue, lastDirtyTimestamp)));
+    public Mono<ResponseEntity<?>> deleteStatusUpdate(@Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication, @Nullable @RequestParam("value") String newStatusValue, @Nullable @RequestParam String lastDirtyTimestamp, @PathVariable String appId, @PathVariable String instanceId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PutMapping("/apps/{appId}/{instanceId}/metadata")
-    public Mono<ResponseEntity<?>> updateMetadata(
-        ServerWebExchange serverWebExchange,
-
-        @PathVariable String appId,
-        @PathVariable String instanceId
-    ) {
-        var app = applicationsResource.getApplicationResource(EUREKA_VERSION, appId);
-        var instance = app.getInstanceInfo(instanceId);
-        return just(convertResponse(instance.updateMetadata(getUriInfo(serverWebExchange))));
+    public Mono<ResponseEntity<?>> updateMetadata(ServerWebExchange serverWebExchange, @PathVariable String appId, @PathVariable String instanceId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @DeleteMapping("/apps/{appId}/{instanceId}")
-    public Mono<ResponseEntity<?>> cancelLease(
-        @Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-
-        @PathVariable String appId,
-        @PathVariable String instanceId
-    ) {
-        var app = applicationsResource.getApplicationResource(EUREKA_VERSION, appId);
-        var instance = app.getInstanceInfo(instanceId);
-        return just(convertResponse(instance.cancelLease(isReplication)));
+    public Mono<ResponseEntity<?>> cancelLease(@Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication, @PathVariable String appId, @PathVariable String instanceId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/instances/{id}")
-    public Mono<ResponseEntity<?>> getById(
-        @PathVariable String id
-    ) {
-        return just(convertResponse(instancesResource.getById(EUREKA_VERSION, id)));
+    public Mono<ResponseEntity<?>> getById(@PathVariable String id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/svips/{svipAddress}")
-    public Mono<ResponseEntity<?>> secureVipStatusUpdate(
-        @Nullable @RequestHeader(ACCEPT) String acceptHeader,
-        @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
-
-        @PathVariable String svipAddress
-    ) {
-        return just(convertResponse(secureVIPResource.statusUpdate(EUREKA_VERSION, svipAddress, acceptHeader, eurekaAccept)));
+    public Mono<ResponseEntity<?>> secureVipStatusUpdate(@Nullable @RequestHeader(ACCEPT) String acceptHeader, @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept, @PathVariable String svipAddress) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/vips/{vipAddress}")
-    public Mono<ResponseEntity<?>> vipStatusUpdate(
-        @Nullable @RequestHeader(ACCEPT) String acceptHeader,
-        @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
-
-        @PathVariable String vipAddress
-    ) {
-        return just(convertResponse(vipResource.statusUpdate(EUREKA_VERSION, vipAddress, acceptHeader, eurekaAccept)));
+    public Mono<ResponseEntity<?>> vipStatusUpdate(@Nullable @RequestHeader(ACCEPT) String acceptHeader, @Nullable @RequestHeader(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept, @PathVariable String vipAddress) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping("/serverinfo/statusoverrides")
     public Mono<ResponseEntity<?>> getOverrides() throws Exception {
-        return just(convertResponse(serverInfoResource.getOverrides()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PutMapping("/asg/{asgName}/status")
-    public Mono<ResponseEntity<?>> asgStatusUpdate(
-        @Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-        @Nullable @RequestParam("value") String newStatus,
-
-        @PathVariable String asgName
-    ) {
-        return just(convertResponse(asgResource.statusUpdate(asgName, newStatus, isReplication)));
+    public Mono<ResponseEntity<?>> asgStatusUpdate(@Nullable @RequestHeader(PeerEurekaNode.HEADER_REPLICATION) String isReplication, @Nullable @RequestParam("value") String newStatus, @PathVariable String asgName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @PostMapping({"/peerreplication/batch/", "/peerreplication/batch"})
-    public Mono<ResponseEntity<?>> batchReplication(
-        @RequestBody String replicationListString
-    ) throws IOException {
-        var replicationList = JACKSON_JSON.decode(replicationListString, ReplicationList.class);
-        return Mono.fromCallable(() -> convertResponse(peerReplicationResource.batchReplication(replicationList)));
+    @PostMapping({ "/peerreplication/batch/", "/peerreplication/batch" })
+    public Mono<ResponseEntity<?>> batchReplication(@RequestBody String replicationListString) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @RequiredArgsConstructor
@@ -292,115 +188,97 @@ public class EurekaRestController {
 
         @Override
         public String getPath() {
-            return request.getURI().getPath();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public String getPath(boolean decode) {
-            return getPath();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public List<PathSegment> getPathSegments() {
-            return request.getPath().contextPath().elements().stream().map(
-                    e -> new PathSegment() {
-                        @Override
-                        public String getPath() {
-                            return e.value();
-                        }
-
-                        @Override
-                        public MultivaluedMap<String, String> getMatrixParameters() {
-                            return new MultivaluedHashMap<>();
-                        }
-                    }
-                )
-                .map(PathSegment.class::cast)
-                .toList();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public List<PathSegment> getPathSegments(boolean decode) {
-            return getPathSegments();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public URI getRequestUri() {
-            return request.getURI();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public UriBuilder getRequestUriBuilder() {
-            return UriBuilder.fromUri(request.getURI());
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public URI getAbsolutePath() {
-            return request.getURI();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public UriBuilder getAbsolutePathBuilder() {
-            return UriBuilder.fromUri(getAbsolutePath());
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public URI getBaseUri() {
-            return getRequestUriBuilder().path("/").build();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public UriBuilder getBaseUriBuilder() {
-            return UriBuilder.fromUri(getBaseUri());
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public MultivaluedMap<String, String> getPathParameters() {
-            return new MultivaluedHashMap<>();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public MultivaluedMap<String, String> getPathParameters(boolean decode) {
-            return getPathParameters();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public MultivaluedMap<String, String> getQueryParameters() {
-            var map = new MultivaluedHashMap<String, String>();
-            request.getQueryParams().entrySet().forEach(e -> map.addAll(e.getKey(), e.getValue()));
-            return map;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public MultivaluedMap<String, String> getQueryParameters(boolean decode) {
-            return getQueryParameters();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public List<String> getMatchedURIs() {
-            return List.of();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public List<String> getMatchedURIs(boolean decode) {
-            return List.of();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public List<Object> getMatchedResources() {
-            return List.of();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public URI resolve(URI uri) {
-            return uri;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public URI relativize(URI uri) {
-            return uri;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

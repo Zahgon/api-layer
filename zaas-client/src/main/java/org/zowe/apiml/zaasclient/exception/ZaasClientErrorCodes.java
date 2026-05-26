@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaasclient.exception;
 
 import java.util.HashMap;
@@ -21,8 +20,7 @@ public enum ZaasClientErrorCodes {
     EMPTY_NULL_AUTHORIZATION_HEADER("ZWEAS122E", "Empty or null authorization header provided", 400),
     INVALID_JWT_TOKEN("ZWEAO402E", "The request has not been applied because it lacks valid authentication credentials.", 400),
     GENERIC_EXCEPTION("ZWEAS170E", "An exception occurred while trying to get the token", 500),
-    BAD_REQUEST("ZWEAS400E", "Unable to generate PassTicket. Verify that the secured signon (PassTicket) function " +
-        "and application ID is configured properly by referring to  Using PassTickets in the guide for your security provider", 400),
+    BAD_REQUEST("ZWEAS400E", "Unable to generate PassTicket. Verify that the secured signon (PassTicket) function " + "and application ID is configured properly by referring to  Using PassTickets in the guide for your security provider", 400),
     TOKEN_NOT_PROVIDED("ZWEAS401E", "Token is not provided", 401),
     SERVICE_UNAVAILABLE("ZWEAS404E", "Gateway service is unavailable", 503),
     INTERNAL_SERVER_ERROR("ZWEAS504E", "Internal server error while generating PassTicket.", 500),
@@ -30,7 +28,9 @@ public enum ZaasClientErrorCodes {
     APPLICATION_NAME_NOT_FOUND("ZWEAS417E", "The application name wasn't found", 400);
 
     private final String id;
+
     private final String message;
+
     private final int returnCode;
 
     private static final Map<String, ZaasClientErrorCodes> errorNumberToEnum = new HashMap<>();
@@ -48,28 +48,23 @@ public enum ZaasClientErrorCodes {
     }
 
     public String getId() {
-        return id;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getMessage() {
-        return message;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public int getReturnCode() {
-        return returnCode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static ZaasClientErrorCodes byErrorNumber(String errorNumber) {
-        return errorNumberToEnum.get(errorNumber);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String toString() {
-        return "ZaasClientErrorCodes{" +
-            "id='" + id + '\'' +
-            ", message='" + message + '\'' +
-            ", returnCode=" + returnCode +
-            '}';
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

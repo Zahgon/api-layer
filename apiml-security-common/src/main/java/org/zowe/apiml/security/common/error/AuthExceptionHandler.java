@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.error;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +30,6 @@ import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.product.gateway.GatewayNotAvailableException;
 import org.zowe.apiml.security.common.token.*;
-
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -45,23 +43,24 @@ public class AuthExceptionHandler extends AbstractExceptionHandler {
     private ApplicationInfo applicationInfo;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AuthExceptionHandler(
-        MessageService messageService,
-        ObjectMapper objectMapper,
-        @Autowired(required = false) ApplicationInfo applicationInfo) {
-            super(messageService, objectMapper);
-            this.applicationInfo = applicationInfo == null ? ApplicationInfo.builder().isModulith(false).build() : applicationInfo;
+    public AuthExceptionHandler(MessageService messageService, ObjectMapper objectMapper, @Autowired(required = false) ApplicationInfo applicationInfo) {
+        super(messageService, objectMapper);
+        this.applicationInfo = applicationInfo == null ? ApplicationInfo.builder().isModulith(false).build() : applicationInfo;
     }
 
     @AllArgsConstructor
     private static class HandlerContext {
+
         String requestUri;
+
         BiConsumer<ApiMessageView, HttpStatus> function;
+
         BiConsumer<String, String> addHeader;
     }
 
     @FunctionalInterface
     private interface ExceptionHandler<E extends Exception> {
+
         void handle(E ex, HandlerContext ctx);
     }
 
@@ -69,52 +68,7 @@ public class AuthExceptionHandler extends AbstractExceptionHandler {
         return Map.entry(clazz, handler);
     }
 
-    private final Map<Class<? extends Exception>, ExceptionHandler<? extends Exception>> exceptionHandlers = Map.ofEntries(
-        entry(InsufficientAuthenticationException.class,
-            (ex, ctx) -> handleAuthenticationRequired(ctx.requestUri, ctx.function, ctx.addHeader, ex)),
-        entry(BadCredentialsException.class,
-            (ex, ctx) -> handleBadCredentials(ctx.requestUri, ctx.function, ex)),
-        entry(AuthenticationCredentialsNotFoundException.class,
-            (ex, ctx) -> handleAuthenticationCredentialsNotFound(ctx.requestUri, ctx.function, ex)),
-        entry(AuthMethodNotSupportedException.class,
-            (ex, ctx) -> handleAuthMethodNotSupported(ctx.requestUri, ctx.function, ex)),
-        entry(TokenNotValidException.class,
-            (ex, ctx) -> handleTokenNotValid(ctx.requestUri, ctx.function, ctx.addHeader, ex)),
-        entry(NoMainframeIdentityException.class,
-            (ex, ctx) -> handleNoMainframeIdentity(ctx.requestUri, ctx.function, ctx.addHeader, ex)),
-        entry(TokenNotProvidedException.class,
-            (ex, ctx) -> handleTokenNotProvided(ctx.requestUri, ctx.function, ex)),
-        entry(TokenExpireException.class,
-            (ex, ctx) -> handleTokenExpire(ctx.requestUri, ctx.function, ex)),
-        entry(TokenFormatNotValidException.class,
-            (ex, ctx) -> handleTokenFormatException(ctx.requestUri, ctx.function, ex)),
-        entry(AccessTokenInvalidBodyException.class,
-            (ex, ctx) -> handleBadRequest(ctx.requestUri, ctx.function, ex, "org.zowe.apiml.accessToken.invalidFormat")),
-        entry(AccessTokenMissingBodyException.class,
-            (ex, ctx) -> handleBadRequest(ctx.requestUri, ctx.function, ex, "org.zowe.apiml.security.token.accessTokenBodyMissingScopes")),
-        entry(InvalidCertificateException.class,
-            (ex, ctx) -> handleInvalidCertificate(ctx.function, ex)),
-        entry(ZosAuthenticationException.class,
-            (ex, ctx) -> handleZosAuthenticationException(ctx.function, ex)),
-        entry(InvalidTokenTypeException.class,
-            (ex, ctx) -> handleInvalidTokenTypeException(ctx.requestUri, ctx.function, ex)),
-        entry(AuthenticationException.class,
-            (ex, ctx) -> handleAuthenticationException(ctx.requestUri, ctx.function, ex)),
-        entry(ServiceNotAccessibleException.class,
-            (ex, ctx) -> handleServiceNotAccessibleException(ctx.requestUri, ctx.function, ex)),
-        entry(NoResourceFoundException.class,
-            (ex, ctx) -> handleNoResourceFoundException(ctx.function, ex)),
-        entry(RuntimeException.class,
-            (ex, ctx) -> handleRuntimeException(ctx.requestUri, ctx.function, ex)),
-        entry(WebClientResponseException.BadRequest.class,
-            (ex, ctx) -> handleBadRequest(ctx.requestUri, ctx.function, ex, "org.zowe.apiml.security.login.invalidInput")),
-        entry(AccessDeniedException.class,
-            (ex, ctx) ->  handleForbidden(ctx.requestUri, ctx.function, ex)
-        ),
-        entry(GatewayNotAvailableException.class,
-            (ex, ctx) -> handleGatewayNotAvailable(ctx.function, ex, ctx.requestUri)
-        )
-    );
+    private final Map<Class<? extends Exception>, ExceptionHandler<? extends Exception>> exceptionHandlers = Map.ofEntries(entry(InsufficientAuthenticationException.class, (ex, ctx) -> handleAuthenticationRequired(ctx.requestUri, ctx.function, ctx.addHeader, ex)), entry(BadCredentialsException.class, (ex, ctx) -> handleBadCredentials(ctx.requestUri, ctx.function, ex)), entry(AuthenticationCredentialsNotFoundException.class, (ex, ctx) -> handleAuthenticationCredentialsNotFound(ctx.requestUri, ctx.function, ex)), entry(AuthMethodNotSupportedException.class, (ex, ctx) -> handleAuthMethodNotSupported(ctx.requestUri, ctx.function, ex)), entry(TokenNotValidException.class, (ex, ctx) -> handleTokenNotValid(ctx.requestUri, ctx.function, ctx.addHeader, ex)), entry(NoMainframeIdentityException.class, (ex, ctx) -> handleNoMainframeIdentity(ctx.requestUri, ctx.function, ctx.addHeader, ex)), entry(TokenNotProvidedException.class, (ex, ctx) -> handleTokenNotProvided(ctx.requestUri, ctx.function, ex)), entry(TokenExpireException.class, (ex, ctx) -> handleTokenExpire(ctx.requestUri, ctx.function, ex)), entry(TokenFormatNotValidException.class, (ex, ctx) -> handleTokenFormatException(ctx.requestUri, ctx.function, ex)), entry(AccessTokenInvalidBodyException.class, (ex, ctx) -> handleBadRequest(ctx.requestUri, ctx.function, ex, "org.zowe.apiml.accessToken.invalidFormat")), entry(AccessTokenMissingBodyException.class, (ex, ctx) -> handleBadRequest(ctx.requestUri, ctx.function, ex, "org.zowe.apiml.security.token.accessTokenBodyMissingScopes")), entry(InvalidCertificateException.class, (ex, ctx) -> handleInvalidCertificate(ctx.function, ex)), entry(ZosAuthenticationException.class, (ex, ctx) -> handleZosAuthenticationException(ctx.function, ex)), entry(InvalidTokenTypeException.class, (ex, ctx) -> handleInvalidTokenTypeException(ctx.requestUri, ctx.function, ex)), entry(AuthenticationException.class, (ex, ctx) -> handleAuthenticationException(ctx.requestUri, ctx.function, ex)), entry(ServiceNotAccessibleException.class, (ex, ctx) -> handleServiceNotAccessibleException(ctx.requestUri, ctx.function, ex)), entry(NoResourceFoundException.class, (ex, ctx) -> handleNoResourceFoundException(ctx.function, ex)), entry(RuntimeException.class, (ex, ctx) -> handleRuntimeException(ctx.requestUri, ctx.function, ex)), entry(WebClientResponseException.BadRequest.class, (ex, ctx) -> handleBadRequest(ctx.requestUri, ctx.function, ex, "org.zowe.apiml.security.login.invalidInput")), entry(AccessDeniedException.class, (ex, ctx) -> handleForbidden(ctx.requestUri, ctx.function, ex)), entry(GatewayNotAvailableException.class, (ex, ctx) -> handleGatewayNotAvailable(ctx.function, ex, ctx.requestUri)));
 
     private <E extends Exception> ExceptionHandler<E> resolveHandler(E ex) {
         Class<?> exClass = ex.getClass();
@@ -122,7 +76,6 @@ public class AuthExceptionHandler extends AbstractExceptionHandler {
             if (!applicationInfo.isModulith() && exClass == RuntimeException.class) {
                 return null;
             }
-
             ExceptionHandler<E> handler = (ExceptionHandler<E>) exceptionHandlers.get(exClass);
             if (handler != null) {
                 return handler;
@@ -144,24 +97,8 @@ public class AuthExceptionHandler extends AbstractExceptionHandler {
      * @param ex         Exception to be handled
      */
     @Override
-    public void handleException(String requestUri,
-                                BiConsumer<ApiMessageView, HttpStatus> function,
-                                BiConsumer<String, String> addHeader,
-                                Exception ex) throws ServletException {
-
-        HandlerContext ctx = new HandlerContext(requestUri, function, addHeader);
-        ExceptionHandler<Exception> handler = resolveHandler(ex);
-
-        if (handler != null) {
-            handler.handle(ex, ctx);
-            return;
-        }
-
-        if (!applicationInfo.isModulith()) {
-            throw new ServletException(ex);
-        }
-
-        handleUnknownHandler(requestUri, function, ex);
+    public void handleException(String requestUri, BiConsumer<ApiMessageView, HttpStatus> function, BiConsumer<String, String> addHeader, Exception ex) throws ServletException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void handleZosAuthenticationException(BiConsumer<ApiMessageView, HttpStatus> function, ZosAuthenticationException ex) {
@@ -278,7 +215,5 @@ public class AuthExceptionHandler extends AbstractExceptionHandler {
     private void handleGatewayNotAvailable(BiConsumer<ApiMessageView, HttpStatus> function, GatewayNotAvailableException ex, String uri) {
         log.debug(MESSAGE_FORMAT, HttpStatus.SERVICE_UNAVAILABLE.value(), ex.getMessage());
         writeErrorResponse("org.zowe.apiml.security.gatewayNotAvailable", HttpStatus.SERVICE_UNAVAILABLE, function, uri);
-
     }
-
 }

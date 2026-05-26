@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.exceptions;
 
 public class ApiVersionNotFoundException extends RuntimeException {
@@ -23,7 +22,6 @@ public class ApiVersionNotFoundException extends RuntimeException {
      */
     @Override
     public Throwable fillInStackTrace() {
-        return this;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

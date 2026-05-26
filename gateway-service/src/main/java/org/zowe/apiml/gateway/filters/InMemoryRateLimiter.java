@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import io.github.bucket4j.Bandwidth;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.ratelimit.RateLimiter;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,12 +37,7 @@ public class InMemoryRateLimiter implements RateLimiter<InMemoryRateLimiter.Conf
 
     @Override
     public Mono<Response> isAllowed(String routeId, String id) {
-        Bucket bucket = cache.computeIfAbsent(id, this::newBucket);
-        if (bucket.tryConsume(1)) {
-            return Mono.just(new Response(true, getHeaders(bucket)));
-        } else {
-            return Mono.just(new Response(false, getHeaders(bucket)));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Bucket newBucket(String id) {
@@ -59,42 +52,32 @@ public class InMemoryRateLimiter implements RateLimiter<InMemoryRateLimiter.Conf
     }
 
     public void setParameters(int capacity, int tokens, int refillDuration) {
-        this.capacity = (capacity != 0) ? capacity : this.capacity;
-        this.tokens = (tokens != 0) ? tokens : this.tokens;
-        this.refillDuration = (refillDuration != 0) ? refillDuration : this.refillDuration;;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Map<String, Config> getConfig() {
-        Config defaultConfig = new Config();
-        defaultConfig.setCapacity(capacity);
-        defaultConfig.setTokens(tokens);
-        defaultConfig.setRefillDuration(refillDuration);
-
-        Map<String, Config> configMap = new ConcurrentHashMap<>();
-        configMap.put("default", defaultConfig);
-        return configMap;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Class<Config> getConfigClass() {
-        return Config.class;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Config newConfig() {
-        Config config = new Config();
-        config.setCapacity(capacity);
-        config.setTokens(tokens);
-        config.setRefillDuration(refillDuration);
-        return config;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Setter
     @Getter
     public static class Config {
+
         private int capacity;
+
         private int tokens;
+
         private int refillDuration;
     }
 }

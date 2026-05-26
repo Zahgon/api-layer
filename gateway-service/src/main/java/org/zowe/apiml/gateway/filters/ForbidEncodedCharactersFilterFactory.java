@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,11 +19,10 @@ import org.springframework.stereotype.Component;
  * for filtering them.
  * Encoded characters in URL are allowed by default.
  */
-
 @Component
 public class ForbidEncodedCharactersFilterFactory extends AbstractEncodedCharactersFilterFactory {
 
-    private static final char[] PROHIBITED_CHARACTERS = {'%', ';', '\\'};
+    private static final char[] PROHIBITED_CHARACTERS = { '%', ';', '\\' };
 
     public ForbidEncodedCharactersFilterFactory() {
         super();
@@ -32,10 +30,10 @@ public class ForbidEncodedCharactersFilterFactory extends AbstractEncodedCharact
 
     @Override
     protected boolean shouldFilter(String uri) {
-        return StringUtils.containsAny(uri, PROHIBITED_CHARACTERS);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     RuntimeException getException(String uri) {
-        return new ForbidCharacterException(uri);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

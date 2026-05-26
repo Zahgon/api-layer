@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.config;
 
 import lombok.RequiredArgsConstructor;
@@ -23,17 +22,16 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.zowe.apiml.config.ApplicationInfo;
 import reactor.core.publisher.Mono;
-
 import java.net.URI;
 import java.time.Duration;
-
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration("catalogWebConfig")
 @ComponentScan("org.zowe.apiml.product.web")
 @RequiredArgsConstructor
-@SuppressWarnings("squid:S1192") // using same literals increase the readability
+// using same literals increase the readability
+@SuppressWarnings("squid:S1192")
 @Slf4j
 public class WebConfig implements WebFluxConfigurer {
 
@@ -41,25 +39,7 @@ public class WebConfig implements WebFluxConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String prefix = applicationInfo.isModulith() ? "/apicatalog/ui/v1" : "/apicatalog";
-
-        registry
-            .addResourceHandler(prefix + "/*")
-            .setCacheControl(CacheControl
-                .noStore()
-                .cachePrivate()
-                .mustRevalidate())
-            .addResourceLocations("/static/", "classpath:/static/");
-
-        registry
-            .addResourceHandler(prefix + "/static/**")
-            .setCacheControl(CacheControl.maxAge(Duration.ofDays(365L)))
-            .addResourceLocations("classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/", "classpath:/static/static/");
-
-        registry
-            .addResourceHandler(prefix + "/resources/**")
-            .setCacheControl(CacheControl.maxAge(Duration.ofDays(365L)))
-            .addResourceLocations("/resources/", "/resources/static/", "/resources/templates/");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Mono<ServerResponse> redirect(String path) {
@@ -69,9 +49,6 @@ public class WebConfig implements WebFluxConfigurer {
     @Bean
     @ConditionalOnMissingBean(name = "modulithConfig")
     public RouterFunction<ServerResponse> redirectRouteMicroservice() {
-        return route(GET("/"), req -> redirect("/apicatalog"))
-            .and(route(GET("/apicatalog"), req -> redirect("/apicatalog/")))
-            .and(route(GET("/apicatalog/"), req -> redirect("/apicatalog/index.html")));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

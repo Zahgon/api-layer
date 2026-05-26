@@ -7,13 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import java.util.function.Predicate;
-
 import jakarta.validation.constraints.NotEmpty;
-
 import lombok.Getter;
 import org.springframework.cloud.gateway.handler.predicate.AbstractRoutePredicateFactory;
 import org.springframework.cloud.gateway.handler.predicate.GatewayPredicate;
@@ -35,22 +32,7 @@ public class MissingHeaderRoutePredicateFactory extends AbstractRoutePredicateFa
 
     @Override
     public Predicate<ServerWebExchange> apply(Config config) {
-        return new GatewayPredicate() {
-            @Override
-            public boolean test(ServerWebExchange exchange) {
-                return !exchange.getRequest().getHeaders().containsKey(config.header);
-            }
-
-            @Override
-            public Object getConfig() {
-                return config;
-            }
-
-            @Override
-            public String toString() {
-                return String.format("Missing header: %s", config.header);
-            }
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Getter
@@ -61,10 +43,7 @@ public class MissingHeaderRoutePredicateFactory extends AbstractRoutePredicateFa
         private String header;
 
         public Config setHeader(String header) {
-            this.header = header;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

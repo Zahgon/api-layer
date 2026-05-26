@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,11 +19,9 @@ import org.zowe.apiml.exception.ServiceDefinitionException;
 
 @RestController
 @RequestMapping("/api/v1/apiMediationClient")
-@Tag(
-    description = "/api/v1/apiMediationClient",
-    name = "API Mediation Client test call"
-)
+@Tag(description = "/api/v1/apiMediationClient", name = "API Mediation Client test call")
 public class ApiMediationClientTestController {
+
     private final ApiMediationClientService apiMediationClientService;
 
     public ApiMediationClientTestController(ApiMediationClientService apiMediationClientService) {
@@ -34,25 +31,18 @@ public class ApiMediationClientTestController {
     @PostMapping
     @Operation(summary = "Forward registration to discovery service via API mediation client")
     public ResponseEntity<String> forwardRegistration() {
-        try {
-            apiMediationClientService.register();
-            return ResponseEntity.ok().build();
-        } catch (ServiceDefinitionException e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @DeleteMapping
     @Operation(summary = "Forward un-registration to discovery service via API mediation client")
     public ResponseEntity<String> forwardUnRegistration() {
-        apiMediationClientService.unregister();
-        return ResponseEntity.ok().build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping
     @Operation(summary = "Indicate if registration with discovery service via API mediation client was successful")
     public Registered isRegistered() {
-        boolean isRegistered = apiMediationClientService.isRegistered();
-        return new Registered(isRegistered);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

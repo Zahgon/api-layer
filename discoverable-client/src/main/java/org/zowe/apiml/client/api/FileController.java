@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import jakarta.servlet.ServletContext;
 import java.io.InputStream;
 
@@ -27,6 +25,7 @@ import java.io.InputStream;
 @RestController
 @Tag(name = "Other Operations")
 public class FileController {
+
     private final ServletContext servletContext;
 
     public FileController(ServletContext servletContext) {
@@ -35,14 +34,6 @@ public class FileController {
 
     @GetMapping(value = "/api/v1/get-file", produces = "image/png")
     public ResponseEntity<InputStreamResource> downloadImage() {
-        String fileName = "api-catalog.png";
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
-        InputStreamResource resource = new InputStreamResource(inputStream);
-        String mineType = servletContext.getMimeType(fileName);
-        MediaType mediaType = MediaType.parseMediaType(mineType);
-        return ResponseEntity.ok()
-            .contentType(mediaType)
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName)
-            .body(resource);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

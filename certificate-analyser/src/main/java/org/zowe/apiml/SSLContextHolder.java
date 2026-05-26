@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import javax.net.ssl.*;
@@ -20,7 +19,9 @@ import java.security.cert.X509Certificate;
 public class SSLContextHolder {
 
     private final Stores stores;
+
     private SSLContext sslContext;
+
     private SSLContext sslContextWithKeystore;
 
     private SSLContextHolder(Stores stores) {
@@ -28,79 +29,22 @@ public class SSLContextHolder {
     }
 
     public Stores getStores() {
-        return stores;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public SSLContext getSslContext() {
-        return sslContext;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public SSLContext getSslContextWithKeystore() {
-        return sslContextWithKeystore;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static SSLContextHolder initSSLContextWithKeystore(Stores stores) throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException, KeyManagementException {
-
-        SSLContextHolder conf = new SSLContextHolder(stores);
-        TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustFactory.init(stores.getTrustStore());
-        KeyManagerFactory keyFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        keyFactory.init(stores.getKeyStore(), stores.getConf().getKeyPasswd().toCharArray());
-        conf.sslContextWithKeystore = SSLContext.getInstance(stores.getConf().getTlsVersion());
-        X509KeyManager originalKm = (X509KeyManager) keyFactory.getKeyManagers()[0];
-        X509KeyManager km = new X509KeyManager() {
-            public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
-                if (stores.getConf().getKeyAlias() == null) {
-                    return originalKm.chooseClientAlias(keyType, issuers, socket);
-                }
-                return stores.getConf().getKeyAlias();
-            }
-
-            public X509Certificate[] getCertificateChain(String alias) {
-                return originalKm.getCertificateChain(alias);
-            }
-
-            @Override
-            public String[] getClientAliases(String s, Principal[] principals) {
-                return originalKm.getClientAliases(s, principals);
-            }
-
-            @Override
-            public String[] getServerAliases(String s, Principal[] principals) {
-                return originalKm.getServerAliases(s, principals);
-            }
-
-            @Override
-            public String chooseServerAlias(String s, Principal[] principals, Socket socket) {
-                if (stores.getConf().getKeyAlias() == null) {
-                    return originalKm.chooseServerAlias(s, principals, socket);
-                }
-                return stores.getConf().getKeyAlias();
-            }
-
-            @Override
-            public PrivateKey getPrivateKey(String s) {
-                return originalKm.getPrivateKey(s);
-            }
-        };
-        conf.sslContextWithKeystore.init(new KeyManager[]{km}, trustFactory.getTrustManagers(), new SecureRandom());
-        return conf;
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static SSLContextHolder initSSLContextWithoutKeystore(Stores stores) throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException, KeyManagementException {
-
-        SSLContextHolder conf = new SSLContextHolder(stores);
-        TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustFactory.init(stores.getTrustStore());
-        KeyManagerFactory keyFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-
-        KeyStore emptyKeystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        emptyKeystore.load(null, null);
-        keyFactory.init(emptyKeystore, null);
-        conf.sslContext = SSLContext.getInstance(stores.getConf().getTlsVersion());
-        conf.sslContext.init(keyFactory.getKeyManagers(), trustFactory.getTrustManagers(), new SecureRandom());
-        return conf;
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

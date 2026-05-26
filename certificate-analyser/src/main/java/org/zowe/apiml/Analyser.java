@@ -7,63 +7,21 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import picocli.CommandLine;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("squid:S106") //ignoring the System.out System.err warnings
+//ignoring the System.out System.err warnings
+@SuppressWarnings("squid:S106")
 public class Analyser {
 
     public static int mainWithExitCode(String[] args) {
-        try {
-            ApimlConf conf = new ApimlConf();
-            CommandLine cmd = new CommandLine(conf);
-            cmd.parseArgs(args);
-            if (conf.isHelpRequested()) {
-                cmd.printVersionHelp(System.out);
-                CommandLine.usage(new ApimlConf(), System.out);
-                return 8;
-            }
-
-            Stores stores = new Stores(conf);
-            SSLContextHolder sslContextHolder = SSLContextHolder.initSSLContextWithoutKeystore(stores);
-            List<Verifier> verifiers = new ArrayList<>();
-            HttpClient client;
-            if (conf.getRemoteUrl() != null) {
-                if (conf.isClientCertAuth()) {
-                    sslContextHolder = SSLContextHolder.initSSLContextWithKeystore(stores);
-                    client = new HttpClient(sslContextHolder.getSslContextWithKeystore());
-                } else {
-                    client = new HttpClient(sslContextHolder.getSslContext());
-                }
-                verifiers.add(new RemoteHandshake(sslContextHolder, client));
-            } else {
-                System.out.println("No remote will be verified. Specify \"-r\" or \"--remoteurl\" if you wish to verify the trust.");
-            }
-
-            if (conf.isDoLocalHandshake()) {
-                sslContextHolder = SSLContextHolder.initSSLContextWithKeystore(stores);
-                client = new HttpClient(sslContextHolder.getSslContextWithKeystore());
-                verifiers.add(new LocalHandshake(sslContextHolder, client));
-            }
-            if (conf.getKeyStore() != null) {
-                verifiers.add(new LocalVerifier(stores, conf.getRequiredHostNames()));
-            }
-
-            boolean valid = verifiers.stream().map(Verifier::verify).min(Boolean::compareTo).orElse(false);
-            return valid ? 0 : 4;
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-        return 4;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static final void main(String[] args) {
-        System.exit(mainWithExitCode(args));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

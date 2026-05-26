@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.configuration;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -25,13 +24,11 @@ public class SpringComponentsConfiguration {
 
     @Bean
     Jackson2ObjectMapperBuilderCustomizer failOnUnknownProperties() {
-        return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
-            .featuresToEnable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     ServiceStartupEventHandler serviceStartupEventHandler() {
-        return new ServiceStartupEventHandler();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

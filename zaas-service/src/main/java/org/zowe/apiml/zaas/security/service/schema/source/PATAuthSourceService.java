@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ import org.zowe.apiml.security.common.token.AccessTokenProvider;
 import org.zowe.apiml.security.common.token.QueryResponse;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
 import org.zowe.apiml.zaas.security.service.TokenCreationService;
-
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -36,94 +34,48 @@ public class PATAuthSourceService extends TokenAuthSourceService {
     protected final ApimlLogger logger = ApimlLogger.empty();
 
     private final AuthenticationService authenticationService;
+
     private final AccessTokenProvider tokenProvider;
+
     private final TokenCreationService tokenService;
 
     @Override
     protected ApimlLogger getLogger() {
-        return logger;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Function<String, AuthSource> getMapper() {
-        return PATAuthSource::new;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Optional<AuthSource> getAuthSourceFromRequest(HttpServletRequest request) {
-        Optional<AuthSource> authSource = super.getAuthSourceFromRequest(request);
-
-        if (authSource.isPresent()) {
-            PATAuthSource patAuthSource = (PATAuthSource) authSource.get();
-            String defaultServiceId = request.getHeader(SERVICE_ID_HEADER);
-            patAuthSource.setDefaultServiceId(defaultServiceId);
-        }
-
-        return authSource;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Optional<String> getToken(HttpServletRequest request) {
-        Optional<String> tokenOptional = authenticationService.getJwtTokenFromRequest(request);
-        if (!tokenOptional.isPresent()) {
-            // try to get token also from PAT specific cookie or header
-            tokenOptional = authenticationService.getPATFromRequest(request);
-        }
-        if (tokenOptional.isPresent()) {
-            AuthSource.Origin origin = authenticationService.getTokenOrigin(tokenOptional.get());
-            if (AuthSource.Origin.ZOWE_PAT == origin) {
-                return tokenOptional;
-            }
-        }
-        return Optional.empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean isValid(AuthSource authSource) {
-        try {
-            String token = (String) authSource.getRawSource();
-            String serviceId = ((PATAuthSource) authSource).getDefaultServiceId();
-            boolean validForScopes = tokenProvider.isValidForScopes(token, serviceId);
-            logger.log(MessageType.DEBUG, "PAT is {} for scope: {} ", validForScopes ? "valid" : "not valid", serviceId);
-            if (!validForScopes) return false;
-            boolean invalidate = tokenProvider.isInvalidated(token);
-            logger.log(MessageType.DEBUG, "PAT was {}}", invalidate ? "invalidated" : "not invalidated");
-            return !invalidate;
-        } catch (Exception e) {
-            logger.log(MessageType.ERROR, "PAT is not valid due to the exception: {}", e.getMessage());
-            if (log.isDebugEnabled()) {
-                log.debug("PAT is not valid due to the exception:", e);
-            }
-            return false;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public AuthSource.Parsed parse(AuthSource authSource) {
-        if (authSource instanceof PATAuthSource) {
-            String jwt = (String) authSource.getRawSource();
-            QueryResponse response = authenticationService.parseJwtWithSignature(jwt);
-
-            AuthSource.Origin origin = AuthSource.Origin.valueByTokenSource(response.getSource());
-            return new ParsedTokenAuthSource(response.getUserId(), response.getCreation(), response.getExpiration(), origin);
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getLtpaToken(AuthSource authSource) {
-        String zosmfToken = getJWT(authSource);
-        AuthSource.Origin origin = authenticationService.getTokenOrigin(zosmfToken);
-        if (AuthSource.Origin.ZOWE.equals(origin)) {
-            zosmfToken = authenticationService.getLtpaToken(zosmfToken);
-        }
-        return zosmfToken;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getJWT(AuthSource authSource) {
-        ParsedTokenAuthSource parsed = (ParsedTokenAuthSource) parse(authSource);
-        return tokenService.createJwtTokenWithoutCredentials(parsed.getUserId());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

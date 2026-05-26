@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import org.zowe.apiml.eurekaservice.model.Health;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,11 +21,11 @@ public class HealthController {
 
     @Get(uri = "/health", produces = MediaType.APPLICATION_JSON)
     public Health getHealthStatus() {
-        return new Health("UP");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Get(uri = "/info", produces = MediaType.APPLICATION_JSON)
     public Map<String, String> getInfo() {
-        return new HashMap<>();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

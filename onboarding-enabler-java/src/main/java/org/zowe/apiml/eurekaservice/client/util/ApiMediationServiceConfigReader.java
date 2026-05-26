@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,14 +21,12 @@ import org.zowe.apiml.util.FileUtils;
 import org.zowe.apiml.util.ObjectUtil;
 import org.zowe.apiml.util.StringUtils;
 import org.zowe.apiml.util.UrlUtils;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_ABSENT;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -80,7 +77,6 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
  *
  *  , or in the corresponding Java System property.
  *  </p>
- *
  */
 @Slf4j
 public class ApiMediationServiceConfigReader {
@@ -101,17 +97,14 @@ public class ApiMediationServiceConfigReader {
      */
     private final ThreadLocal<Map<String, String>> threadConfigurationContext = ThreadLocal.withInitial(HashMap::new);
 
-
     /**
      * Default constructor.
      */
     public ApiMediationServiceConfigReader() {
-        objectMapper = new ObjectMapper(new YAMLFactory())
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.setDefaultMergeable(true);
         objectMapper.setDefaultPropertyInclusion(JsonInclude.Value.construct(NON_NULL, NON_ABSENT));
     }
-
 
     /**
      * Merges two APiMediationServiceConfig objects, where the second one has higher priority, i.e replaces values into the first one.
@@ -121,12 +114,7 @@ public class ApiMediationServiceConfigReader {
      * @return
      */
     public ApiMediationServiceConfig mergeConfigurations(ApiMediationServiceConfig defaultConfiguration, ApiMediationServiceConfig additionalConfiguration) {
-
-        Map<String, Object> defaultConfigPropertiesMap = objectMapper.convertValue(defaultConfiguration, Map.class);
-        Map<String, Object> additionalConfigPropertiesMap = objectMapper.convertValue(additionalConfiguration, Map.class);
-        Map<String, Object> config = ObjectUtil.mergeConfigurations(defaultConfigPropertiesMap, additionalConfigPropertiesMap);
-
-        return objectMapper.convertValue(config, ApiMediationServiceConfig.class);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -137,10 +125,8 @@ public class ApiMediationServiceConfigReader {
      * @param internalConfigurationFileName
      * @return
      */
-    public ApiMediationServiceConfig loadConfiguration(String internalConfigurationFileName)
-        throws ServiceDefinitionException {
-
-        return loadConfiguration(internalConfigurationFileName, null, false);
+    public ApiMediationServiceConfig loadConfiguration(String internalConfigurationFileName) throws ServiceDefinitionException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -156,70 +142,41 @@ public class ApiMediationServiceConfigReader {
      * @param externalizedConfigFileName
      * @return
      */
-    public ApiMediationServiceConfig loadConfiguration(String internalConfigFileName, String externalizedConfigFileName)
-        throws ServiceDefinitionException {
-
-        return loadConfiguration(internalConfigFileName, externalizedConfigFileName, false);
+    public ApiMediationServiceConfig loadConfiguration(String internalConfigFileName, String externalizedConfigFileName) throws ServiceDefinitionException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    private ApiMediationServiceConfig loadConfiguration(String internalConfigFileName, String externalizedConfigFileName, boolean isInitialized)
-        throws ServiceDefinitionException {
-
+    private ApiMediationServiceConfig loadConfiguration(String internalConfigFileName, String externalizedConfigFileName, boolean isInitialized) throws ServiceDefinitionException {
         /*
          * Loading new configuration. Clean context map which might be kept in ThreadLocal object from previous configs.
          */
         if (!isInitialized) {
             initializeContextMap();
-
             /*
              * Store API ML relevant ("apiml." prefixed) Java system properties to a Map in ThreadLocal
              */
             setApiMlSystemProperties();
         }
-
         if (internalConfigFileName == null) {
             internalConfigFileName = DEFAULT_CONFIGURATION_FILE_NAME;
         }
-
         ApiMediationServiceConfig serviceConfig = buildConfiguration(internalConfigFileName);
-
         if (externalizedConfigFileName != null) {
             ApiMediationServiceConfig externalizedConfig = buildConfiguration(externalizedConfigFileName);
-
             ApiMediationServiceConfig mergedConfig = null;
             if (externalizedConfig != null) {
                 mergedConfig = mergeConfigurations(serviceConfig, externalizedConfig);
             }
-
             if (mergedConfig != null) {
                 serviceConfig = mergedConfig;
             }
         }
-
         setServiceIpAddress(serviceConfig);
-
         return serviceConfig;
     }
 
     public static void setServiceIpAddress(ApiMediationServiceConfig serviceConfig) throws ServiceDefinitionException {
-        if ((serviceConfig == null) || !serviceConfig.isPreferIpAddress()) {
-            if (serviceConfig != null && org.apache.commons.lang3.StringUtils.isEmpty(serviceConfig.getServiceIpAddress())) {
-                serviceConfig.setServiceIpAddress("127.0.0.1");
-            }
-            log.debug("IP Address is not preferred, will not resolve address from hostname.");
-            return;
-        }
-        // Set instance ipAddress if required by Eureka and not set in the configuration files
-        if ((serviceConfig.getServiceIpAddress() == null)) {
-            String urlString = serviceConfig.getBaseUrl();
-            try {
-                serviceConfig.setServiceIpAddress(UrlUtils.getIpAddressFromUrl(urlString));
-            } catch (MalformedURLException e) {
-                throw new ServiceDefinitionException(String.format("%s is not a valid URL.", urlString), e);
-            } catch (UnknownHostException e) {
-                throw new ServiceDefinitionException(String.format("URL %s contains unknown hostname.", urlString), e);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -231,7 +188,7 @@ public class ApiMediationServiceConfigReader {
      * @throws ServiceDefinitionException
      */
     public ApiMediationServiceConfig buildConfiguration(String fileName) throws ServiceDefinitionException {
-        return buildConfiguration(fileName, threadConfigurationContext.get());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -241,25 +198,9 @@ public class ApiMediationServiceConfigReader {
      * @param fileName
      * @return
      * @throws ServiceDefinitionException
-    */
+     */
     public ApiMediationServiceConfig buildConfiguration(String fileName, Map<String, String> properties) throws ServiceDefinitionException {
-        if (fileName == null) {
-            return null;
-        }
-
-        String configData = null;
-        try {
-            configData = FileUtils.readFile(fileName);
-        } catch (IOException e) {
-            throw new ServiceDefinitionException(String.format("Configuration data can't be read from file %s.", fileName), e);
-        }
-        configData = StringUtils.resolveExpressions(configData, properties);
-
-        try {
-            return objectMapper.readValue(configData, ApiMediationServiceConfig.class);
-        } catch (IOException e) {
-            throw new ServiceDefinitionException("Configuration data can't be parsed as ApiMediationServiceConfig.", e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -268,17 +209,7 @@ public class ApiMediationServiceConfigReader {
      * @param servletContext
      */
     public Map<String, String> setApiMlServiceContext(ServletContext servletContext) {
-        Map<String, String> threadContextMap = ObjectUtil.getThreadContextMap(threadConfigurationContext);
-
-        Enumeration<String> paramNames = servletContext.getInitParameterNames();
-        while (paramNames.hasMoreElements()) {
-            String param = paramNames.nextElement();
-            String value = servletContext.getInitParameter(param);
-            if (param.startsWith("apiml.")) {
-                threadContextMap.put(param, value);
-            }
-        }
-        return threadContextMap;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -326,58 +257,16 @@ public class ApiMediationServiceConfigReader {
      * @param context
      */
     public ApiMediationServiceConfig loadConfiguration(ServletContext context) throws ServiceDefinitionException {
-
-        /*
-         * Loading new configuration. Clean context map which might be kept in ThreadLocal object from previous configs.
-         */
-        initializeContextMap();
-
-        /*
-         * Store API ML relevant ("apiml." prefixed) Java system properties to a Map in ThreadLocal
-         */
-        setApiMlSystemProperties();
-
-        /*
-         * Set Java system properties from ServletContext parameters starting with "apiml." prefix.
-         * If rewriting is not used, it is not necessary to call {@link ApiMediationServiceConfigReader#setSystemProperties}
-         */
-        setApiMlServiceContext(context);
-
-        Map<String, String> threadContextMap = ObjectUtil.getThreadContextMap(threadConfigurationContext);
-
-        /*
-         *  Get default configuration file name from ServletContext init parameter.
-         *  If null, ApiMediationServiceConfigReader will use "/service-configuration.yml" as default.
-         */
-        String basicConfigurationFileName = threadContextMap.get(APIML_DEFAULT_CONFIG);
-        if (basicConfigurationFileName == null) {
-            basicConfigurationFileName = threadContextMap.get(APIML_DEFAULT_CONFIG);
-        }
-
-        /*
-         * (Optional) Get externalized configuration file name from ServletContext init parameter.
-         */
-        String externalConfigurationFileName = threadContextMap.get(APIML_ADDITIONAL_CONFIG);
-        if (externalConfigurationFileName == null) {
-            externalConfigurationFileName = threadContextMap.get(APIML_ADDITIONAL_CONFIG);
-        }
-
-        /*
-         * return result of loadConfiguration method with both config file names initialized above.
-         */
-        return loadConfiguration(basicConfigurationFileName, externalConfigurationFileName, true);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Add/Replace all system properties prefixed with "apiml." to the apiml context map stored in ThreadLocal.
      *
      * WARNING: This method could rewrite previously set Servlet context parameters
-     *
      */
     private Map<String, String> setApiMlSystemProperties() {
-
         Map<String, String> threadContextMap = ObjectUtil.getThreadContextMap(threadConfigurationContext);
-
         Enumeration<?> propertyNames = System.getProperties().propertyNames();
         while (propertyNames.hasMoreElements()) {
             String param = (String) propertyNames.nextElement();
@@ -386,7 +275,6 @@ public class ApiMediationServiceConfigReader {
                 threadContextMap.put(param, value);
             }
         }
-
         return threadContextMap;
     }
 

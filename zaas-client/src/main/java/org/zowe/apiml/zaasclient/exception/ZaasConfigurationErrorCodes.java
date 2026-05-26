@@ -7,16 +7,14 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaasclient.exception;
 
 public enum ZaasConfigurationErrorCodes {
-    TRUST_STORE_NOT_PROVIDED("ZWEAS500E", "There was no path to the trust store."),
-    KEY_STORE_NOT_PROVIDED("ZWEAS501E","There was no path to the key store."),
-    WRONG_CRYPTO_CONFIGURATION("ZWEAS502E", "The configuration provided for SSL is invalid."),
-    IO_CONFIGURATION_ISSUE("ZWEAS503E", "The SSL configuration contained invalid path.");
+
+    TRUST_STORE_NOT_PROVIDED("ZWEAS500E", "There was no path to the trust store."), KEY_STORE_NOT_PROVIDED("ZWEAS501E", "There was no path to the key store."), WRONG_CRYPTO_CONFIGURATION("ZWEAS502E", "The configuration provided for SSL is invalid."), IO_CONFIGURATION_ISSUE("ZWEAS503E", "The SSL configuration contained invalid path.");
 
     private final String id;
+
     private final String message;
 
     ZaasConfigurationErrorCodes(String id, String message) {
@@ -25,18 +23,15 @@ public enum ZaasConfigurationErrorCodes {
     }
 
     public String getId() {
-        return id;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getMessage() {
-        return message;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String toString() {
-        return "ZaasClientErrorCodes{" +
-            "id='" + id + '\'' +
-            ", message='" + message +
-            '}';
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

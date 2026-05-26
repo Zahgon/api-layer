@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
@@ -25,9 +24,7 @@ import org.zowe.apiml.config.ApplicationInfo;
 import org.zowe.apiml.product.version.VersionInfo;
 import org.zowe.apiml.product.version.VersionInfoDetails;
 import org.zowe.apiml.product.version.VersionService;
-
 import java.util.List;
-
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.*;
 
 /**
@@ -40,33 +37,33 @@ import static org.zowe.apiml.constants.EurekaMetadataDefinition.*;
 public class GatewayHomepageController {
 
     private static final String SUCCESS_ICON_NAME = "success";
+
     private static final String WARNING_ICON_NAME = "warning";
+
     private static final String UI_V1_ROUTE = "%s.ui-v1.%s";
 
     private final DiscoveryClient discoveryClient;
+
     private final VersionService versionService;
+
     @Value("${apiml.catalog.serviceId:}")
     private String apiCatalogServiceId;
 
     private final ApplicationInfo applicationInfo;
+
     private String buildString;
+
     private String zoweVersionText;
 
     @PostConstruct
     public void init() {
-        initializeBuildInfos();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Hidden
     @GetMapping("/")
     public String home(Model model) {
-        initializeCatalogAttributes(model);
-        initializeDiscoveryAttributes(model);
-        initializeAuthenticationAttributes(model);
-
-        model.addAttribute("buildInfoText", buildString);
-        model.addAttribute("zoweVersionText", zoweVersionText);
-        return "home";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void initializeBuildInfos() {
@@ -85,11 +82,10 @@ public class GatewayHomepageController {
     private void initializeDiscoveryAttributes(Model model) {
         String discoveryStatusText = null;
         String discoveryIconName = null;
-
         List<ServiceInstance> serviceInstances = discoveryClient.getInstances("discovery");
         if (serviceInstances != null) {
             int discoveryCount = serviceInstances.size();
-            switch (discoveryCount) {
+            switch(discoveryCount) {
                 case 0:
                     discoveryStatusText = "The Discovery Service is not running";
                     discoveryIconName = "danger";
@@ -104,7 +100,6 @@ public class GatewayHomepageController {
                     break;
             }
         }
-
         model.addAttribute("discoveryStatusText", discoveryStatusText);
         model.addAttribute("discoveryIconName", discoveryIconName);
     }
@@ -113,13 +108,10 @@ public class GatewayHomepageController {
         String authStatusText = "The Authentication Service is not running";
         String authIconName = WARNING_ICON_NAME;
         long zaasCount = authorizationServiceCount();
-
         if (zaasCount > 0) {
             authIconName = SUCCESS_ICON_NAME;
-            authStatusText = zaasCount > 1 ?
-                zaasCount + " Authentication Service instances are running" : "The Authentication Service is running";
+            authStatusText = zaasCount > 1 ? zaasCount + " Authentication Service instances are running" : "The Authentication Service is running";
         }
-
         model.addAttribute("authStatusText", authStatusText);
         model.addAttribute("authIconName", authIconName);
     }
@@ -130,7 +122,6 @@ public class GatewayHomepageController {
         if (!isAnyCatalogAvailable) {
             return;
         }
-
         String catalogLink = null;
         String catalogStatusText = "The API Catalog is not running";
         String catalogIconName = WARNING_ICON_NAME;
@@ -143,12 +134,9 @@ public class GatewayHomepageController {
                 linkEnabled = true;
                 catalogIconName = SUCCESS_ICON_NAME;
                 catalogLink = getCatalogLink(catalogServiceInstances.get(0));
-
-                catalogStatusText = catalogCount > 1 ?
-                    catalogCount + " API Catalog instances are running" : "The API Catalog is running";
+                catalogStatusText = catalogCount > 1 ? catalogCount + " API Catalog instances are running" : "The API Catalog is running";
             }
         }
-
         model.addAttribute("catalogLink", catalogLink);
         model.addAttribute("catalogIconName", catalogIconName);
         model.addAttribute("catalogLinkEnabled", linkEnabled);
@@ -172,5 +160,4 @@ public class GatewayHomepageController {
             return serviceUrl + gatewayUrl;
         }
     }
-
 }

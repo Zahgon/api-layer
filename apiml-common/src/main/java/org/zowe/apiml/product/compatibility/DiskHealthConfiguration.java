@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.compatibility;
 
 import org.springframework.boot.actuate.autoconfigure.system.DiskSpaceHealthContributorAutoConfiguration;
@@ -30,6 +29,6 @@ public class DiskHealthConfiguration {
     @Bean
     @Primary
     public DiskSpaceHealthIndicator diskSpaceHealthIndicator(DiskSpaceHealthIndicatorProperties properties) {
-        return new CustomDiskSpaceHealthIndicator(properties.getPath(), properties.getThreshold());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

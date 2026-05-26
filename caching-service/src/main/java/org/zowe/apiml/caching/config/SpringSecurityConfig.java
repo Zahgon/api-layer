@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +26,6 @@ import org.springframework.security.web.server.util.matcher.AndServerWebExchange
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.zowe.apiml.security.common.util.X509Util;
 import reactor.core.publisher.Mono;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,46 +42,11 @@ public class SpringSecurityConfig {
     @Bean
     @Order(1)
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-
-        var antMatchersToIgnore = new ArrayList<String>();
-        antMatchersToIgnore.add("/cachingservice/application/info");
-        antMatchersToIgnore.add("/cachingservice/application/eurekaversion");
-        antMatchersToIgnore.add("/cachingservice/v3/api-docs");
-        if (!isHealthEndpointProtected) {
-            antMatchersToIgnore.add("/cachingservice/application/health");
-        }
-
-        http
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .headers(headers -> headers.hsts(ServerHttpSecurity.HeaderSpec.HstsSpec::disable))
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                ServerWebExchangeMatchers.pathMatchers("/cachingservice/**")
-            ))
-            .exceptionHandling(exceptionHandlingSpec ->
-                exceptionHandlingSpec.authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.FORBIDDEN))
-            );
-
-        if (verifyCertificates) {
-            http.authorizeExchange(exchange -> exchange
-                .pathMatchers(antMatchersToIgnore.toArray(new String[0])).permitAll()
-                .anyExchange().authenticated()
-            ).x509(x509spec -> x509spec.principalExtractor(X509Util.x509PrincipalExtractor())
-                .authenticationManager(X509Util.x509ReactiveAuthenticationManager()));
-        } else {
-            http.authorizeExchange(exchange -> exchange.anyExchange().permitAll());
-        }
-
-        return http.build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     @Bean
     ReactiveUserDetailsService userDetailsService() {
-
-        return username -> {
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            UserDetails userDetails = User.withUsername(username).authorities(authorities).password("").build();
-            return Mono.just(userDetails);
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

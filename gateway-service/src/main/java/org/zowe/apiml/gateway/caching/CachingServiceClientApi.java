@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.caching;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.zowe.apiml.cache.Storage;
 import org.zowe.apiml.caching.model.KeyValue;
 import reactor.core.publisher.Mono;
-
 import static reactor.core.publisher.Mono.empty;
 
 /**
@@ -37,41 +35,27 @@ import static reactor.core.publisher.Mono.empty;
 @Slf4j
 @RequiredArgsConstructor
 public class CachingServiceClientApi implements CachingServiceClient {
+
     private final Storage storage;
 
     @Override
     public Mono<Void> create(ApiKeyValue keyValue) {
-        String serviceId = extractServiceId(keyValue.getKey());
-        storage.create(serviceId, mapToApiKeyValue(keyValue));
-        return empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Mono<Void> update(ApiKeyValue keyValue) {
-        String serviceId = extractServiceId(keyValue.getKey());
-        storage.update(serviceId, mapToApiKeyValue(keyValue));
-        return empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Mono<ApiKeyValue> read(String key) {
-
-        String serviceId = extractServiceId(key);
-        KeyValue stored = storage.read(serviceId, key);
-        if (stored != null) {
-            return Mono.just(new ApiKeyValue(stored.getKey(), stored.getValue()));
-        } else {
-            return empty();
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Mono<Void> delete(String key) {
-        String serviceId = extractServiceId(key);
-        storage.delete(serviceId, key);
-        return empty();
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private KeyValue mapToApiKeyValue(ApiKeyValue apiValue) {
@@ -92,5 +76,4 @@ public class CachingServiceClientApi implements CachingServiceClient {
         }
         return prefixRemoved.substring(colonPos + 1);
     }
-
 }

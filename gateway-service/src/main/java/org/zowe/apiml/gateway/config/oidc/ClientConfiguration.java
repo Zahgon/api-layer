@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config.oidc;
 
 import jakarta.annotation.PostConstruct;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,17 +39,18 @@ import java.util.stream.Collectors;
 public class ClientConfiguration {
 
     private static final String DEFAULT_REDIRECT_URI = "{baseUrl}/gateway/{action}/oauth2/code/{registrationId}";
+
     private static final String SYSTEM_ENV_PREFIX = "ZWE_configs_spring_security_oauth2_client_";
-    private static final Pattern REGISTRATION_ID_PATTERN = Pattern.compile(
-        "^" + SYSTEM_ENV_PREFIX + "(registration|provider)_([^_]+)_.*$"
-    );
+
+    private static final Pattern REGISTRATION_ID_PATTERN = Pattern.compile("^" + SYSTEM_ENV_PREFIX + "(registration|provider)_([^_]+)_.*$");
 
     public static final String REGISTRATION_ENV_TYPE = "registration";
+
     public static final String PROVIDER_ENV_TYPE = "provider";
 
     private Map<String, Registration> registration = new HashMap<>();
-    private Map<String, Provider> provider = new HashMap<>();
 
+    private Map<String, Provider> provider = new HashMap<>();
 
     private String getSystemEnv(String id, String type, String name) {
         StringBuilder sb = new StringBuilder();
@@ -70,7 +69,6 @@ public class ClientConfiguration {
         update(id, REGISTRATION_ENV_TYPE, "clientId", registration::setClientId);
         update(id, REGISTRATION_ENV_TYPE, "clientSecret", registration::setClientSecret);
         update(id, REGISTRATION_ENV_TYPE, "redirectUri", registration::setRedirectUri);
-
         String scope = getSystemEnv(id, REGISTRATION_ENV_TYPE, "scope");
         if (scope != null) {
             registration.setScope(Arrays.asList(scope.split(",")));
@@ -86,25 +84,18 @@ public class ClientConfiguration {
     }
 
     private Set<String> getRegistrationsIdsFromSystemEnv() {
-        return System.getenv().keySet().stream()
-            .map(key -> {
-                Matcher matcher = REGISTRATION_ID_PATTERN.matcher(String.valueOf(key));
-                if (matcher.matches()) {
-                    return matcher.group(2);
-                }
-                return null;
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+        return System.getenv().keySet().stream().map(key -> {
+            Matcher matcher = REGISTRATION_ID_PATTERN.matcher(String.valueOf(key));
+            if (matcher.matches()) {
+                return matcher.group(2);
+            }
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toSet());
     }
 
     @PostConstruct
     void updateWithSystemEnvironment() {
-        for (String registrationId : getRegistrationsIdsFromSystemEnv()) {
-            update(registrationId, registration.computeIfAbsent(registrationId, k -> new Registration()));
-            update(registrationId, provider.computeIfAbsent(registrationId, k -> new Provider()));
-        }
-        processDefaults();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /*
@@ -120,30 +111,11 @@ public class ClientConfiguration {
     }
 
     public Map<String, Config> getConfigurations() {
-        Map<String, Config> map = new HashMap<>();
-        for (Map.Entry<String, Registration> registrationEntry : registration.entrySet()) {
-            String id = registrationEntry.getKey();
-            Provider providerConfig = provider.get(id);
-            if (providerConfig != null) {
-                map.put(id, Config.builder()
-                    .id(id)
-                    .registration(registrationEntry.getValue())
-                    .provider(providerConfig)
-                    .build()
-                );
-            }
-        }
-        if (map.size() < Math.max(registration.size(), provider.size())) {
-            log.debug("OIDC configuration is not complete, please refer to the documentation.");
-        }
-        return map;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean isConfigured() {
-        if (!Optional.ofNullable(registration).map(m -> !m.isEmpty()).orElse(false)) {
-            return false;
-        }
-        return Optional.ofNullable(provider).map(m -> !m.isEmpty()).orElse(false);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Value
@@ -151,9 +123,9 @@ public class ClientConfiguration {
     public static class Config {
 
         private String id;
+
         private Registration registration;
+
         private Provider provider;
-
     }
-
 }

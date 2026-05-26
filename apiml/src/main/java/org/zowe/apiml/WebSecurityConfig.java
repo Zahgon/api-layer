@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import lombok.RequiredArgsConstructor;
@@ -60,11 +59,9 @@ import org.zowe.apiml.zaas.security.config.CompoundAuthProvider;
 import org.zowe.apiml.zaas.security.login.x509.X509AuthenticationProvider;
 import org.zowe.apiml.zaas.security.mapping.AuthenticationMapper;
 import org.zowe.apiml.zaas.security.query.TokenAuthenticationProvider;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -80,27 +77,43 @@ import static org.zowe.apiml.gateway.services.ServicesInfoController.SERVICES_SH
 public class WebSecurityConfig {
 
     private static final String CONTEXT_PATH = String.format("/%s", CoreService.GATEWAY.getServiceId());
+
     private static final String REGISTRY_PATH = CONTEXT_PATH + "/api/v1/registry";
+
     private static final String CONFORMANCE_SHORT_URL = CONTEXT_PATH + "/conformance/**";
+
     private static final String CONFORMANCE_LONG_URL = CONTEXT_PATH + "/api/v1" + "/conformance/**";
+
     private static final String VALIDATE_SHORT_URL = "gateway/validate";
+
     private static final String VALIDATE_LONG_URL = "gateway/api/v1/validate";
+
     private static final String APPLICATION_HEALTH = "/application/health";
+
     private static final String APPLICATION_INFO = "/application/info";
 
     private final CompoundAuthProvider compoundAuthProvider;
+
     private final X509AuthenticationProvider x509AuthenticationProvider;
+
     private final LocalTokenProvider localTokenProvider;
-    private final Set<String> publicKeyCertificatesBase64; // Base64 encoded public keys of APIML certificates
-    private final CertificateValidator certificateValidator; // Service for validating certificates
+
+    // Base64 encoded public keys of APIML certificates
+    private final Set<String> publicKeyCertificatesBase64;
+
+    // Service for validating certificates
+    private final CertificateValidator certificateValidator;
+
     private final FailedAuthenticationWebHandler failedAuthenticationWebHandler;
+
     private final TokenAuthenticationProvider tokenAuthenticationProvider;
+
     private final HttpUtils httpUtils;
 
-    @Setter(onMethod_ = {@Autowired(required = false)})
+    @Setter(onMethod_ = { @Autowired(required = false) })
     private OIDCProvider oidcProvider;
 
-    @Setter(onMethod_ = {@Autowired(required = false), @Qualifier("oidcMapper")})
+    @Setter(onMethod_ = { @Autowired(required = false), @Qualifier("oidcMapper") })
     private AuthenticationMapper oidcMapper;
 
     @Value("${apiml.security.oidc.userIdField:sub}")
@@ -121,26 +134,17 @@ public class WebSecurityConfig {
     @Value("${apiml.security.oidc.enabled:false}")
     private boolean isOidcEnabled;
 
-    private static final List<String> UNAUTHENTICATED_PATTERNS = List.of(
-        "/application/",
-        "/application/version",
-        "/eureka/css/**",
-        "/eureka/js/**",
-        "/eureka/fonts/**",
-        "/eureka/images/**",
-        APPLICATION_INFO,
-        "/favicon.ico");
+    private static final List<String> UNAUTHENTICATED_PATTERNS = List.of("/application/", "/application/version", "/eureka/css/**", "/eureka/js/**", "/eureka/fonts/**", "/eureka/images/**", APPLICATION_INFO, "/favicon.ico");
 
     private final ServerWebExchangeMatcher discoveryPortMatcher = exchange -> exchange.getRequest().getURI().getPort() == internalDiscoveryPort ? MatchResult.match() : MatchResult.notMatch();
-    private final ServerWebExchangeMatcher isInUnauthenticatedPaths = pathMatchers(UNAUTHENTICATED_PATTERNS.toArray(new String[]{}));
+
+    private final ServerWebExchangeMatcher isInUnauthenticatedPaths = pathMatchers(UNAUTHENTICATED_PATTERNS.toArray(new String[] {}));
+
     private final ServerWebExchangeMatcher notInUnauthenticatedPaths = new NegatedServerWebExchangeMatcher(isInUnauthenticatedPaths);
 
     @Bean
     SecurityWebFilterChain errorFilterChain(ServerHttpSecurity http) {
-        return http
-            .securityMatcher(pathMatchers("/error"))
-            .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll())
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -153,29 +157,7 @@ public class WebSecurityConfig {
     @Bean
     @Order(0)
     SecurityWebFilterChain discoveryServiceClientCertificateFilterChain(ServerHttpSecurity http) {
-        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                discoveryPortMatcher,
-                pathMatchers("/eureka/**"),
-                notInUnauthenticatedPaths,
-                exchange -> exchange.getRequest().getURI().getPath().startsWith("/eureka/") ? MatchResult.match() : MatchResult.notMatch() // Prevents matching /eureka (mapping for homepage in modulith)
-            ))
-            .authorizeExchange(authorizeExchangeSpec -> {
-                if (verifySslCertificatesOfServices) {
-                    authorizeExchangeSpec
-                        .anyExchange().authenticated();
-                } else {
-                    authorizeExchangeSpec.anyExchange().permitAll();
-                }
-            })
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .formLogin(ServerHttpSecurity.FormLoginSpec::disable);
-
-        if (verifySslCertificatesOfServices) {
-            return x509SecurityConfig(http).build();
-        }
-
-        return http.build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -189,41 +171,17 @@ public class WebSecurityConfig {
      */
     @Bean
     @Order(1)
-    SecurityWebFilterChain discoveryServiceBasicAuthOrTokenOrCertFilterChain(ServerHttpSecurity http,
-                                                                             AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive) {
-        http
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                discoveryPortMatcher,
-                notInUnauthenticatedPaths,
-                pathMatchers("/discovery/**")
-            ))
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new TokenAuthFilter(localTokenProvider, authConfigurationProperties, authExceptionHandlerReactive), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION);
-
-        if (verifySslCertificatesOfServices) {
-            return x509SecurityConfig(http).build();
-        }
-        return http.build();
+    SecurityWebFilterChain discoveryServiceBasicAuthOrTokenOrCertFilterChain(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Set up the default x509 authentication mode. It verifies only trusted certificates such as server certs, without mapping
      */
     private ServerHttpSecurity x509SecurityConfig(ServerHttpSecurity http, boolean defaultExceptionHandler) {
-        http
-            .headers(customizer -> customizer.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable))
-            .x509(x509 -> x509
-                .principalExtractor(X509Util.x509PrincipalExtractor())
-                .authenticationManager(X509Util.x509ReactiveAuthenticationManager())
-            )
-            .csrf(ServerHttpSecurity.CsrfSpec::disable);
-
+        http.headers(customizer -> customizer.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable)).x509(x509 -> x509.principalExtractor(X509Util.x509PrincipalExtractor()).authenticationManager(X509Util.x509ReactiveAuthenticationManager())).csrf(ServerHttpSecurity.CsrfSpec::disable);
         if (defaultExceptionHandler) {
-            return http.exceptionHandling(exceptionHandlingSpec ->
-                exceptionHandlingSpec.authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.FORBIDDEN))
-            );
+            return http.exceptionHandling(exceptionHandlingSpec -> exceptionHandlingSpec.authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.FORBIDDEN)));
         }
         return http;
     }
@@ -258,26 +216,7 @@ public class WebSecurityConfig {
     @Bean
     @Order(9)
     SecurityWebFilterChain discoveryAllowedEndpoints(ServerHttpSecurity http) {
-        http
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                discoveryPortMatcher,
-                isInUnauthenticatedPaths
-            ))
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .authorizeExchange(exchange -> {
-                exchange
-                    .pathMatchers(
-                        "/eureka/css/**",
-                        "/eureka/js/**",
-                        "/eureka/fonts/**",
-                        "/eureka/images/**",
-                        APPLICATION_INFO,
-                        "/favicon.ico"
-                    )
-                    .permitAll();
-                exchange.anyExchange().authenticated();
-            });
-        return http.build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -291,25 +230,8 @@ public class WebSecurityConfig {
      */
     @Bean
     @Order(2)
-    SecurityWebFilterChain healthEndpointFilterChain(ServerHttpSecurity http,
-                                                     AuthConfigurationProperties authConfigurationProperties,
-                                                     AuthExceptionHandlerReactive authExceptionHandlerReactive) {
-        http
-            .securityMatcher(pathMatchers(APPLICATION_HEALTH))
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .authorizeExchange(exchange -> {
-                if (!isHealthEndpointProtected) {
-                    exchange.pathMatchers(APPLICATION_HEALTH).permitAll();
-                } else {
-                    exchange.anyExchange().authenticated();
-                }
-            })
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);
-        if (isHealthEndpointProtected) {
-            http.addFilterAfter(new TokenAuthFilter(localTokenProvider, authConfigurationProperties, authExceptionHandlerReactive), SecurityWebFiltersOrder.AUTHENTICATION)
-                .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION);
-        }
-        return http.build();
+    SecurityWebFilterChain healthEndpointFilterChain(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -331,21 +253,8 @@ public class WebSecurityConfig {
      * @return the configured {@link SecurityWebFilterChain} for protecting "/application/**" paths
      */
     @Bean
-    SecurityWebFilterChain applicationEndpointsProtected(ServerHttpSecurity http,
-                                                         AuthConfigurationProperties authConfigurationProperties,
-                                                         AuthExceptionHandlerReactive authExceptionHandlerReactive) {
-        return http
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                pathMatchers("/application/**"),
-                new NegatedServerWebExchangeMatcher(pathMatchers(APPLICATION_HEALTH, APPLICATION_INFO, "/application/version"))
-            ))
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new TokenAuthFilter(localTokenProvider, authConfigurationProperties, authExceptionHandlerReactive), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
-
+    SecurityWebFilterChain applicationEndpointsProtected(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -353,18 +262,8 @@ public class WebSecurityConfig {
      */
     @Bean
     @Order(10)
-    SecurityWebFilterChain discoveryBasicAuthOrToken(ServerHttpSecurity http,
-                                                     AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive) {
-        return http
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                discoveryPortMatcher,
-                notInUnauthenticatedPaths
-            ))
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new TokenAuthFilter(localTokenProvider, authConfigurationProperties, authExceptionHandlerReactive), SecurityWebFiltersOrder.AUTHENTICATION) // waiting for the new one not relying on zaas
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
+    SecurityWebFilterChain discoveryBasicAuthOrToken(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -376,32 +275,8 @@ public class WebSecurityConfig {
      * @return
      */
     @Bean
-    SecurityWebFilterChain loginAndLogoutSecurityWebFilterChain(ServerHttpSecurity http, LogoutHandler logoutHandler,
-                                                                AuthConfigurationProperties authConfigurationProperties) {
-        var man = new ProviderManager(x509AuthenticationProvider);
-        var reactiveX509provider = new ReactiveAuthenticationManagerAdapter(man);
-        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                pathMatchers(POST, "gateway/api/v1/auth/login", "gateway/api/v1/auth/logout", "apicatalog/api/v1/auth/login")
-            ))
-            .authorizeExchange(exchange ->
-                exchange.matchers(pathMatchers(POST, "gateway/api/v1/auth/logout")).authenticated()
-            )
-            .authorizeExchange(exchange ->
-                exchange.matchers(pathMatchers(POST, "gateway/api/v1/auth/login", "apicatalog/api/v1/auth/login")).permitAll()
-            )
-            .logout(c -> c
-                .logoutUrl("/gateway/api/v1/auth/logout")
-                .logoutHandler(logoutHandler)
-                .logoutSuccessHandler(new HttpStatusReturningServerLogoutSuccessHandler(HttpStatus.NO_CONTENT)))
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new CachedBodyFilter(), SecurityWebFiltersOrder.FIRST)
-            .addFilterAfter(new CategorizeCertsWebFilter(publicKeyCertificatesBase64, certificateValidator), SecurityWebFiltersOrder.FIRST)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new X509AuthFilter(reactiveX509provider), SecurityWebFiltersOrder.AUTHENTICATION);
-        addOidcFilterIfEnabled(http, authConfigurationProperties);
-
-        return http.build();
+    SecurityWebFilterChain loginAndLogoutSecurityWebFilterChain(ServerHttpSecurity http, LogoutHandler logoutHandler, AuthConfigurationProperties authConfigurationProperties) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -416,19 +291,7 @@ public class WebSecurityConfig {
      */
     @Bean
     SecurityWebFilterChain queryFilter(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties) {
-        var man = new ProviderManager(tokenAuthenticationProvider);
-        var reactiveTokenAuthProvider = new ReactiveAuthenticationManagerAdapter(man);
-
-        addOidcFilterIfEnabled(http, authConfigurationProperties);
-        return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                pathMatchers("gateway/api/v1/auth/query")
-            ))
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new QueryWebFilter(failedAuthenticationWebHandler, HttpMethod.GET, false, reactiveTokenAuthProvider, httpUtils), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -444,17 +307,7 @@ public class WebSecurityConfig {
      */
     @Bean
     SecurityWebFilterChain accessTokenFilter(ServerHttpSecurity http) {
-        var man = new ProviderManager(x509AuthenticationProvider);
-        var reactiveX509provider = new ReactiveAuthenticationManagerAdapter(man);
-        return http
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .securityMatcher(pathMatchers(POST, "/gateway/api/v1/auth/access-token/generate"))
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new CategorizeCertsWebFilter(publicKeyCertificatesBase64, certificateValidator), SecurityWebFiltersOrder.FIRST)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new X509AuthFilter(reactiveX509provider), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -470,20 +323,8 @@ public class WebSecurityConfig {
      */
     @Bean
     SecurityWebFilterChain revokeTokenFilterChain(ServerHttpSecurity http) {
-        var man = new ProviderManager(x509AuthenticationProvider);
-        var reactiveX509provider = new ReactiveAuthenticationManagerAdapter(man);
-        return http
-            .headers(customizer -> customizer.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable))
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .securityMatcher(pathMatchers("/gateway/api/v1/auth/access-token/revoke/tokens/**", "/gateway/api/v1/auth/access-token/evict"))
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new CategorizeCertsWebFilter(publicKeyCertificatesBase64, certificateValidator), SecurityWebFiltersOrder.FIRST)
-            .addFilterAfter(new X509AuthFilter(reactiveX509provider), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * This security filter chain secures the /refresh access token (PAT) endpoint
@@ -494,16 +335,7 @@ public class WebSecurityConfig {
     @ConditionalOnProperty(name = "apiml.security.allowTokenRefresh", havingValue = "true")
     @Bean
     SecurityWebFilterChain refreshTokenFilter(ServerHttpSecurity http) {
-        var man = new ProviderManager(tokenAuthenticationProvider);
-        var reactiveTokenAuthProvider = new ReactiveAuthenticationManagerAdapter(man);
-        return x509SecurityConfig(http)
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                pathMatchers(POST, "gateway/api/v1/auth/refresh")
-            ))
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new QueryWebFilter(failedAuthenticationWebHandler, POST, true, reactiveTokenAuthProvider, httpUtils), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -515,18 +347,8 @@ public class WebSecurityConfig {
      */
     @Bean
     SecurityWebFilterChain gatewayInvalidateAndDistribute(ServerHttpSecurity http) {
-        return x509SecurityConfig(http)
-            .securityMatcher(
-                new OrServerWebExchangeMatcher(
-                    pathMatchers(DELETE, "gateway/api/v1/auth/invalidate/**"),
-                    pathMatchers(GET, "gateway/api/v1/auth/distribute/**")
-                )
-            )
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * This security filter chain secures the /ticket endpoint
@@ -536,16 +358,7 @@ public class WebSecurityConfig {
      */
     @Bean
     SecurityWebFilterChain ticketFilter(ServerHttpSecurity http) {
-        var man = new ProviderManager(tokenAuthenticationProvider);
-        var reactiveTokenAuthProvider = new ReactiveAuthenticationManagerAdapter(man);
-        return x509SecurityConfig(http)
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                pathMatchers("gateway/api/v1/auth/ticket")
-            ))
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new QueryWebFilter(failedAuthenticationWebHandler, POST, true, reactiveTokenAuthProvider, httpUtils), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -557,23 +370,8 @@ public class WebSecurityConfig {
      * @return
      */
     @Bean
-    SecurityWebFilterChain safResourceCheckFilter(ServerHttpSecurity http,
-                                                  AuthConfigurationProperties authConfigurationProperties,
-                                                  AuthExceptionHandlerReactive authExceptionHandlerReactive) {
-        var man = new ProviderManager(x509AuthenticationProvider);
-        var reactiveX509provider = new ReactiveAuthenticationManagerAdapter(man);
-
-        return x509SecurityConfig(http)
-            .securityMatcher(new AndServerWebExchangeMatcher(
-                pathMatchers("gateway/auth/check")
-            ))
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new CategorizeCertsWebFilter(publicKeyCertificatesBase64, certificateValidator), SecurityWebFiltersOrder.FIRST)
-            .addFilterAfter(new TokenAuthFilter(localTokenProvider, authConfigurationProperties, authExceptionHandlerReactive), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new X509AuthFilter(reactiveX509provider), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
+    SecurityWebFilterChain safResourceCheckFilter(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -582,34 +380,8 @@ public class WebSecurityConfig {
      * Unauthenticated requests receive a WWW-Authenticate: Basic header.
      */
     @Bean
-    SecurityWebFilterChain apiCatalogCertEndpoints(ServerHttpSecurity http,
-                                                   AuthConfigurationProperties authConfigurationProperties,
-                                                   AuthExceptionHandlerReactive authExceptionHandlerReactive,
-                                                   ServerAuthenticationEntryPoint serverAuthenticationEntryPoint) {
-        http
-            .securityMatcher(pathMatchers(
-                "/apicatalog/api/v1/apidoc/**",
-                "/apicatalog/api/v1/static-api/refresh"
-            ))
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .exceptionHandling(eh -> eh.authenticationEntryPoint(
-                catalogEntryPoint(serverAuthenticationEntryPoint)
-            ));
-
-        if (verifySslCertificatesOfServices) {
-            http.x509(x509 -> x509
-                .principalExtractor(X509Util.x509PrincipalExtractor())
-                .authenticationManager(X509Util.x509ReactiveAuthenticationManager())
-            );
-        }
-
-        http
-            .addFilterAfter(new TokenAuthFilter(localTokenProvider, authConfigurationProperties, authExceptionHandlerReactive), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION);
-
-        return http.build();
+    SecurityWebFilterChain apiCatalogCertEndpoints(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive, ServerAuthenticationEntryPoint serverAuthenticationEntryPoint) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -619,32 +391,8 @@ public class WebSecurityConfig {
      * from the request so TokenAuthFilter does not reject the non-APIML JWT.
      */
     @Bean
-    SecurityWebFilterChain apiCatalogAuthenticatedEndpoints(ServerHttpSecurity http,
-                                                            AuthConfigurationProperties authConfigurationProperties,
-                                                            AuthExceptionHandlerReactive authExceptionHandlerReactive,
-                                                            ServerAuthenticationEntryPoint serverAuthenticationEntryPoint) {
-        http
-            .securityMatcher(pathMatchers(
-                "/apicatalog/api/v1/static-api/**",
-                "/apicatalog/api/v1/containers",
-                "/apicatalog/api/v1/containers/**",
-                "/apicatalog/api/v1/application/**",
-                "/apicatalog/api/v1/services/**"
-            ))
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .exceptionHandling(eh -> eh.authenticationEntryPoint(
-                catalogEntryPoint(serverAuthenticationEntryPoint)
-            ));
-
-        addOidcFilterIfEnabled(http, authConfigurationProperties);
-
-        http
-            .addFilterAfter(new TokenAuthFilter(localTokenProvider, authConfigurationProperties, authExceptionHandlerReactive), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION);
-
-        return http.build();
+    SecurityWebFilterChain apiCatalogAuthenticatedEndpoints(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive, ServerAuthenticationEntryPoint serverAuthenticationEntryPoint) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ServerAuthenticationEntryPoint catalogEntryPoint(ServerAuthenticationEntryPoint delegate) {
@@ -668,27 +416,6 @@ public class WebSecurityConfig {
      */
     @Bean
     SecurityWebFilterChain gatewayAuthenticatedEndpoints(ServerHttpSecurity http, AuthConfigurationProperties authConfigurationProperties, AuthExceptionHandlerReactive authExceptionHandlerReactive) {
-        return x509SecurityConfig(http, false)
-            .securityMatcher(pathMatchers(
-                REGISTRY_PATH,
-                REGISTRY_PATH + "/**",
-                SERVICES_SHORT_URL,
-                SERVICES_SHORT_URL + "/**",
-                SERVICES_FULL_URL,
-                SERVICES_FULL_URL + "/**",
-                CONFORMANCE_SHORT_URL,
-                CONFORMANCE_LONG_URL,
-                VALIDATE_SHORT_URL,
-                VALIDATE_LONG_URL
-            ))
-            .authorizeExchange(authorizeExchangeSpec ->
-                authorizeExchangeSpec
-                    .anyExchange().authenticated()
-            )
-            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-            .addFilterAfter(new TokenAuthFilter(localTokenProvider, authConfigurationProperties, authExceptionHandlerReactive), SecurityWebFiltersOrder.AUTHENTICATION)
-            .addFilterAfter(new BasicLoginFilter(compoundAuthProvider, failedAuthenticationWebHandler), SecurityWebFiltersOrder.AUTHENTICATION)
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

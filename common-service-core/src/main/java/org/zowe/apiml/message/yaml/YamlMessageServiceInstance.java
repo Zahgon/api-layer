@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.message.yaml;
 
 public class YamlMessageServiceInstance {
@@ -18,10 +17,6 @@ public class YamlMessageServiceInstance {
     }
 
     public static YamlMessageService getInstance() {
-        if (yamlMessageService == null) {
-            yamlMessageService = new YamlMessageService();
-        }
-
-        return yamlMessageService;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

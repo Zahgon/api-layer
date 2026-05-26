@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 @RestController
@@ -31,20 +29,15 @@ public class RedirectController {
      * @param response         return the same data as request body
      * @return
      */
-    @PostMapping(
-        value = "/api/v1/redirect",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(value = "/api/v1/redirect", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.FOUND)
-    public RedirectLocation redirectPage(@RequestBody RedirectLocation redirectLocation,
-                                         HttpServletResponse response) {
-        response.setHeader(LOCATION, redirectLocation.getLocation());
-        return redirectLocation;
+    public RedirectLocation redirectPage(@RequestBody RedirectLocation redirectLocation, HttpServletResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
     static class RedirectLocation {
+
         private String location;
     }
 }

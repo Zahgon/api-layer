@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.login;
 
 import jakarta.servlet.FilterChain;
@@ -21,10 +20,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-
 import java.io.IOException;
 
 public class X509AuthAwareFilter extends X509ForwardingAwareAuthenticationFilter {
+
     private final AuthenticationFailureHandler failureHandler;
 
     public X509AuthAwareFilter(String endpoint, AuthenticationFailureHandler failureHandler, AuthenticationProvider authenticationProvider) {
@@ -35,24 +34,16 @@ public class X509AuthAwareFilter extends X509ForwardingAwareAuthenticationFilter
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
-        // TODO: investigate how to improve the security config to avoid calling isPreAuthenticated()
-        if (SecurityContextHolder.getContext().getAuthentication() == null || isPreAuthenticated() || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            context.setAuthentication(authResult);
-            SecurityContextHolder.setContext(context);
-        }
-        chain.doFilter(request, response);
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected boolean isPreAuthenticated() {
-        return SecurityContextHolder.getContext().getAuthentication() instanceof PreAuthenticatedAuthenticationToken;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
+
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        failureHandler.onAuthenticationFailure(request, response, failed);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

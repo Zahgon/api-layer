@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.config;
 
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -22,16 +21,7 @@ import org.zowe.apiml.product.instance.lookup.InstanceLookupExecutor;
 public class ZaasConfig {
 
     @Bean
-    public GatewayInstanceInitializer gatewayInstanceInitializer(
-            DiscoveryClient discoveryClient,
-            ApplicationEventPublisher applicationEventPublisher,
-            GatewayClient gatewayClient) {
-
-        return new GatewayInstanceInitializer(
-                new InstanceLookupExecutor(discoveryClient),
-                applicationEventPublisher,
-                gatewayClient
-        );
+    public GatewayInstanceInitializer gatewayInstanceInitializer(DiscoveryClient discoveryClient, ApplicationEventPublisher applicationEventPublisher, GatewayClient gatewayClient) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

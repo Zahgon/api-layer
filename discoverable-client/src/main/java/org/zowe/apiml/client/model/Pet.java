@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.zowe.apiml.client.model.state.Existing;
 import org.zowe.apiml.client.model.state.New;
-
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
@@ -25,12 +23,13 @@ import java.util.Objects;
  */
 @Schema(description = "A Pet Object")
 public class Pet {
+
     @Null(groups = New.class, message = "Id should be null for pet creation")
     @NotNull(groups = Existing.class, message = "Id should be not null for pet update")
     @Schema(description = "The id is of the pet", example = "1")
     private Long id;
 
-    @NotEmpty(groups = {New.class, Existing.class}, message = "Name should not be empty string")
+    @NotEmpty(groups = { New.class, Existing.class }, message = "Name should not be empty string")
     @Schema(description = "The name of the pet", example = "Falco")
     private String name;
 
@@ -40,8 +39,7 @@ public class Pet {
      * @param id   Pet ID
      * @param name Pet name
      */
-    public Pet(@JsonProperty("id") Long id,
-               @JsonProperty("name") String name) {
+    public Pet(@JsonProperty("id") Long id, @JsonProperty("name") String name) {
         this.id = id;
         this.name = name;
     }
@@ -52,7 +50,7 @@ public class Pet {
      * @return Pet ID
      */
     public Long getId() {
-        return id;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -61,7 +59,7 @@ public class Pet {
      * @return Pet name
      */
     public String getName() {
-        return name;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -70,7 +68,7 @@ public class Pet {
      * @param id Pet ID
      */
     public void setId(Long id) {
-        this.id = id;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -79,20 +77,16 @@ public class Pet {
      * @param name Pet name
      */
     public void setName(String name) {
-        this.name = name;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) &&
-            Objects.equals(name, pet.name);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

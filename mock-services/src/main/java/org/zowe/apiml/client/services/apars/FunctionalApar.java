@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.services.apars;
 
 import jakarta.servlet.http.Cookie;
@@ -18,23 +17,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.zowe.apiml.client.model.LoginBody;
 import org.zowe.apiml.client.services.JwtTokenService;
-
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@SuppressWarnings({"squid:S1452", "squid:S1172"})
+@SuppressWarnings({ "squid:S1452", "squid:S1172" })
 public class FunctionalApar implements Apar {
+
     private static final String COOKIE_HEADER = "cookie";
+
     private static final String JWT_TOKEN_NAME = "jwtToken";
+
     private static final String LTPA_TOKEN_NAME = "LtpaToken2";
+
     private static final String LTPA_TOKEN_VALUE = "paMypL7yRO/IBroQtro21/uSC2LTrJvOuYebHaPc6JAUNWQ7lEHHt1l3CYeXa/nP6aKLFHTuyWy3qlRXvt10PjVdVl+7Q+wavgIsro7odz+PvTaJBp/+r0AH+DHYcdZikKe8dytGYZRH2c2gw8Gv3PliDIMd1iPEazY4HeYTU5VCFM5cBJkeIoTXCfL5ud9wTzrkY2c4h1PQPtx+hYCF4kEpiVkqIypVwjQLzWdJGV1Ihz7NqH/UU9MMJRXY1xMqsWZSibs2fX5MVK77dnyBrNYjVXA7PqYL6U/v5/1UCvuYQ/iEU9+Uy95J+xFEsnTX";
 
     protected static final String AUTHORIZATION_HEADER = "authorization";
 
     private final List<String> usernames;
+
     protected List<String> passwords;
+
     private JwtTokenService jwtTokenService;
 
     protected FunctionalApar(List<String> usernames, List<String> passwords) {
@@ -49,61 +53,14 @@ public class FunctionalApar implements Apar {
 
     @Override
     public Optional<ResponseEntity<?>> apply(Object... parameters) {
-        String calledService = (String) parameters[0];
-        String calledMethod = (String) parameters[1];
-        Optional<ResponseEntity<?>> originalResult = (Optional<ResponseEntity<?>>) parameters[2];
-        HttpServletResponse response = (HttpServletResponse) parameters[3];
-        Map<String, String> headers = (Map<String, String>) parameters[4];
-        ResponseEntity<?> result = null;
-        String token = jwtTokenService.extractToken(headers);
-        String ltpaToken = jwtTokenService.extractLtpaToken(headers);
-        if (calledService.equals("authentication")) {
-            switch (calledMethod) {
-                case "create":
-                    result = handleAuthenticationCreate(headers, response);
-                    break;
-                case "verify":
-                    result = handleAuthenticationVerify(headers, response);
-                    break;
-                case "update":
-                    if (parameters.length > 4) {
-                        LoginBody body = (LoginBody) parameters[5];
-                        result = handleChangePassword(body);
-                    }
-                    break;
-                case "delete":
-                    result = handleAuthenticationDelete(headers);
-                    if (ltpaToken != null) {
-                        jwtTokenService.invalidateJwtToken(ltpaToken);
-                    }
-                    jwtTokenService.invalidateJwtToken(token);
-                    break;
-                default:
-                    result = handleAuthenticationDefault(headers);
-                    break;
-            }
-        }
-
-        if (calledService.equals("information")) {
-            result = handleInformation(headers, response);
-        }
-
-        if (calledService.equals("files")) {
-            result = handleFiles(headers);
-        }
-
-        if (calledService.equals("jwtKeys")) {
-            result = handleJwtKeys();
-        }
-
-        return result == null ? originalResult : Optional.of(result);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Override to provide response entity when the JWT keys are requested from the zOSMF
      */
     protected ResponseEntity<?> handleJwtKeys() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -111,7 +68,7 @@ public class FunctionalApar implements Apar {
      * for the authentication service is called with proper authorization.
      */
     protected ResponseEntity<?> handleAuthenticationCreate(Map<String, String> headers, HttpServletResponse response) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -119,7 +76,7 @@ public class FunctionalApar implements Apar {
      * for the authentication service is called with proper authorization.
      */
     protected ResponseEntity<?> handleAuthenticationVerify(Map<String, String> headers, HttpServletResponse response) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -127,7 +84,7 @@ public class FunctionalApar implements Apar {
      * with proper authorization.
      */
     protected ResponseEntity<?> handleAuthenticationDelete(Map<String, String> headers) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -135,7 +92,7 @@ public class FunctionalApar implements Apar {
      * is not explicitly handled.
      */
     protected ResponseEntity<?> handleAuthenticationDefault(Map<String, String> headers) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -143,38 +100,29 @@ public class FunctionalApar implements Apar {
      * with proper authorization.
      */
     protected ResponseEntity<?> handleChangePassword(LoginBody body) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Override to provide a response entity when the information service is called with proper authorization.
      */
     protected ResponseEntity<?> handleInformation(Map<String, String> headers, HttpServletResponse response) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Override to provide a response entity when the files service is called with proper authorization.
      */
     protected ResponseEntity<?> handleFiles(Map<String, String> headers) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected boolean noAuthentication(Map<String, String> headers) {
-        String basicAuth = getAuthorizationHeader(headers);
-        String cookie = getAuthCookie(headers);
-        return (basicAuth == null || basicAuth.isEmpty()) && (cookie == null || cookie.isEmpty());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected boolean containsInvalidOrNoUser(Map<String, String> headers) {
-        String authorization = getAuthorizationHeader(headers);
-        if (authorization == null || authorization.isEmpty()) {
-            return true;
-        }
-
-        String[] piecesOfCredentials = getPiecesOfCredentials(headers);
-        return piecesOfCredentials.length <= 0 || (!usernames.contains(piecesOfCredentials[0]) ||
-            (!passwords.contains(piecesOfCredentials[1]) && !piecesOfCredentials[1].contains("PASS_TICKET")));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String getAuthorizationHeader(Map<String, String> headers) {
@@ -182,59 +130,27 @@ public class FunctionalApar implements Apar {
     }
 
     protected String[] getPiecesOfCredentials(Map<String, String> headers) {
-        String authorization = getAuthorizationHeader(headers);
-        if (authorization != null) {
-            byte[] decoded = Base64.getDecoder().decode(authorization.replace("Basic ", ""));
-            String credentials = new String(decoded);
-            return credentials.split(":");
-        }
-
-        String cookie = getAuthCookie(headers);
-        if (cookie != null) {
-            return cookie.split("=");
-        }
-
-        throw new IllegalArgumentException("Headers did not have cookie or authorization field");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected boolean ltpaIsPresent(Map<String, String> headers) {
-        String cookie = getAuthCookie(headers);
-        return cookie != null && cookie.contains(LTPA_TOKEN_NAME);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected boolean validLtpaCookie(Map<String, String> headers) {
-        if (!ltpaIsPresent(headers)) {
-            return false;
-        }
-        String token = jwtTokenService.extractLtpaToken(headers);
-        return !jwtTokenService.containsToken(token);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected boolean isValidJwtCookie(Map<String, String> headers) {
-        String cookie = getAuthCookie(headers);
-        if (cookie == null || !cookie.contains(JWT_TOKEN_NAME)) {
-            return false;
-        }
-        String jwtToken = jwtTokenService.extractToken(headers);
-        return jwtTokenService.validateJwtToken(jwtToken);
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected boolean isValidAuthHeader(String authHeader) {
-        if (!StringUtils.hasText(authHeader)) {
-            return false;
-        }
-
-        if (authHeader.startsWith("Bearer")) {
-            return isValidTokenInAuthHeader(authHeader);
-        }
-
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean isValidTokenInAuthHeader(String authHeader) {
-        var jwtToken = authHeader.length() > 8 ? authHeader.substring(7) : "";
-        return jwtTokenService.validateJwtToken(jwtToken);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String getAuthCookie(Map<String, String> headers) {
@@ -242,35 +158,10 @@ public class FunctionalApar implements Apar {
     }
 
     protected void setLtpaToken(HttpServletResponse response) {
-        Cookie ltpaToken = new Cookie(LTPA_TOKEN_NAME, LTPA_TOKEN_VALUE);
-
-        ltpaToken.setSecure(true);
-        ltpaToken.setHttpOnly(true);
-        ltpaToken.setPath("/");
-
-        response.addCookie(ltpaToken);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected ResponseEntity<?> validJwtResponse(HttpServletResponse response, String username, String keystorePath) {
-        String jwtToken;
-        try {
-            jwtToken = jwtTokenService.generateJwt(username);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Not able to generate jwt. Message: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-
-        // Build a valid JWT token
-        Cookie jwtCookie = new Cookie(JWT_TOKEN_NAME, jwtToken);
-        jwtCookie.setSecure(true);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
-        response.addCookie(jwtCookie);
-
-        setLtpaToken(response);
-
-        response.setContentType("application/json");
-        return new ResponseEntity<>("{}", HttpStatus.OK);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

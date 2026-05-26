@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaasclient.util;
 
 import lombok.Data;
@@ -17,7 +16,6 @@ import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -33,14 +31,16 @@ import java.util.Map;
  * @param stringBody response body as String
  * @param headers    http response headers
  */
-
 @Data
 @RequiredArgsConstructor
 public class SimpleHttpResponse {
 
     private final int code;
+
     private final byte[] byteBody;
+
     private final String stringBody;
+
     private final Map<String, List<Header>> headers;
 
     public SimpleHttpResponse(int code, byte[] byteBody) {
@@ -73,19 +73,11 @@ public class SimpleHttpResponse {
      * @throws ParseException in case of data cannot be converted into String
      */
     public static SimpleHttpResponse fromResponseWithBytesBodyOnSuccess(ClassicHttpResponse response) throws IOException, ParseException {
-        if (response.getEntity() != null) {
-            if (isSuccessInternal(response.getCode())) {
-                return new SimpleHttpResponse(response.getCode(), response.getEntity().getContent().readAllBytes());
-            } else {
-                return new SimpleHttpResponse(response.getCode(), EntityUtils.toString(response.getEntity()));
-            }
-        } else {
-            return new SimpleHttpResponse(response.getCode());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean isSuccess() {
-        return isSuccessInternal(code);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static boolean isSuccessInternal(int code) {

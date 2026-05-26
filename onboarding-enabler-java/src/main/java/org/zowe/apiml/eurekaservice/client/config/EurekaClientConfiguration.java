@@ -7,15 +7,15 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client.config;
 
 import com.netflix.discovery.DefaultEurekaClientConfig;
-
 import java.util.List;
 
 public class EurekaClientConfiguration extends DefaultEurekaClientConfig {
+
     private static final int DEFAULT_RENEWAL_INTERVAL = 30;
+
     private final ApiMediationServiceConfig config;
 
     public EurekaClientConfiguration(ApiMediationServiceConfig config) {
@@ -23,52 +23,51 @@ public class EurekaClientConfiguration extends DefaultEurekaClientConfig {
     }
 
     protected ApiMediationServiceConfig getConfig() {
-        return config;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean shouldRegisterWithEureka() {
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getDecoderName() {
-        return "JacksonJson";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getRegion() {
-        return "default";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean shouldUseDnsForFetchingServiceUrls() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public List<String> getEurekaServerServiceUrls(String s) {
-        return config.getDiscoveryServiceUrls();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean shouldOnDemandUpdateStatusChange() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getRegistryFetchIntervalSeconds() {
-        return DEFAULT_RENEWAL_INTERVAL;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getEurekaServerConnectTimeoutSeconds() {
-        return config.getConnectTimeout();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getEurekaServerReadTimeoutSeconds() {
-        return config.getReadTimeout();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

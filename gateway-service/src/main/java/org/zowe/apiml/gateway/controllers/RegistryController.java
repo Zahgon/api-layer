@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,10 +29,8 @@ import org.zowe.apiml.gateway.service.model.ApimlInfo;
 import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.services.ServiceInfo;
 import reactor.core.publisher.Flux;
-
 import java.util.List;
 import java.util.Map;
-
 import static com.google.common.base.Strings.emptyToNull;
 
 @Slf4j
@@ -46,36 +43,17 @@ import static com.google.common.base.Strings.emptyToNull;
 public class RegistryController {
 
     private final CentralApimlInfoMapper centralApimlInfoMapper;
+
     private final GatewayIndexService gatewayIndexService;
 
-    @GetMapping(value = {"/registry", "/registry/{apimlId}"})
-    @Operation(summary = "Returns a list of services onboarded to the each instance of the APIML Discovery service.",
-        operationId = "getServices",
-        description = "Use the `/registry` API to list all APIML instances (central and domain) within their onboarded services. " +
-            "Parameters `apiId` and `serviceId` are used to filter results.",
-        security = {
-            @SecurityRequirement(name = "ClientCert")
-        }
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successful obtaining of services", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = ApimlInfo.class)
-        )),
-        @ApiResponse(responseCode = "403", description = "Client certificate is required", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = ApiMessageView.class)
-        ))
-    })
+    @GetMapping(value = { "/registry", "/registry/{apimlId}" })
+    @Operation(summary = "Returns a list of services onboarded to the each instance of the APIML Discovery service.", operationId = "getServices", description = "Use the `/registry` API to list all APIML instances (central and domain) within their onboarded services. " + "Parameters `apiId` and `serviceId` are used to filter results.", security = { @SecurityRequirement(name = "ClientCert") })
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Successful obtaining of services", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApimlInfo.class))), @ApiResponse(responseCode = "403", description = "Client certificate is required", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiMessageView.class))) })
     public Flux<ApimlInfo> getServices(@PathVariable(required = false) String apimlId, @Parameter(description = "The API ID of requested services") @RequestParam(name = "apiId", required = false) String apiId, @Parameter(description = "Service ID of the requested service") @RequestParam(name = "serviceId", required = false) String serviceId) {
-        Map<String, List<ServiceInfo>> apimlList = gatewayIndexService.listRegistry(emptyToNull(apimlId), emptyToNull(apiId), emptyToNull(serviceId));
-        return Flux.fromIterable(apimlList.entrySet())
-            .map(this::buildEntry)
-            .onErrorContinue(RuntimeException.class, (ex, consumer) -> log.debug("Unexpected mapping error", ex));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ApimlInfo buildEntry(Map.Entry<String, List<ServiceInfo>> entry) {
         return centralApimlInfoMapper.buildApimlServiceInfo(entry.getKey(), entry.getValue());
     }
-
 }

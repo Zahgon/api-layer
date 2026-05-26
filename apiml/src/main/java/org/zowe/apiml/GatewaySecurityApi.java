@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import lombok.RequiredArgsConstructor;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Primary;
@@ -27,9 +25,7 @@ import org.zowe.apiml.zaas.security.config.CompoundAuthProvider;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
-
 import static org.zowe.apiml.security.common.error.ErrorType.TOKEN_NOT_VALID;
-
 
 @Service
 @Primary
@@ -38,42 +34,24 @@ import static org.zowe.apiml.security.common.error.ErrorType.TOKEN_NOT_VALID;
 public class GatewaySecurityApi implements GatewaySecurity {
 
     private final CompoundAuthProvider compoundAuthProvider;
+
     private final AuthenticationService authenticationService;
+
     @Nullable
     private final OIDCProvider oidcProvider;
 
     @Override
     public Optional<String> login(String username, char[] password, char[] newPassword) {
-        if (StringUtils.isBlank(username) || ArrayUtils.isEmpty(password)) {
-            throw new AuthenticationCredentialsNotFoundException("Username or password not provided.");
-        }
-
-        var loginRequest = new LoginRequest(username, password, newPassword);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, loginRequest);
-        authentication = compoundAuthProvider.authenticate(authentication);
-        if (authentication.isAuthenticated() ) {
-            return Optional.ofNullable((String) authentication.getCredentials());
-        }
-        return Optional.empty();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public QueryResponse query(String token) {
-        log.debug("Querying JWT.");
-        var authentication = authenticationService.validateJwtToken(token);
-        if (authentication.isAuthenticated()) {
-            log.debug("JWT is valid. Parsing JWT.");
-            return authenticationService.parseJwtToken(token).getQueryResponse();
-        }
-        throw new TokenNotValidException(TOKEN_NOT_VALID.getDefaultMessage());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public TokenAuthentication verifyOidc(String token) {
-        if (oidcProvider != null && oidcProvider.isValid(token)) {
-            return new TokenAuthentication(token, TokenAuthentication.Type.OIDC);
-        }
-        throw new TokenNotValidException(TOKEN_NOT_VALID.getDefaultMessage());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

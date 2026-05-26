@@ -7,12 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import org.zowe.apiml.security.common.token.QueryResponse;
 import org.zowe.apiml.security.common.token.TokenNotValidException;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -39,6 +37,7 @@ public interface AuthSource extends Serializable {
      * Interface defines general parsed form of the authentication source.
      */
     interface Parsed {
+
         String getUserId();
 
         Date getCreation();
@@ -71,18 +70,7 @@ public interface AuthSource extends Serializable {
          * @return which system generated the authentication token
          */
         public static Origin valueByTokenSource(QueryResponse.Source source) {
-            switch (source) {
-                case ZOSMF:
-                    return ZOSMF;
-                case ZOWE:
-                    return ZOWE;
-                case ZOWE_PAT:
-                    return ZOWE_PAT;
-                case OIDC:
-                    return OIDC;
-                default:
-                    throw new TokenNotValidException("Unknown authentication source type : " + source.name());
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 
@@ -90,9 +78,7 @@ public interface AuthSource extends Serializable {
      * Defines supported type of authentication source - JWT token and client certificate
      */
     enum AuthSourceType {
-        JWT,
-        CLIENT_CERT,
-        PAT,
-        OIDC
+
+        JWT, CLIENT_CERT, PAT, OIDC
     }
 }

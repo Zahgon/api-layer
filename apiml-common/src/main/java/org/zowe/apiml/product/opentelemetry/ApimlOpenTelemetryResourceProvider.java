@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.opentelemetry;
 
 import io.opentelemetry.api.common.Attributes;
@@ -17,7 +16,6 @@ import io.opentelemetry.sdk.resources.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-
 import javax.annotation.Nonnull;
 
 @Slf4j
@@ -40,39 +38,17 @@ public abstract class ApimlOpenTelemetryResourceProvider implements ResourceProv
     @Value("${apiml.service.apimlId:#{null}}")
     protected String apimlId;
 
-    public @Nonnull Attributes calculateAttributes() {
-        var attributesBuilder = Attributes.builder();
-
-        if (StringUtils.isBlank(serviceNamespace)) {
-            log.debug("service.namespace is not provided in configuration");
-        }
-
-        if (StringUtils.isBlank(serviceName)) {
-            var generatedServiceName = generateServiceName();
-            attributesBuilder.put("service.name", generatedServiceName);
-            log.debug("service.name not provided in configuration, using generated default {}", generatedServiceName);
-        }
-
-        var instanceId = generateInstanceId();
-        attributesBuilder.put(ZosOpenTelemetryAttributes.OTEL_ZOS_INSTANCE_ID, instanceId);
-        log.debug("using generated service.instance.id {}", instanceId);
-
-        // io.opentelemetry.instrumentation.resources.OsResource resolves the version but uses it only to populate os.description
-        // https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/16211
-        attributesBuilder.put(OS_VERSION, System.getProperty(OS_VERSION));
-
-        attributesBuilder.putAll(internalCalculateAttributes());
-        return attributesBuilder.build();
+    @Nonnull
+    public Attributes calculateAttributes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    protected abstract @Nonnull Attributes internalCalculateAttributes();
+    @Nonnull
+    protected abstract Attributes internalCalculateAttributes();
 
     @Override
     public Resource createResource(@Nonnull ConfigProperties config) {
-        var attributesBuilder = Attributes.builder();
-
-        attributesBuilder.putAll(calculateAttributes());
-        return Resource.create(attributesBuilder.build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String generateInstanceId() {
@@ -83,13 +59,6 @@ public abstract class ApimlOpenTelemetryResourceProvider implements ResourceProv
 
     @Override
     public int order() {
-        /* To run after
-                io.opentelemetry.instrumentation.resources.JarServiceNameDetector
-            but before
-                io.opentelemetry.sdk.autoconfigure.EnvironmentResourceProvider
-                io.opentelemetry.sdk.extension.incubator.resources.ServiceInstanceIdResourceProvider
-        */
-        return 10000;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

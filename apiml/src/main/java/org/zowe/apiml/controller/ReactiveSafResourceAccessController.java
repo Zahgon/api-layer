@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.controller;
 
 import lombok.AllArgsConstructor;
@@ -37,30 +36,18 @@ public class ReactiveSafResourceAccessController {
 
     @PostMapping(path = "/check", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Object>> hasSafAccess(@RequestBody CheckRequestModel request) {
-        return ReactiveSecurityContextHolder.getContext()
-            .flatMap(ctx -> Mono.justOrEmpty(ctx.getAuthentication()))
-            .filter(auth -> auth.getPrincipal() != null)
-            .flatMap(authentication -> {
-                if (safResourceAccessVerifying.hasSafResourceAccess(
-                    authentication,
-                    request.getResourceClass(),
-                    request.getResourceName(),
-                    request.getAccessLevel().name()
-                )) {
-                    return Mono.just(ResponseEntity.noContent().build());
-                } else {
-                    throw new SafAccessDeniedException("Access denied for user: " + authentication.getPrincipal(), authentication.getPrincipal());
-                }
-            })
-            .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatusCode.valueOf(401)).build()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
     static class CheckRequestModel {
+
         private String resourceClass;
+
         private String resourceName;
+
         private AccessLevel accessLevel;
     }
 }

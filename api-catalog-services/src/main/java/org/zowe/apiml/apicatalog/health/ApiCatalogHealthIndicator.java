@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.health;
 
 import lombok.RequiredArgsConstructor;
@@ -31,14 +30,6 @@ public class ApiCatalogHealthIndicator extends AbstractHealthIndicator {
 
     @Override
     protected void doHealthCheck(Health.Builder builder) {
-        String gatewayServiceId = CoreService.GATEWAY.getServiceId();
-
-        boolean gatewayUp = !this.discoveryClient.getInstances(gatewayServiceId).isEmpty();
-        Status healthStatus = gatewayUp ? Status.UP : Status.DOWN;
-
-        builder
-            .status(healthStatus)
-            .withDetail(gatewayServiceId, healthStatus.getCode());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

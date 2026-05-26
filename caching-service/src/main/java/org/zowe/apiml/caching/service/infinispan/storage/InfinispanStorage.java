@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.infinispan.storage;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,7 +21,6 @@ import org.zowe.apiml.cache.StorageException;
 import org.zowe.apiml.caching.model.KeyValue;
 import org.zowe.apiml.caching.service.Messages;
 import org.zowe.apiml.models.AccessTokenContainer;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +30,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import static org.zowe.apiml.caching.service.infinispan.config.InfinispanConfig.CACHE_ZOWE;
 import static org.zowe.apiml.caching.service.infinispan.config.InfinispanConfig.CACHE_ZOWE_INVALIDATED_TOKEN;
 
@@ -43,6 +40,7 @@ public class InfinispanStorage implements Storage {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final DefaultCacheManager defaultCacheManager;
+
     private final Supplier<ClusteredLock> lockSupplier;
 
     static {
@@ -59,141 +57,58 @@ public class InfinispanStorage implements Storage {
 
     @Override
     public KeyValue create(String serviceId, KeyValue toCreate) {
-        toCreate.setServiceId(serviceId);
-        log.info("Writing record: {}|{}|{}", serviceId, toCreate.getKey(), toCreate.getValue());
-
-        KeyValue serviceCache = getCache().putIfAbsent(serviceId + toCreate.getKey(), toCreate);
-
-        if (serviceCache != null) {
-            throw new StorageException(Messages.DUPLICATE_KEY.getKey(), Messages.DUPLICATE_KEY.getStatus(), toCreate.getKey());
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public KeyValue storeMapItem(String serviceId, String mapKey, KeyValue toCreate) {
-        ClusteredLock lock = lockSupplier.get();
-        CompletableFuture<Boolean> complete = lock.tryLock(4, TimeUnit.SECONDS).whenComplete((r, ex) -> {
-            if (Boolean.TRUE.equals(r)) {
-                try {
-                    String cacheKey = serviceId + mapKey;
-                    log.info("Storing the item into token cache: {} -> {}|{}", cacheKey, toCreate.getKey(), toCreate.getValue());
-                    Map<String, String> tokenCacheItem = getTokenCache().get(cacheKey);
-                    if (tokenCacheItem == null) {
-                        tokenCacheItem = new HashMap<>();
-                    }
-                    tokenCacheItem.put(toCreate.getKey(), toCreate.getValue());
-                    getTokenCache().put(cacheKey, tokenCacheItem);
-                } finally {
-                    lock.unlock();
-                }
-            }
-        });
-        completeJoin(complete);
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Map<String, String> getAllMapItems(String serviceId, String mapKey) {
-        log.info("Reading all records from token cache for service {} under the {} key.", serviceId, mapKey);
-        return getTokenCache().get(serviceId + mapKey);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Map<String, Map<String, String>> getAllMaps(String serviceId) {
-        log.info("Reading all records from token cache for service {} ", serviceId);
-
-        /**
-         * Original implementation with stream, collect and lambdas to read keys leads to serializing of lambdas,
-         * see org.infinispan.marshall.core.LambdaMarshaller#write(java.io.ObjectOutput, java.lang.Object).
-         * It is difficult to support and also slower (see exchanging lambdas between nodes).
-         */
-        Map<String, Map<String, String>> result = new HashMap<>();
-        for (String key : getTokenCache().keySet()) {
-            if (!key.startsWith(serviceId)) continue;
-
-            String newKey = key.substring(serviceId.length());
-            result.put(newKey, getTokenCache().get(key));
-        }
-
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public KeyValue read(String serviceId, String key) {
-        log.info("Reading record for service {} under key {}", serviceId, key);
-        KeyValue serviceCache = getCache().get(serviceId + key);
-        if (serviceCache != null) {
-            return serviceCache;
-        } else {
-            throw new StorageException(Messages.KEY_NOT_IN_CACHE.getKey(), Messages.KEY_NOT_IN_CACHE.getStatus(), key, serviceId);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public KeyValue update(String serviceId, KeyValue toUpdate) {
-        toUpdate.setServiceId(serviceId);
-        log.info("Updating record for service {} under key {}", serviceId, toUpdate);
-        KeyValue serviceCache = getCache().put(serviceId + toUpdate.getKey(), toUpdate);
-        if (serviceCache == null) {
-            throw new StorageException(Messages.KEY_NOT_IN_CACHE.getKey(), Messages.KEY_NOT_IN_CACHE.getStatus(), toUpdate.getKey(), serviceId);
-        }
-        return toUpdate;
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public KeyValue delete(String serviceId, String toDelete) {
-        log.info("Removing record for service {} under key {}", serviceId, toDelete);
-        KeyValue entry = getCache().remove(serviceId + toDelete);
-        if (entry != null) {
-            return entry;
-        } else {
-            throw new StorageException(Messages.KEY_NOT_IN_CACHE.getKey(), Messages.KEY_NOT_IN_CACHE.getStatus(), toDelete, serviceId);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Map<String, KeyValue> readForService(String serviceId) {
-        log.info("Reading all records for service {} ", serviceId);
-        Map<String, KeyValue> result = new HashMap<>();
-        getCache().forEach((key, value) -> {
-            if (serviceId.equals(value.getServiceId())) {
-                result.put(value.getKey(), value);
-            }
-        });
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void deleteForService(String serviceId) {
-        log.info("Removing all records for service {} ", serviceId);
-        getCache().forEach((key, value) -> {
-            if (value.getServiceId().equals(serviceId)) {
-                getCache().remove(key);
-            }
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void removeNonRelevantTokens(String serviceId, String mapKey) {
-        ClusteredLock lock = lockSupplier.get();
-        CompletableFuture<Boolean> complete = lock.tryLock(4, TimeUnit.SECONDS).whenComplete((r, ex) -> {
-            if (Boolean.TRUE.equals(r)) {
-                try {
-                    removeToken(serviceId, mapKey);
-                } finally {
-                    lock.unlock();
-                }
-            }
-        });
-        completeJoin(complete);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void removeToken(String serviceId, String mapKey) {
         Map<String, String> map = getTokenCache().get(serviceId + mapKey);
         if (map != null && !map.isEmpty()) {
-            Map<String,String> result = map.entrySet().stream().filter(entry -> {
+            Map<String, String> result = map.entrySet().stream().filter(entry -> {
                 try {
                     AccessTokenContainer c = objectMapper.readValue(entry.getValue(), AccessTokenContainer.class);
                     return !c.getExpiresAt().isBefore(LocalDateTime.now());
@@ -208,26 +123,7 @@ public class InfinispanStorage implements Storage {
 
     @Override
     public void removeNonRelevantRules(String serviceId, String mapKey) {
-        ClusteredLock lock = lockSupplier.get();
-        CompletableFuture<Boolean> complete = lock.tryLock(4, TimeUnit.SECONDS).whenComplete((r, ex) -> {
-            if (Boolean.TRUE.equals(r)) {
-                try {
-                    long timestamp = System.currentTimeMillis();
-                    Map<String, String> map = getTokenCache().get(serviceId + mapKey);
-                    if (map != null && !map.isEmpty()) {
-                        Map<String,String> result = map.entrySet().stream().filter(entry -> {
-                            long delta = timestamp - Long.parseLong(entry.getValue());
-                            long deltaToDays = TimeUnit.MILLISECONDS.toDays(delta);
-                            return deltaToDays <= 90;
-                        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                        getTokenCache().put(serviceId + mapKey, result);
-                    }
-                } finally {
-                    lock.unlock();
-                }
-            }
-        });
-        completeJoin(complete);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void completeJoin(CompletableFuture<Boolean> complete) {
@@ -242,5 +138,4 @@ public class InfinispanStorage implements Storage {
             }
         }
     }
-
 }

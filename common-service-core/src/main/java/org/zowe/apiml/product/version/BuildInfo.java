@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.version;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
 import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -25,6 +23,7 @@ import java.util.Properties;
 public class BuildInfo {
 
     String buildProperties = "META-INF/build-info.properties";
+
     String gitProperties = "META-INF/git.properties";
 
     public BuildInfo(String buildProperties, String gitProperties) {
@@ -39,33 +38,26 @@ public class BuildInfo {
     private ApimlLogger apimlLog = ApimlLogger.of(this.getClass(), YamlMessageServiceInstance.getInstance());
 
     public void logBuildInfo() {
-        BuildInfoDetails buildInfo = getBuildInfoDetails();
-        log.info("Service {} version {} #{} on {} by {} commit {}", buildInfo.getArtifact(), buildInfo.getVersion(), buildInfo.getNumber(),
-            buildInfo.getTime(), buildInfo.getMachine(), buildInfo.getCommitId());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public BuildInfoDetails getBuildInfoDetails() {
-        Properties build = getProperties(buildProperties);
-        Properties git = getProperties(gitProperties);
-        return new BuildInfoDetails(build, git);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Properties getProperties(String path) {
         // Create the Properties
         Properties props = new Properties();
-
         // Create the input streams
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
             if (input == null) {
                 apimlLog.log("org.zowe.apiml.common.buildInfoPropertiesNotFound", path);
                 return props;
             }
-
             props.load(input);
         } catch (IOException ioe) {
             apimlLog.log("org.zowe.apiml.common.buildInfoPropertiesIOError", path, ioe.toString());
         }
-
         return props;
     }
 }

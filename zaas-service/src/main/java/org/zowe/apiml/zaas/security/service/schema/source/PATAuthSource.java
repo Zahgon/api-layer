@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import lombok.EqualsAndHashCode;
@@ -30,12 +29,11 @@ public class PATAuthSource implements AuthSource {
 
     @Override
     public Object getRawSource() {
-        return source;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public AuthSourceType getType() {
-        return type;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

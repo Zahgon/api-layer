@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.logging;
 
 import ch.qos.logback.core.boolex.PropertyConditionBase;
@@ -19,35 +18,16 @@ import lombok.Setter;
 public class PropertyContainsCondition extends PropertyConditionBase {
 
     String key;
+
     String value;
 
     @Override
     public void start() {
-        if (key == null) {
-            addError("In PropertyContainsValue 'key' parameter cannot be null");
-            return;
-        }
-        if (value == null) {
-            addError("In PropertyContainsValue 'value' parameter cannot be null");
-            return;
-        }
-        super.start();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean evaluate() {
-        if (key == null) {
-            addError("key cannot be null");
-            return false;
-        }
-
-        String val = p(key);
-        if (val == null)
-            return false;
-        else {
-            return val.contains(value);
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

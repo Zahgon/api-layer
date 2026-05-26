@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -23,18 +22,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnMissingBean(name = "modulithConfig")
-@OpenAPIDefinition(
-    security = @SecurityRequirement(name = "ClientCert"),
-    info = @io.swagger.v3.oas.annotations.info.Info(title = "Caching service", description = """
-        REST API for the Caching service, which is a module of the API Mediation Layer.
-        Use this API to perform tasks such as store, read and update items under the client certificate as a key.
-        """)
-)
-@SecurityScheme(
-    type = SecuritySchemeType.MUTUALTLS,
-    name = "ClientCert",
-    description = "Client certificate X509"
-)
+@OpenAPIDefinition(security = @SecurityRequirement(name = "ClientCert"), info = @io.swagger.v3.oas.annotations.info.Info(title = "Caching service", description = """
+    REST API for the Caching service, which is a module of the API Mediation Layer.
+    Use this API to perform tasks such as store, read and update items under the client certificate as a key.
+    """))
+@SecurityScheme(type = SecuritySchemeType.MUTUALTLS, name = "ClientCert", description = "Client certificate X509")
 public class SwaggerConfig {
 
     @Value("${apiml.service.title}")
@@ -48,10 +40,6 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI().info(new Info()
-            .title(apiTitle)
-            .description(apiDescription)
-            .version(apiVersion)
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

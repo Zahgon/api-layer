@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.vsam;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +31,7 @@ public class VsamInitializer {
 
     @Retryable(value = UnsupportedOperationException.class, maxAttempts = 10)
     public void storageWarmup(VsamConfig config, ApimlLogger apimlLogger) {
-        try (VsamFile file = new VsamFile(config, VsamConfig.VsamOptions.WRITE, true, apimlLogger)) {
-            log.info("Vsam file open successful");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -48,26 +45,6 @@ public class VsamInitializer {
      * @throws VsamRecordException
      */
     public void warmUpVsamFile(ZFile zFile, VsamConfig vsamConfig) throws ZFileException, VsamRecordException {
-        log.info("Warming up the vsam file by writing and deleting a record");
-        log.info("VSAM file being used: {}", zFile.getActualFilename());
-
-        VsamRecord vsamRec = new VsamRecord(vsamConfig, "delete", new KeyValue("me", "novalue"));
-
-        log.info("Writing Record: {}", vsamRec);
-        zFile.write(vsamRec.getBytes());
-
-        boolean found = zFile.locate(vsamRec.getKeyBytes(), ZFileConstants.LOCATE_KEY_EQ);
-
-        log.info("Test record for deletion found: {}", found);
-        if (found) {
-            byte[] recBuf = new byte[vsamConfig.getRecordLength()];
-            //has to be read before update/delete
-            if (vsamConfig.getRecordLength() != zFile.read(recBuf)) {
-                log.warn("Configured VSAM record length is different that the actual data read from {}", zFile.getActualFilename());
-            }
-
-            zFile.delrec();
-            log.info("Test record deleted.");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

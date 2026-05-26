@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.service;
 
 import ch.qos.logback.classic.Level;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
-
 import java.lang.management.ManagementFactory;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,34 +27,12 @@ public class ServiceStartupEventHandler {
 
     public static final int DEFAULT_DELAY_FACTOR = 5;
 
-    private final ApimlLogger apimlLog = ApimlLogger.of(ServiceStartupEventHandler.class,
-        YamlMessageServiceInstance.getInstance());
+    private final ApimlLogger apimlLog = ApimlLogger.of(ServiceStartupEventHandler.class, YamlMessageServiceInstance.getInstance());
 
     private final Set<String> registeredServices = ConcurrentHashMap.newKeySet();
 
     @SuppressWarnings("squid:S1172")
     public void onServiceStartup(String serviceName, int delayFactor) {
-        if (registeredServices.contains(serviceName)) {
-            return;
-        }
-        registeredServices.add(serviceName);
-        long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
-        apimlLog.log("org.zowe.apiml.common.serviceStarted", serviceName, uptime / 1000.0);
-
-        new java.util.Timer().schedule(new java.util.TimerTask() {
-            @Override
-            public void run() {
-                LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-                String[] names = new String[] { "com.netflix.discovery.DiscoveryClient",
-                        "com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient"
-                };
-                for (String name : names) {
-                    Logger logger = loggerContext.getLogger(name);
-                    logger.setLevel(Level.ERROR);
-                }
-            }
-        }, uptime * delayFactor);
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

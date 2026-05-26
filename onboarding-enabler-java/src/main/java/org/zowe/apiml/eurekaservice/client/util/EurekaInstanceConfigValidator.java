@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client.util;
 
 import com.google.common.primitives.Chars;
@@ -17,10 +16,8 @@ import org.zowe.apiml.eurekaservice.client.config.Route;
 import org.zowe.apiml.eurekaservice.client.config.Ssl;
 import org.zowe.apiml.exception.MetadataValidationException;
 import org.zowe.apiml.util.EurekaUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Class that validates a service configuration before the registration with API ML
@@ -29,10 +26,13 @@ import java.util.List;
 public class EurekaInstanceConfigValidator {
 
     private static final String UNSET_VALUE_STRING = "{apiml.";
+
     private static final char[] UNSET_VALUE_CHAR_ARRAY = UNSET_VALUE_STRING.toCharArray();
 
     private final List<String> missingSslParameters = new ArrayList<>();
+
     private final List<String> missingRoutesParameters = new ArrayList<>();
+
     private final List<String> poorlyFormedRelativeUrlParameters = new ArrayList<>();
 
     /**
@@ -42,20 +42,7 @@ public class EurekaInstanceConfigValidator {
      * @throws MetadataValidationException if the validation fails
      */
     public void validate(ApiMediationServiceConfig config) {
-        EurekaUtils.validateServiceId(config.getServiceId());
-        validateRoutes(config.getRoutes());
-        if (config.getDiscoveryServiceUrls().stream().anyMatch(url -> url.toLowerCase().startsWith("https"))) {
-            validateSsl(config.getSsl());
-        }
-        validateUrls(config);
-
-        if (config.getCatalog() == null) {
-            log.warn("The API Catalog UI tile configuration is not provided. Try to add apiml.service.catalog.tile section.");
-        }
-
-        if (config.getApiInfo() == null || config.getApiInfo().isEmpty()) {
-            log.warn("The API info configuration is not provided. Try to add apiml.service.apiInfo section.");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void validateRoutes(List<Route> routes) {
@@ -103,27 +90,24 @@ public class EurekaInstanceConfigValidator {
     }
 
     private boolean isKeyring(String in) {
-        if (in == null) return false;
-        if (!in.startsWith("JCE")) return false;
+        if (in == null)
+            return false;
+        if (!in.startsWith("JCE"))
+            return false;
         return in.endsWith("KS");
     }
 
     private void validateSsl(Ssl ssl) {
         validateSslParameters(ssl, missingSslParameters);
-        if (isInvalid(ssl.getTrustStorePassword()) && (isInvalid(ssl.getTrustStoreType()) ||
-                (!isInvalid(ssl.getTrustStoreType()) && !isKeyring(ssl.getTrustStoreType())))) {
+        if (isInvalid(ssl.getTrustStorePassword()) && (isInvalid(ssl.getTrustStoreType()) || (!isInvalid(ssl.getTrustStoreType()) && !isKeyring(ssl.getTrustStoreType())))) {
             addParameterToProblemsList("trustStorePassword", missingSslParameters);
         }
-        if (isInvalid(ssl.getKeyStorePassword()) && (isInvalid(ssl.getKeyStoreType()) ||
-                (!isInvalid(ssl.getKeyStoreType()) && !isKeyring(ssl.getKeyStoreType())))) {
+        if (isInvalid(ssl.getKeyStorePassword()) && (isInvalid(ssl.getKeyStoreType()) || (!isInvalid(ssl.getKeyStoreType()) && !isKeyring(ssl.getKeyStoreType())))) {
             addParameterToProblemsList("keyStorePassword", missingSslParameters);
         }
-        if (isInvalid(ssl.getKeyPassword()) && (isInvalid(ssl.getKeyStoreType()) ||
-            (!isInvalid(ssl.getKeyStoreType()) && !isKeyring(ssl.getKeyStoreType())))) {
+        if (isInvalid(ssl.getKeyPassword()) && (isInvalid(ssl.getKeyStoreType()) || (!isInvalid(ssl.getKeyStoreType()) && !isKeyring(ssl.getKeyStoreType())))) {
             addParameterToProblemsList("keyPassword", missingSslParameters);
         }
-
-
         if (!missingSslParameters.isEmpty()) {
             throw new MetadataValidationException(String.format("SSL parameters ** %s ** are missing or were not replaced by the system properties.", String.join(", ", missingSslParameters)));
         }
@@ -131,27 +115,21 @@ public class EurekaInstanceConfigValidator {
 
     private void validateUrls(ApiMediationServiceConfig config) {
         validateHomePageRelativeUrl(config);
-
         if (isPoorlyFormedRelativeUrl(config.getHealthCheckRelativeUrl())) {
             addParameterToProblemsList("healthCheckRelativeUrl", poorlyFormedRelativeUrlParameters);
         }
-
         if (isPoorlyFormedRelativeUrl(config.getStatusPageRelativeUrl())) {
             addParameterToProblemsList("statusPageRelativeUrl", poorlyFormedRelativeUrlParameters);
         }
-
         if (isPoorlyFormedRelativeUrl(config.getContextPath())) {
             addParameterToProblemsList("contextPath", poorlyFormedRelativeUrlParameters);
         }
-
         if (!poorlyFormedRelativeUrlParameters.isEmpty()) {
             log.warn(String.format("Relative URL parameters ** %s ** don't begin with '/' which often causes malformed URLs.", String.join(", ", poorlyFormedRelativeUrlParameters)));
         }
-
         if (config.getBaseUrl() != null && config.getBaseUrl().endsWith("/")) {
             log.warn("The baseUrl parameter ends with a trailing '/'. This often causes malformed URLs when relative URLs are used.");
         }
-
         if (config.getContextPath() != null && config.getContextPath().endsWith("/")) {
             log.warn("The contextPath parameter ends with a trailing '/'. This often causes malformed URLs when relative URLs are used.");
         }

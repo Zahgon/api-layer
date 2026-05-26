@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +21,6 @@ public class UrlTomcatCustomizer implements TomcatConnectorCustomizer {
 
     @Override
     public void customize(Connector connector) {
-        connector.setAllowBackslash(true);
-        connector.setEncodedSolidusHandling(EncodedSolidusHandling.PASS_THROUGH.getValue());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

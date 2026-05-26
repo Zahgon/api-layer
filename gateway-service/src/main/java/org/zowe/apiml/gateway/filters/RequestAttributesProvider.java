@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,8 @@ public class RequestAttributesProvider implements WebFilter, GlobalFilter, Order
         Object request = exchange.getRequest();
         while (request instanceof ServerHttpRequestDecorator) {
             Object delegatedRequest = ((ServerHttpRequestDecorator) request).getDelegate();
-            if (request == delegatedRequest) break;
+            if (request == delegatedRequest)
+                break;
             request = delegatedRequest;
         }
         return (R) request;
@@ -47,27 +47,21 @@ public class RequestAttributesProvider implements WebFilter, GlobalFilter, Order
             log.debug("The current request implementation does not support obtaining of request attributes. Is it running a test?");
             return;
         }
-
-        Streams.of(requestFacade.getAttributeNames())
-            .filter(name -> !exchange.getAttributes().containsKey(name))
-            .forEach(name -> exchange.getAttributes().put(name, requestFacade.getAttribute(name)));
+        Streams.of(requestFacade.getAttributeNames()).filter(name -> !exchange.getAttributes().containsKey(name)).forEach(name -> exchange.getAttributes().put(name, requestFacade.getAttribute(name)));
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        copyAttributes(exchange);
-        return chain.filter(exchange);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        copyAttributes(exchange);
-        return chain.filter(exchange);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE + 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

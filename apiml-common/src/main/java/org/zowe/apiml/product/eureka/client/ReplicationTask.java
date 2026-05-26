@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.eureka.client;
 
 import com.netflix.discovery.shared.transport.EurekaHttpResponse;
@@ -20,6 +19,7 @@ public abstract class ReplicationTask {
     private static final Logger logger = LoggerFactory.getLogger(ReplicationTask.class);
 
     protected final String peerNodeName;
+
     protected final PeerAwareInstanceRegistryImpl.Action action;
 
     ReplicationTask(String peerNodeName, PeerAwareInstanceRegistryImpl.Action action) {
@@ -30,15 +30,16 @@ public abstract class ReplicationTask {
     public abstract String getTaskName();
 
     public PeerAwareInstanceRegistryImpl.Action getAction() {
-        return action;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public abstract EurekaHttpResponse<?> execute() throws Throwable;
 
     public void handleSuccess() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
-        logger.warn("The replication of task {} failed with response code {}", getTaskName(), statusCode);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

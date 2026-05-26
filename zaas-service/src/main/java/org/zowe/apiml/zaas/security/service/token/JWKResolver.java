@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.token;
 
 import lombok.RequiredArgsConstructor;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.lang.JoseException;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 
 @Component
@@ -24,8 +22,6 @@ public class JWKResolver {
     private final HttpsJwksProvider provider;
 
     public JsonWebKeySet resolve(String url) throws JoseException, IOException {
-        var httpsJwks = provider.getFor(url);
-        return new JsonWebKeySet(httpsJwks.getJsonWebKeys());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-
 /**
  * This controller is intended for redirection of API Catalog APIs. It also serves as a fix for Cors.
  */
@@ -31,40 +29,41 @@ import reactor.core.publisher.Mono;
 public class ReactiveCatalogController {
 
     private static final String API_V1 = "/api/v1";
+
     private static final String UI_V1 = "/ui/v1";
 
     @GetMapping(API_V1)
     public Mono<ResponseEntity<Void>> catalogApi() {
-        return Mono.just(ResponseEntity.status(308).header(HttpHeaders.LOCATION, "/apicatalog/api/v1/").build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping(API_V1 + "/")
     public Mono<ResponseEntity<Void>> catalogApiIndex() {
-        return Mono.just(ResponseEntity.status(308).header(HttpHeaders.LOCATION, "/apicatalog/api/v1/index.html").build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping(UI_V1)
     public Mono<ResponseEntity<Void>> catalogUi() {
-        return Mono.just(ResponseEntity.status(308).header(HttpHeaders.LOCATION, "/apicatalog/ui/v1/").build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping(UI_V1 + "/")
     public Mono<ResponseEntity<Void>> catalogUiIndex() {
-        return Mono.just(ResponseEntity.status(308).header(HttpHeaders.LOCATION, "/apicatalog/ui/v1/index.html").build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(API_V1 + "/auth/login")
     public Mono<ResponseEntity<Void>> catalogLogin() {
-        return Mono.just(ResponseEntity.status(308).header(HttpHeaders.LOCATION, "/gateway/api/v1/auth/login").build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(API_V1 + "/auth/logout")
     public Mono<ResponseEntity<Void>> catalogLogout() {
-        return Mono.just(ResponseEntity.status(308).header(HttpHeaders.LOCATION, "/gateway/api/v1/auth/logout").build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @GetMapping(API_V1 + "/auth/query")
     public Mono<ResponseEntity<Void>> catalogQuery() {
-        return Mono.just(ResponseEntity.status(308).header(HttpHeaders.LOCATION, "/gateway/api/v1/auth/query").build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

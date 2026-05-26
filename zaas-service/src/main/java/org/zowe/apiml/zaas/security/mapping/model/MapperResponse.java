@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.mapping.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,12 +27,16 @@ public class MapperResponse {
 
     @JsonProperty("userid")
     private String userId;
+
     @JsonProperty("returnCode")
     private int rc;
+
     @JsonProperty("safReturnCode")
     private int safRc;
+
     @JsonProperty("racfReturnCode")
     private int racfRc;
+
     @JsonProperty("racfReasonCode")
     private int racfRs;
 
@@ -41,46 +44,10 @@ public class MapperResponse {
     private final ApimlLogger apimlLog = ApimlLogger.of(EurekaMetadataParser.class, YamlMessageServiceInstance.getInstance());
 
     public String toString() {
-        return "User: " + userId + ", rc=" + rc + ", safRc=" + safRc + ", racfRc=" + racfRc + ", racfRs=" + racfRs;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean isOIDCResultValid() {
-        // https://www.ibm.com/docs/en/zos/2.5.0?topic=user-return-reason-codes
-        if (rc == 0 && safRc == 0 && racfRc == 0 && racfRs == 0) {
-            return true;
-        }
-
-        if (rc == 8 && safRc == 8 && racfRc == 8) {
-            switch (racfRs) {
-                case 4:
-                    // ACF2 contains the following bug https://support.broadcom.com/web/ecx/solutiondetails?aparNo=LU01316&os=z%2FOS
-                    // that returns this return codes
-                    apimlLog.log(OIDC_FAILED_MESSAGE_KEY,
-                        "A parameter list error occurred. Make sure LU01316 PTF was applied when using" +
-                            " the ACF2 security manager. Otherwise, contact Zowe support.");
-                    return false;
-                case 20:
-                    apimlLog.log(OIDC_FAILED_MESSAGE_KEY,
-                        "Not authorized to use this service. Make sure that user '" + userId + "' has READ" +
-                            " access to the IRR.IDIDMAP.QUERY resource in the FACILITY class.");
-                    return false;
-                case 44:
-                    apimlLog.log(OIDC_FAILED_MESSAGE_KEY,
-                        "The Registry Name or supplied distributed identity is all blanks (x'20'), all nulls" +
-                            " (x'00'), or a combination of blanks and nulls.");
-                    return false;
-                case 48:
-                    apimlLog.log(OIDC_FAILED_MESSAGE_KEY,
-                        "There is no distributed identity filter mapping of the supplied distributed identity to" +
-                            " a SAF user ID, or the IDIDMAP SAF general resource class is not active or not RACLISTed.");
-                    return false;
-                default:
-            }
-        }
-
-        apimlLog.log(OIDC_FAILED_MESSAGE_KEY, "SAF response: " + this + " Review the return codes in the IBM" +
-            " documentation for R_usermap (IRRSIM00) callable service.");
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

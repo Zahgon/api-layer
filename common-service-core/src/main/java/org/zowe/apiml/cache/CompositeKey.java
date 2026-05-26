@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.cache;
 
 import org.apache.commons.lang3.StringUtils;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -32,43 +30,37 @@ public class CompositeKey implements Serializable {
 
     private int hashCode;
 
-    public CompositeKey(Object...values) {
-        if (values == null) values = new Object[0];
+    public CompositeKey(Object... values) {
+        if (values == null)
+            values = new Object[0];
         this.values = Arrays.copyOf(values, values.length, Serializable[].class);
         this.hashCode = Arrays.deepHashCode(this.values);
     }
 
     public Object get(int i) {
-        return this.values[i];
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean equals(int i, Object o) {
-        return Objects.equals(this.values[i], o);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public int size() {
-        return values.length;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CompositeKey that = (CompositeKey) o;
-        if (that.hashCode != this.hashCode) return false;
-
-        return Arrays.deepEquals(this.values, that.values);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int hashCode() {
-        return this.hashCode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [" + StringUtils.join(values, ",") + "]";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

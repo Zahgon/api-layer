@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service;
 
 import jakarta.annotation.PostConstruct;
@@ -30,11 +29,9 @@ import org.zowe.apiml.gateway.service.scheme.SchemeHandler;
 import org.zowe.apiml.product.routing.RoutedService;
 import org.zowe.apiml.util.StringUtils;
 import reactor.core.publisher.Flux;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.*;
 
 @Service
@@ -55,142 +52,64 @@ public class RouteLocator implements RouteDefinitionLocator {
 
     @Value("${apiml.gateway.servicesToLimitRequestRate:}")
     List<String> servicesToLimitRequestRateProperty;
+
     List<String> servicesToLimitRequestRate;
 
     @Value("${apiml.gateway.servicesToDisableRetry:}")
     List<String> servicesToDisableRetryProperty;
+
     List<String> servicesToDisableRetry;
 
     private final ReactiveDiscoveryClient discoveryClient;
 
     @Qualifier("commonFilters")
     private final List<FilterDefinition> commonFilters;
+
     @Qualifier("commonNoRetryFilters")
     private final List<FilterDefinition> commonNoRetryFilters;
+
     private final List<RouteDefinitionProducer> routeDefinitionProducers;
+
     private final List<SchemeHandler> schemeHandlersList;
+
     private final Map<AuthenticationScheme, SchemeHandler> schemeHandlers = new EnumMap<>(AuthenticationScheme.class);
 
     @PostConstruct
     void afterPropertiesSet() {
-        for (SchemeHandler schemeHandler : schemeHandlersList) {
-            schemeHandlers.put(schemeHandler.getAuthenticationScheme(), schemeHandler);
-        }
-
-        servicesToLimitRequestRate = servicesToLimitRequestRateProperty.stream().map(String::toLowerCase).toList();
-        servicesToDisableRetry = servicesToDisableRetryProperty.stream().map(String::toLowerCase).toList();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     Flux<List<ServiceInstance>> getServiceInstances() {
-        return discoveryClient.getServices()
-            .filter(this::filterIgnored)
-            .flatMap(service -> discoveryClient.getInstances(service)
-            .collectList());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void setAuth(ServiceInstance serviceInstance, RouteDefinition routeDefinition, Authentication auth) {
-        if (auth != null && auth.getScheme() != null) {
-            SchemeHandler schemeHandler = schemeHandlers.get(auth.getScheme());
-            if (schemeHandler != null) {
-                schemeHandler.apply(serviceInstance, routeDefinition, auth);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     Stream<RoutedService> getRoutedService(ServiceInstance serviceInstance) {
-        return metadataParser.parseToListRoute(serviceInstance.getMetadata()).stream()
-            // sorting avoid a conflict with the more general pattern
-            .sorted(Comparator.<RoutedService>comparingInt(x -> StringUtils.removeFirstAndLastOccurrence(x.getGatewayUrl(), "/").length()).reversed());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static <T> List<T> join(List<T> a, List<T> b) {
-        if (b.isEmpty()) return a;
-
-        List<T> output = new LinkedList<>(a);
-        output.addAll(b);
-        return output;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     List<FilterDefinition> getPostRoutingFilters(ServiceInstance serviceInstance, RoutedService routedService) {
-        List<FilterDefinition> serviceRelated = new LinkedList<>();
-        if (forwardingClientCertEnabled
-                && Optional.ofNullable(serviceInstance.getMetadata().get(SERVICE_SUPPORTING_CLIENT_CERT_FORWARDING))
-                    .map(Boolean::parseBoolean)
-                    .orElse(false)
-        ) {
-            FilterDefinition forwardClientCertFilter = new FilterDefinition();
-            forwardClientCertFilter.setName("ForwardClientCertFilterFactory");
-            serviceRelated.add(forwardClientCertFilter);
-        }
-        //Allow encoded characters by default
-        if (!Optional.ofNullable(serviceInstance.getMetadata().get(ENABLE_URL_ENCODED_CHARACTERS))
-            .map(Boolean::parseBoolean)
-            .orElse(true)) {
-            FilterDefinition forbidEncodedCharactersFilter = new FilterDefinition();
-            forbidEncodedCharactersFilter.setName("ForbidEncodedCharactersFilterFactory");
-            serviceRelated.add(forbidEncodedCharactersFilter);
-        }
-
-        if (Optional.ofNullable(serviceInstance.getMetadata().get(APPLY_RATE_LIMITER_FILTER))
-            .map(Boolean::parseBoolean)
-            .orElse(false)) {
-            FilterDefinition rateLimiterFilter = new FilterDefinition();
-            rateLimiterFilter.setName("InMemoryRateLimiterFilterFactory");
-            rateLimiterFilter.addArg("capacity", serviceInstance.getMetadata().get("apiml.gateway.rateLimiterCapacity"));
-            rateLimiterFilter.addArg("tokens", serviceInstance.getMetadata().get("apiml.gateway.rateLimiterTokens"));
-            rateLimiterFilter.addArg("refillDuration", serviceInstance.getMetadata().get("apiml.gateway.rateLimiterRefillDuration"));
-            serviceRelated.add(rateLimiterFilter);
-        } else if (servicesToLimitRequestRate != null && servicesToLimitRequestRate.contains(serviceInstance.getServiceId().toLowerCase())) {
-            FilterDefinition rateLimiterFilter = new FilterDefinition();
-            rateLimiterFilter.setName("InMemoryRateLimiterFilterFactory");
-            serviceRelated.add(rateLimiterFilter);
-        }
-
-        FilterDefinition pageRedirectionFilter = new FilterDefinition();
-        pageRedirectionFilter.setName("PageRedirectionFilterFactory");
-        pageRedirectionFilter.addArg("serviceId", serviceInstance.getServiceId());
-        pageRedirectionFilter.addArg("instanceId", serviceInstance.getInstanceId());
-        pageRedirectionFilter.addArg("gatewayUrl", routedService.getGatewayUrl());
-        pageRedirectionFilter.addArg("serviceUrl", routedService.getServiceUrl());
-        serviceRelated.add(pageRedirectionFilter);
-
-        if (!otelDisabled) {
-            FilterDefinition otelRequestBasicFilter = new FilterDefinition();
-            otelRequestBasicFilter.setName("OtelServiceFilterFactory");
-            otelRequestBasicFilter.addArg("serviceId", serviceInstance.getServiceId());
-            otelRequestBasicFilter.addArg("instanceId", serviceInstance.getInstanceId());
-            serviceRelated.add(otelRequestBasicFilter);
-        }
-
-        if (servicesToDisableRetry.contains(serviceInstance.getServiceId().toLowerCase())) {
-            return join(commonNoRetryFilters, serviceRelated);
-        } else {
-            return join(commonFilters, serviceRelated);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    private List<RouteDefinition> getAuthFilterPerRoute(
-        AtomicInteger orderHolder,
-        ServiceInstance serviceInstance
-    ) {
+    private List<RouteDefinition> getAuthFilterPerRoute(AtomicInteger orderHolder, ServiceInstance serviceInstance) {
         Authentication auth = metadataParser.parseAuthentication(serviceInstance.getMetadata());
         // iterate over routing definition (ordered from the longest one to match with the most specific)
-        return getRoutedService(serviceInstance)
-            .map(routedService ->
-                routeDefinitionProducers.stream()
-                    .sorted(Comparator.comparingInt(RouteDefinitionProducer::getOrder))
-                    .map(rdp -> {
-                        // generate a new routing rule by a specific produces
-                        RouteDefinition routeDefinition = rdp.get(serviceInstance, routedService);
-                        routeDefinition.setOrder(orderHolder.getAndIncrement());
-                        routeDefinition.getFilters().addAll(getPostRoutingFilters(serviceInstance, routedService));
-                        setAuth(serviceInstance, routeDefinition, auth);
-
-                        return routeDefinition;
-                    }).toList()
-            )
-            .flatMap(List::stream)
-            .toList();
+        return getRoutedService(serviceInstance).map(routedService -> routeDefinitionProducers.stream().sorted(Comparator.comparingInt(RouteDefinitionProducer::getOrder)).map(rdp -> {
+            // generate a new routing rule by a specific produces
+            RouteDefinition routeDefinition = rdp.get(serviceInstance, routedService);
+            routeDefinition.setOrder(orderHolder.getAndIncrement());
+            routeDefinition.getFilters().addAll(getPostRoutingFilters(serviceInstance, routedService));
+            setAuth(serviceInstance, routeDefinition, auth);
+            return routeDefinition;
+        }).toList()).flatMap(List::stream).toList();
     }
 
     /**
@@ -203,18 +122,10 @@ public class RouteLocator implements RouteDefinitionLocator {
      */
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
-        // counter of generated route definition to prevent clashing by the order
-        AtomicInteger order = new AtomicInteger();
-        // iterate over services
-        return getServiceInstances().flatMap(Flux::fromIterable).map(serviceInstance ->
-            // generate route definition per services and its routing rules
-            getAuthFilterPerRoute(order, serviceInstance)
-        )
-        .flatMapIterable(list -> list);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean filterIgnored(String serviceId) {
         return !PatternMatchUtils.simpleMatch(ignoredServices, serviceId.toLowerCase());
     }
-
 }

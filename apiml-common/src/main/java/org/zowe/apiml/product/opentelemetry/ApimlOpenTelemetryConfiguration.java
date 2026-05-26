@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.opentelemetry;
 
 import lombok.RequiredArgsConstructor;
@@ -42,15 +41,11 @@ public class ApimlOpenTelemetryConfiguration implements InitializingBean, BeanPo
     private static HttpConfig initializedHttpConfig;
 
     static HttpsFactory httpsConfig() {
-        if (initializedHttpConfig == null) {
-            return null;
-        }
-        return initializedHttpConfig.httpsFactory();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        ApimlOpenTelemetryConfiguration.initializedHttpConfig = httpConfig; // NOSONAR
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.api;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.zowe.apiml.apicatalog.staticapi.StaticAPIResponse;
 import org.zowe.apiml.apicatalog.staticapi.StaticDefinitionGenerator;
 import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 
 /**
@@ -42,10 +40,7 @@ public class StaticDefinitionController {
     @PostMapping(value = "/generate", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Mono<ResponseEntity<String>> generateStaticDef(@RequestBody String payload, @RequestHeader(value = "Service-Id") String serviceId) throws IOException {
-        StaticAPIResponse staticAPIResponse = staticDefinitionGenerator.generateFile(payload, serviceId);
-        return Mono.just(ResponseEntity
-            .status(staticAPIResponse.getStatusCode())
-            .body(staticAPIResponse.getBody()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -57,19 +52,14 @@ public class StaticDefinitionController {
     @PostMapping(value = "/override", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Mono<ResponseEntity<String>> overrideStaticDef(@RequestBody String payload, @RequestHeader(value = "Service-Id") String serviceId) throws IOException {
-        StaticAPIResponse staticAPIResponse = staticDefinitionGenerator.overrideFile(payload, serviceId);
-        return Mono.just(ResponseEntity
-            .status(staticAPIResponse.getStatusCode())
-            .body(staticAPIResponse.getBody()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @DeleteMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Mono<ResponseEntity<String>> deleteStaticDef(@RequestHeader(value = "Service-Id") String serviceId) throws IOException {
-        StaticAPIResponse staticAPIResponse = staticDefinitionGenerator.deleteFile(serviceId);
-        return Mono.just(ResponseEntity.status(staticAPIResponse.getStatusCode()).body(staticAPIResponse.getBody()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }
 
 @RestController
@@ -80,7 +70,6 @@ class StaticDefinitionControllerModulith extends StaticDefinitionController {
     public StaticDefinitionControllerModulith(StaticDefinitionGenerator staticDefinitionGenerator) {
         super(staticDefinitionGenerator);
     }
-
 }
 
 @RestController
@@ -91,5 +80,4 @@ class StaticDefinitionControllerMicroservice extends StaticDefinitionController 
     public StaticDefinitionControllerMicroservice(StaticDefinitionGenerator staticDefinitionGenerator) {
         super(staticDefinitionGenerator);
     }
-
 }

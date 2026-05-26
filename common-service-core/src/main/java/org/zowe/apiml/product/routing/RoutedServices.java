@@ -7,16 +7,15 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.routing;
 
 import org.apache.commons.lang3.StringUtils;
 import org.zowe.apiml.util.UrlUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class RoutedServices {
+
     private final Map<String, RoutedService> routedService = new HashMap<>();
 
     /**
@@ -25,7 +24,7 @@ public class RoutedServices {
      * @param route the route
      */
     public void addRoutedService(RoutedService route) {
-        routedService.put(route.getGatewayUrl(), route);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -35,7 +34,7 @@ public class RoutedServices {
      * @return the route
      */
     public RoutedService findServiceByGatewayUrl(String gatewayUrl) {
-        return routedService.get(gatewayUrl);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -46,22 +45,7 @@ public class RoutedServices {
      * @return the route
      */
     public RoutedService getBestMatchingServiceUrl(String serviceUrl, ServiceType type) {
-        RoutedService result = null;
-        int maxSize = 0;
-
-        for (Map.Entry<String, RoutedService> serviceEntry : routedService.entrySet()) {
-            if (isServiceTypeMatch(serviceEntry, type)) {
-                RoutedService value = serviceEntry.getValue();
-                int size = value.getServiceUrl().length();
-                String routeServiceUrl = UrlUtils.removeLastSlash(value.getServiceUrl().toLowerCase());
-                if (size > maxSize && serviceUrl.toLowerCase().startsWith(routeServiceUrl)) {
-                    result = value;
-                    maxSize = size;
-                }
-            }
-        }
-
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -69,10 +53,7 @@ public class RoutedServices {
      * @return true is no rule or just empty is defined
      */
     public boolean isDefinedOnlyBypassRoutes() {
-        return routedService.values().stream().allMatch(rs ->
-            StringUtils.isBlank(UrlUtils.removeLastSlash(rs.getGatewayUrl())) &&
-            StringUtils.isBlank(UrlUtils.removeLastSlash(rs.getServiceUrl()))
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -82,28 +63,7 @@ public class RoutedServices {
      * @return the route
      */
     public RoutedService getBestMatchingApiUrl(String serviceUrl) {
-        RoutedService result = null;
-        int maxSize = 0;
-
-        for (Map.Entry<String, RoutedService> serviceEntry : routedService.entrySet()) {
-            if (isServiceTypeMatch(serviceEntry, ServiceType.API)) {
-                RoutedService value = serviceEntry.getValue();
-                int size = value.getServiceUrl().length();
-                //Remove last slash for service url
-                String routeServiceUrl;
-                if ("/".equals(value.getServiceUrl())) {
-                    routeServiceUrl = value.getServiceUrl();
-                } else {
-                    routeServiceUrl = UrlUtils.removeLastSlash(value.getServiceUrl().toLowerCase());
-                }
-                if (size > maxSize && isMatchingApiRoute(serviceUrl, routeServiceUrl)) {
-                    result = value;
-                    maxSize = size;
-                }
-            }
-        }
-
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean isServiceTypeMatch(Map.Entry<String, RoutedService> serviceEntry, ServiceType type) {
@@ -118,18 +78,6 @@ public class RoutedServices {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        for (Map.Entry<String, RoutedService> route : routedService.entrySet()) {
-            builder.append(route.getKey());
-            builder.append(" -> ");
-            builder.append(route.toString());
-            builder.append(", ");
-        }
-        if (routedService.size() > 0) {
-            builder.setLength(builder.length() - 2); // Remove extra ", "
-        }
-        builder.append("]");
-        return builder.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

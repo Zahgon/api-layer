@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.login;
 
 import jakarta.servlet.FilterChain;
@@ -19,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-
 import java.io.IOException;
 
 /**
@@ -33,28 +31,6 @@ public abstract class NonCompulsoryAuthenticationProcessingFilter extends Abstra
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
-        if (!requiresAuthentication(request, response)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        Authentication authResult = null;
-
-        try {
-            authResult = attemptAuthentication(request, response);
-        } catch (AuthenticationException failed) {
-            // Authentication failed
-            unsuccessfulAuthentication(request, response, failed);
-            return;
-        }
-
-        if (authResult == null) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        successfulAuthentication(request, response, chain, authResult);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service.routing;
 
 import org.springframework.cloud.client.ServiceInstance;
@@ -35,49 +34,21 @@ public class ByBasePath extends RouteDefinitionProducer {
     }
 
     static String constructUrl(String... parts) {
-        StringBuilder sb = new StringBuilder();
-        for (String part : parts) {
-            part = StringUtils.removeFirstAndLastOccurrence(part, "/");
-            if (part.isEmpty()) continue;
-
-            sb.append('/');
-            sb.append(part);
-        }
-        return sb.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void setCondition(RouteDefinition routeDefinition, ServiceInstance serviceInstance, RoutedService routedService) {
-        PredicateDefinition headerPredicate = new PredicateDefinition();
-        headerPredicate.setName("MissingHeader");
-        headerPredicate.addArg("header", TARGET_HEADER_NAME);
-        routeDefinition.getPredicates().add(headerPredicate);
-
-        PredicateDefinition pathPredicate = new PredicateDefinition();
-        pathPredicate.setName("Path");
-        String predicateValue = constructUrl(serviceInstance.getServiceId(), routedService.getGatewayUrl(), "**");
-        pathPredicate.addArg("pattern", predicateValue);
-        routeDefinition.getPredicates().add(pathPredicate);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void setFilters(RouteDefinition routeDefinition, ServiceInstance serviceInstance, RoutedService routedService) {
-        var rewriteWithSlash = new FilterDefinition();
-        rewriteWithSlash.setName("RewritePath");
-        rewriteWithSlash.addArg("regexp", constructUrl(serviceInstance.getServiceId(), routedService.getGatewayUrl(), "(?<remaining>.*)"));
-        rewriteWithSlash.addArg("replacement", constructUrl(routedService.getServiceUrl(), "${remaining}"));
-        routeDefinition.getFilters().add(rewriteWithSlash);
-
-        var rewriteWithoutSlash = new FilterDefinition();
-        rewriteWithoutSlash.setName("RewritePath");
-        rewriteWithoutSlash.addArg("regexp", constructUrl(serviceInstance.getServiceId(), routedService.getGatewayUrl()));
-        rewriteWithoutSlash.addArg("replacement", constructUrl(routedService.getServiceUrl()));
-        routeDefinition.getFilters().add(rewriteWithoutSlash);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getOrder() {
-        return 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

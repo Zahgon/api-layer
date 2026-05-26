@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.config;
 
 import jakarta.servlet.ServletException;
@@ -23,7 +22,6 @@ import org.zowe.apiml.security.common.token.TokenFormatNotValidException;
 import org.zowe.apiml.security.common.token.TokenNotProvidedException;
 import org.zowe.apiml.security.common.token.TokenNotValidException;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -32,20 +30,12 @@ import java.util.Optional;
 public class JWTLogoutHandler implements LogoutHandler {
 
     private final AuthenticationService authenticationService;
+
     private final FailedAuthenticationHandler failure;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        Optional<String> token = authenticationService.getJwtTokenFromRequest(request);
-        try {
-            if (token.isPresent()) {
-                invalidateJwtToken(failure, request, response, token.get());
-            } else {
-                failure.onAuthenticationFailure(request, response, new TokenNotProvidedException("The token you are trying to logout is not present in the header"));
-            }
-        } catch (Exception e) {
-            log.error("The response cannot be written during the logout exception handler: {}", e.getMessage());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void invalidateJwtToken(FailedAuthenticationHandler failure, HttpServletRequest request, HttpServletResponse response, String token) throws ServletException, IOException {

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.client.token;
 
 import lombok.RequiredArgsConstructor;
@@ -37,22 +36,11 @@ public class GatewayTokenProvider implements AuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) {
-        TokenAuthentication tokenAuthentication = (TokenAuthentication) authentication;
-        QueryResponse queryResponse;
-        if (tokenAuthentication.getType() == TokenAuthentication.Type.OIDC) {
-            queryResponse = gatewaySecurity.verifyOidc(tokenAuthentication.getCredentials()).getQueryResponse();
-        } else {
-            queryResponse = gatewaySecurity.query(tokenAuthentication.getCredentials());
-        }
-
-        TokenAuthentication validTokenAuthentication = new TokenAuthentication(queryResponse.getUserId(), tokenAuthentication.getCredentials(), tokenAuthentication.getType());
-        validTokenAuthentication.setAuthenticated(true);
-
-        return validTokenAuthentication;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return TokenAuthentication.class.isAssignableFrom(authentication);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.redis;
 
 import io.lettuce.core.RedisClient;
@@ -28,7 +27,6 @@ import org.zowe.apiml.caching.service.redis.exceptions.RedisEntryException;
 import org.zowe.apiml.caching.service.redis.exceptions.RedisOutOfMemoryException;
 import org.zowe.apiml.caching.service.redis.exceptions.RetryableRedisException;
 import org.zowe.apiml.message.log.ApimlLogger;
-
 import jakarta.annotation.PreDestroy;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -43,8 +41,11 @@ import java.util.concurrent.ExecutionException;
 @Component
 @ConditionalOnProperty(name = "caching.storage.mode", havingValue = "redis")
 public class RedisOperator {
+
     private RedisClient redisClient;
+
     private StatefulRedisMasterReplicaConnection<String, String> redisConnection;
+
     private RedisAsyncCommands<String, String> redis;
 
     public RedisOperator(RedisClient redisClient, RedisURI redisUri, ApimlLogger apimlLog) {
@@ -61,13 +62,7 @@ public class RedisOperator {
 
     @PreDestroy
     public void closeConnection() {
-        if (redisConnection != null) {
-            redisConnection.close();
-        }
-
-        if (redisClient != null) {
-            redisClient.shutdown();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -77,20 +72,7 @@ public class RedisOperator {
      * @return true if the key does not exist for the service ID and the entry was created, otherwise false.
      */
     public boolean create(RedisEntry entryToAdd) throws RedisOutOfMemoryException {
-        KeyValue toAdd = entryToAdd.getEntry();
-
-        try {
-            RedisFuture<Boolean> result = redis.hsetnx(entryToAdd.getServiceId(), toAdd.getKey(), entryToAdd.getEntryAsString());
-            return result.get();
-        } catch (ExecutionException e) {
-            handleWriteOperationExecutionException(e);
-        } catch (InterruptedException e) {
-            handleInterruptedException(e);
-        } catch (RedisEntryException e) {
-            return false;
-        }
-
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -100,26 +82,7 @@ public class RedisOperator {
      * @return true if the key exists for a service ID and the value was updated, otherwise false.
      */
     public boolean update(RedisEntry entryToUpdate) throws RedisOutOfMemoryException {
-        String serviceId = entryToUpdate.getServiceId();
-        KeyValue toUpdate = entryToUpdate.getEntry();
-
-        try {
-            boolean exists = redis.hexists(serviceId, toUpdate.getKey()).get();
-            if (!exists) {
-                return false;
-            }
-
-            boolean result = redis.hset(serviceId, toUpdate.getKey(), entryToUpdate.getEntryAsString()).get();
-            return !result; // hset returns false if field already exists and value was updated
-        } catch (ExecutionException e) {
-            handleWriteOperationExecutionException(e);
-        } catch (InterruptedException e) {
-            handleInterruptedException(e);
-        } catch (RedisEntryException e) {
-            return false;
-        }
-
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -128,18 +91,7 @@ public class RedisOperator {
      * @return RedisEntry instance if the service ID and key exist, otherwise null.
      */
     public RedisEntry get(String serviceId, String key) {
-        try {
-            String result = redis.hget(serviceId, key).get();
-            return new RedisEntry(serviceId, result);
-        } catch (InterruptedException e) {
-            handleInterruptedException(e);
-        } catch (ExecutionException e) {
-            throw new RetryableRedisException(e);
-        } catch (RedisEntryException e) {
-            log.warn("Error retrieving entry: {}|{}. Error: {}", serviceId, key, e.getMessage());
-        }
-
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -148,21 +100,11 @@ public class RedisOperator {
      * @return List of RedisEntry instances. If there are no entries an empty List is returned.
      */
     public List<RedisEntry> get(String serviceId) {
-        try {
-            Map<String, String> result = redis.hgetall(serviceId).get();
-            return collectEntries(serviceId, result);
-        } catch (InterruptedException e) {
-            handleInterruptedException(e);
-        } catch (ExecutionException e) {
-            throw new RetryableRedisException(e);
-        }
-
-        return Collections.emptyList();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private List<RedisEntry> collectEntries(String serviceId, Map<String, String> redisEntries) {
         List<RedisEntry> entries = new ArrayList<>();
-
         for (Map.Entry<String, String> entry : redisEntries.entrySet()) {
             try {
                 entries.add(new RedisEntry(serviceId, entry.getValue()));
@@ -170,7 +112,6 @@ public class RedisOperator {
                 log.warn("Error retrieving entry: {}|{}. Error: {}", serviceId, entry, e.getMessage());
             }
         }
-
         return entries;
     }
 
@@ -180,16 +121,7 @@ public class RedisOperator {
      * @return true if at least one entry was deleted, otherwise false.
      */
     public boolean delete(String serviceId, String toDelete) {
-        try {
-            long recordsDeleted = redis.hdel(serviceId, toDelete).get();
-            return recordsDeleted >= 1;
-        } catch (InterruptedException e) {
-            handleInterruptedException(e);
-        } catch (ExecutionException e) {
-            throw new RetryableRedisException(e);
-        }
-
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -198,16 +130,7 @@ public class RedisOperator {
      * @return true if at least one entry was deleted, otherwise false.
      */
     public boolean delete(String serviceId) {
-        try {
-            long recordsDeleted = redis.del(serviceId).get();
-            return recordsDeleted >= 1;
-        } catch (InterruptedException e) {
-            handleInterruptedException(e);
-        } catch (ExecutionException e) {
-            throw new RetryableRedisException(e);
-        }
-
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void handleWriteOperationExecutionException(ExecutionException e) throws RedisOutOfMemoryException {

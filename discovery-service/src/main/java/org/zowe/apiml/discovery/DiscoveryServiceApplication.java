@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery;
 
 import jakarta.annotation.Nonnull;
@@ -29,20 +28,8 @@ import org.zowe.apiml.product.version.BuildInfo;
 import org.zowe.apiml.security.common.config.SafSecurityConfigurationProperties;
 
 @EnableEurekaServer
-@SpringBootApplication(
-    exclude = {
-        OpenTelemetryAutoConfiguration.class,
-        OpenTelemetryLoggingAutoConfiguration.class
-    }
-)
-@ComponentScan({
-    "org.zowe.apiml.discovery",
-    "org.zowe.apiml.product.eureka.web",
-    "org.zowe.apiml.product.config",
-    "org.zowe.apiml.product.security",
-    "org.zowe.apiml.product.web",
-    "org.zowe.apiml.product.service",
-})
+@SpringBootApplication(exclude = { OpenTelemetryAutoConfiguration.class, OpenTelemetryLoggingAutoConfiguration.class })
+@ComponentScan({ "org.zowe.apiml.discovery", "org.zowe.apiml.product.eureka.web", "org.zowe.apiml.product.config", "org.zowe.apiml.product.security", "org.zowe.apiml.product.web", "org.zowe.apiml.product.service" })
 @EnableApimlLogger
 @EnableWebSecurity
 @EnableConfigurationProperties(SafSecurityConfigurationProperties.class)
@@ -52,16 +39,11 @@ public class DiscoveryServiceApplication implements ApplicationListener<Applicat
     private ServiceStartupEventHandler startupEventHandler;
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(DiscoveryServiceApplication.class);
-        app.addInitializers(new LatencyUtilsConfigInitializer());
-        app.setLogStartupInfo(false);
-        new BuildInfo().logBuildInfo();
-        app.run(args);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void onApplicationEvent(@Nonnull final ApplicationReadyEvent event) {
-        startupEventHandler.onServiceStartup("Discovery Service", ServiceStartupEventHandler.DEFAULT_DELAY_FACTOR);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

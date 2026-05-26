@@ -7,72 +7,70 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-
 @JsonTypeName(value = "discoveryInfo")
 public class DiscoveryInfo {
+
     private String hostName;
+
     private Boolean secure;
+
     private String serviceName;
 
     private Integer port;
+
     private String serviceType;
+
     private String serviceTitle;
+
     private Boolean enableApiDoc;
+
     private String description;
 
     @SuppressWarnings("squid:S00107")
-    public DiscoveryInfo(String hostName, Boolean secure, String serviceName,
-                         Integer port, String serviceType, String serviceTitle,
-                         Boolean enableApiDoc, String description
-                         ) {
+    public DiscoveryInfo(String hostName, Boolean secure, String serviceName, Integer port, String serviceType, String serviceTitle, Boolean enableApiDoc, String description) {
         this.hostName = hostName;
         this.secure = secure;
         this.serviceName = serviceName;
-
         this.port = port;
         this.serviceType = serviceType;
         this.serviceTitle = serviceTitle;
         this.enableApiDoc = enableApiDoc;
         this.description = description;
-
     }
 
-    public String getHostName () {
-        return hostName;
+    public String getHostName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Boolean getSecure() {
-        return secure;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getServiceName() {
-        return serviceName;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    public Integer getPort () {
-        return port;
+    public Integer getPort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    public String getServiceType () {
-        return serviceType;
+    public String getServiceType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    public String getServiceTitle () {
-        return serviceTitle;
+    public String getServiceTitle() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    public Boolean getEnableApiDoc () {
-        return enableApiDoc;
+    public Boolean getEnableApiDoc() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    public String getDescription () {
-        return description;
+    public String getDescription() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
-
 }

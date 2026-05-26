@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config;
 
 import lombok.RequiredArgsConstructor;
@@ -33,21 +32,12 @@ public class WebSocketConfig {
     @Bean
     @Primary
     WebSocketClient webSocketClient(HttpConfig config) {
-        var maxFramePayloadLength = httpClientProperties.getWebsocket().getMaxFramePayloadLength();
-        var webSocketContainer = new WsWebSocketContainer();
-        if (maxFramePayloadLength != null) {
-            webSocketContainer.setDefaultMaxBinaryMessageBufferSize(maxFramePayloadLength);
-            webSocketContainer.setDefaultMaxTextMessageBufferSize(maxFramePayloadLength);
-        }
-        return new ApimlWebSocketClient(config.secureSslContext(), webSocketContainer); // using netty client (async) with Tomcat backend (sync) can lead to conditions where frames are written before it's ready to accept;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
-
 
     @Bean
     @Primary
     RequestUpgradeStrategy requestUpgradeStrategy() {
-        return new ApimlRequestUpgradeStrategy(httpClientProperties);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

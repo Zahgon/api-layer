@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.eureka.web;
 
 import com.netflix.discovery.EurekaClient;
@@ -22,9 +21,7 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
 import java.util.regex.Pattern;
-
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Component
@@ -42,24 +39,17 @@ public class EurekaRegistryVersionEndpoint {
 
     @PostConstruct
     void registerListener() {
-        eurekaClient.registerEventListener(this::onRegistryUpdate);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @EventListener
     void onRegistryUpdate(EurekaEvent event) {
-        var hashCode = eurekaClient.getApplications().getAppsHashCode();
-        var matcher = VERSION_PATTERN.matcher(hashCode);
-        if (matcher.find()) {
-            version = Long.parseLong(matcher.group(1));
-            log.debug("New Eureka registry version: {}", this.version);
-        } else {
-            log.debug("Unexpected Eureka registry hashCode: {}", hashCode);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ReadOperation(produces = APPLICATION_JSON)
     public VersionDto status() {
-        return VersionDto.builder().version(this.version).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Builder
@@ -67,7 +57,5 @@ public class EurekaRegistryVersionEndpoint {
     static class VersionDto {
 
         private Long version;
-
     }
-
 }

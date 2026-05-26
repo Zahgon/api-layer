@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,9 +31,7 @@ import org.zowe.apiml.security.common.error.AccessTokenMissingBodyException;
 import org.zowe.apiml.security.common.error.ErrorType;
 import org.zowe.apiml.security.common.error.ZosAuthenticationException;
 import reactor.core.publisher.Mono;
-
 import java.util.Optional;
-
 import static org.apache.http.HttpStatus.*;
 
 @Slf4j
@@ -46,79 +43,62 @@ public class ApimlExceptionHandler extends GatewayExceptionHandler {
     @InjectApimlLogger
     private final ApimlLogger apimlLog = ApimlLogger.empty();
 
-    public ApimlExceptionHandler(ObjectMapper mapper, MessageService messageService,
-                                 LocaleContextResolver localeContextResolver) {
+    public ApimlExceptionHandler(ObjectMapper mapper, MessageService messageService, LocaleContextResolver localeContextResolver) {
         super(mapper, messageService, localeContextResolver);
     }
 
     @ExceptionHandler(AccessTokenInvalidBodyException.class)
     public Mono<Void> handleAccessTokenBodyNotValidException(ServerWebExchange exchange, AccessTokenInvalidBodyException ex) {
-        log.debug("Invalid AccessToken body format, status: {}, message: {}", HttpStatus.BAD_REQUEST.value(), ex.getMessage());
-        return setBodyResponse(exchange, SC_BAD_REQUEST, "org.zowe.apiml.accessToken.invalidFormat");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(AccessTokenMissingBodyException.class)
     public Mono<Void> handleAccessTokenMissingBodyException(ServerWebExchange exchange, AccessTokenMissingBodyException ex) {
-        log.debug("Missing AccessToken body, status: {}, message: {}", HttpStatus.BAD_REQUEST.value(), ex.getMessage());
-        return setBodyResponse(exchange, SC_BAD_REQUEST, "org.zowe.apiml.security.token.accessTokenBodyMissingScopes");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
     public Mono<Void> handleAuthenticationCredentialsNotFoundException(ServerWebExchange exchange, AuthenticationCredentialsNotFoundException e) {
-        log.debug("Authentication credentials not found in request, status: {}, message: {}", SC_BAD_REQUEST, e.getMessage());
-        return setBodyResponse(exchange, SC_BAD_REQUEST, ErrorType.AUTH_CREDENTIALS_NOT_FOUND.getErrorMessageKey(), exchange.getRequest().getURI());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(InvalidWebFingerConfigurationException.class)
     public Mono<Void> handleInvalidWebFingerConfigurationException(ServerWebExchange exchange, InvalidWebFingerConfigurationException ex) {
-        log.debug("Error while reading webfinger configuration from source.", ex);
-        return setBodyResponse(exchange, SC_INTERNAL_SERVER_ERROR, "org.zowe.apiml.security.oidc.invalidWebfingerConfiguration");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(IncorrectPassTicketRequestBodyException.class)
     public Mono<Void> handleIncorrectPassTicketRequestBodyException(ServerWebExchange exchange, IncorrectPassTicketRequestBodyException ex) {
-        log.debug("Incorrect passticket request body received: {}", ex.getMessage());
-        return setBodyResponse(exchange, SC_BAD_REQUEST, "org.zowe.apiml.security.ticket.invalidApplicationName");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(SafAccessDeniedException.class)
     public Mono<Void> handleSafAccessDeniedException(ServerWebExchange exchange, SafAccessDeniedException ex) {
-        log.debug("Access denied: {}", ex.getMessage());
-        return setBodyResponse(exchange, SC_UNAUTHORIZED, "org.zowe.apiml.security.unauthorized", String.valueOf(ex.getPrincipal()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(UsernameNotProvidedException.class)
     public Mono<Void> handleUsernameNotProvidedException(ServerWebExchange exchange, UsernameNotProvidedException ex) {
-        log.debug("Username not provided in PassTicket generation: {}", ex.getMessage());
-        return setBodyResponse(exchange, SC_INTERNAL_SERVER_ERROR, GENERATE_FAILED_MESSAGE_KEY);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(PassTicketException.class)
     public Mono<Void> handlePassTicketException(ServerWebExchange exchange, PassTicketException ex) {
-        log.debug("PassTicket generation exception: {}", ex.getMessage());
-        if (ex.getCause() instanceof IRRPassTicketGenerationException irrEx && irrEx.getCause() != null) {
-            var reason = irrEx.getCause().getMessage();
-            return setBodyResponse(exchange, SC_INTERNAL_SERVER_ERROR, GENERATE_FAILED_MESSAGE_KEY, reason);
-        }
-        return setBodyResponse(exchange, SC_INTERNAL_SERVER_ERROR, GENERATE_FAILED_MESSAGE_KEY, ex.getMessage());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public Mono<Void> handleBadCredentialsException(ServerWebExchange exchange, BadCredentialsException ex) {
-        log.debug("Bad credentials: {}", ex.getMessage());
-        return setBodyResponse(exchange, SC_UNAUTHORIZED, "org.zowe.apiml.security.login.invalidCredentials", String.valueOf(exchange.getRequest().getPath()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(StorageException.class)
     public Mono<Void> handleStorageException(ServerWebExchange exchange, StorageException ex) {
-        log.debug("Incompatible storage option: {}", ex.getMessage());
-        return setBodyResponse(exchange, ex.getStatus().value(), ex.getKey(), (Object[]) ex.getParameters());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ExceptionHandler(ZosAuthenticationException.class)
     public Mono<Void> handleZosAuthenticationException(ServerWebExchange exchange, ZosAuthenticationException ex) {
-        log.debug("Zos Authentication Exception: {}", ex.getMessage());
-        return setBodyResponse(exchange, ex.getPlatformError().responseCode.value(), Optional.ofNullable(ex.getPlatformError()).map(e -> e.errorMessage).orElse(null), ex.getMessage());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

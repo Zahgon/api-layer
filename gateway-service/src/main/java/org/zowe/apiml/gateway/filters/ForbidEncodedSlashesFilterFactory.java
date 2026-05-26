@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,11 +29,11 @@ public class ForbidEncodedSlashesFilterFactory extends AbstractEncodedCharacters
 
     @Override
     protected boolean shouldFilter(String uri) {
-        return StringUtils.containsIgnoreCase(uri, ENCODED_SLASH);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     RuntimeException getException(String uri) {
-        return new ForbidSlashException(uri);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

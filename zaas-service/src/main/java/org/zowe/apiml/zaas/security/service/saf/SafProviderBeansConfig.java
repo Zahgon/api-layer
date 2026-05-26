@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.saf;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ public class SafProviderBeansConfig {
     @Bean
     @ConditionalOnProperty(name = "apiml.security.saf.provider", havingValue = "rest", matchIfMissing = true)
     SafIdtProvider restSafProvider(RestTemplate restTemplate) {
-        return new SafRestAuthenticationService(restTemplate);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client.impl;
 
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -29,7 +28,6 @@ import org.zowe.apiml.security.HttpsConfig;
 import org.zowe.apiml.security.HttpsFactory;
 import org.zowe.apiml.security.SecurityUtils;
 
-
 /**
  * Implements {@link ApiMediationClient} interface methods for registering and unregistering REST service with
  * API Mediation Layer Discovery service. Registration method creates an instance of {@link com.netflix.discovery.EurekaClient}, which is
@@ -44,8 +42,11 @@ import org.zowe.apiml.security.SecurityUtils;
 public class ApiMediationClientImpl implements ApiMediationClient {
 
     private final EurekaClientProvider eurekaClientProvider;
+
     private final EurekaClientConfigProvider eurekaClientConfigProvider;
+
     private final EurekaInstanceConfigCreator eurekaInstanceConfigCreator;
+
     private final DefaultCustomMetadataHelper defaultCustomMetadataHelper;
 
     private EurekaClient eurekaClient;
@@ -58,26 +59,15 @@ public class ApiMediationClientImpl implements ApiMediationClient {
         this(eurekaClientProvider, new ApiMlEurekaClientConfigProvider());
     }
 
-    public ApiMediationClientImpl(
-        EurekaClientProvider eurekaClientProvider, EurekaClientConfigProvider eurekaClientConfigProvider
-    ) {
+    public ApiMediationClientImpl(EurekaClientProvider eurekaClientProvider, EurekaClientConfigProvider eurekaClientConfigProvider) {
         this(eurekaClientProvider, eurekaClientConfigProvider, new EurekaInstanceConfigCreator());
     }
 
-    public ApiMediationClientImpl(
-        EurekaClientProvider eurekaClientProvider,
-        EurekaClientConfigProvider eurekaClientConfigProvider,
-        EurekaInstanceConfigCreator instanceConfigCreator
-    ) {
+    public ApiMediationClientImpl(EurekaClientProvider eurekaClientProvider, EurekaClientConfigProvider eurekaClientConfigProvider, EurekaInstanceConfigCreator instanceConfigCreator) {
         this(eurekaClientProvider, eurekaClientConfigProvider, instanceConfigCreator, new DefaultCustomMetadataHelper());
     }
 
-    public ApiMediationClientImpl(
-        EurekaClientProvider eurekaClientProvider,
-        EurekaClientConfigProvider eurekaClientConfigProvider,
-        EurekaInstanceConfigCreator instanceConfigCreator,
-        DefaultCustomMetadataHelper defaultCustomMetadataHelper
-    ) {
+    public ApiMediationClientImpl(EurekaClientProvider eurekaClientProvider, EurekaClientConfigProvider eurekaClientConfigProvider, EurekaInstanceConfigCreator instanceConfigCreator, DefaultCustomMetadataHelper defaultCustomMetadataHelper) {
         this.eurekaClientProvider = eurekaClientProvider;
         this.eurekaClientConfigProvider = eurekaClientConfigProvider;
         this.eurekaInstanceConfigCreator = instanceConfigCreator;
@@ -95,17 +85,7 @@ public class ApiMediationClientImpl implements ApiMediationClient {
      */
     @Override
     public synchronized void register(ApiMediationServiceConfig config) throws ServiceDefinitionException {
-        if (eurekaClient != null) {
-            throw new ServiceDefinitionException("EurekaClient was previously registered for this instance of ApiMediationClient. Call your ApiMediationClient unregister() method before attempting other registration.");
-        }
-
-        defaultCustomMetadataHelper.update(config);
-        EurekaClientConfig clientConfiguration = eurekaClientConfigProvider.config(config);
-        ApplicationInfoManager infoManager = initializeApplicationInfoManager(config);
-        eurekaClient = initializeEurekaClient(infoManager, clientConfiguration, config);
-        if (eurekaClient != null) {
-            eurekaClient.registerHealthCheck(new HealthCheckCallbackToHandlerBridge());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -113,10 +93,7 @@ public class ApiMediationClientImpl implements ApiMediationClient {
      */
     @Override
     public synchronized void unregister() {
-        if (eurekaClient != null) {
-            eurekaClient.shutdown();
-        }
-        eurekaClient = null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -127,36 +104,23 @@ public class ApiMediationClientImpl implements ApiMediationClient {
      * @param config
      * @return Initialized {@link DiscoveryClient} instance - an implementation of {@link EurekaClient}
      */
-    private EurekaClient initializeEurekaClient(
-        ApplicationInfoManager applicationInfoManager, EurekaClientConfig clientConfig, ApiMediationServiceConfig config) {
-
+    private EurekaClient initializeEurekaClient(ApplicationInfoManager applicationInfoManager, EurekaClientConfig clientConfig, ApiMediationServiceConfig config) {
         Ssl sslConfig = config.getSsl();
-
         HttpsConfig.HttpsConfigBuilder builder = HttpsConfig.builder();
         if (sslConfig != null) {
             updateStorePaths(sslConfig);
             builder.protocol(sslConfig.getProtocol());
             if (Boolean.TRUE.equals(sslConfig.getEnabled())) {
-                builder.keyAlias(sslConfig.getKeyAlias())
-                    .keyStore(sslConfig.getKeyStore())
-                    .keyPassword(sslConfig.getKeyPassword())
-                    .keyStorePassword(sslConfig.getKeyStorePassword())
-                    .keyStoreType(sslConfig.getKeyStoreType());
+                builder.keyAlias(sslConfig.getKeyAlias()).keyStore(sslConfig.getKeyStore()).keyPassword(sslConfig.getKeyPassword()).keyStorePassword(sslConfig.getKeyStorePassword()).keyStoreType(sslConfig.getKeyStoreType());
             }
-
             builder.verifySslCertificatesOfServices(Boolean.TRUE.equals(sslConfig.getVerifySslCertificatesOfServices()));
             builder.nonStrictVerifySslCertificatesOfServices(Boolean.TRUE.equals(sslConfig.getNonStrictVerifySslCertificatesOfServices()));
-            if (Boolean.TRUE.equals(sslConfig.getVerifySslCertificatesOfServices()) ||
-                Boolean.FALSE.equals(sslConfig.getNonStrictVerifySslCertificatesOfServices())) {
-                builder.trustStore(sslConfig.getTrustStore())
-                    .trustStoreType(sslConfig.getTrustStoreType())
-                    .trustStorePassword(sslConfig.getTrustStorePassword());
+            if (Boolean.TRUE.equals(sslConfig.getVerifySslCertificatesOfServices()) || Boolean.FALSE.equals(sslConfig.getNonStrictVerifySslCertificatesOfServices())) {
+                builder.trustStore(sslConfig.getTrustStore()).trustStoreType(sslConfig.getTrustStoreType()).trustStorePassword(sslConfig.getTrustStorePassword());
             }
         }
         HttpsConfig httpsConfig = builder.build();
-
         HttpsFactory factory = new HttpsFactory(httpsConfig);
-
         AbstractDiscoveryClientOptionalArgs<?> args = new Jersey3DiscoveryClientOptionalArgs();
         args.setSSLContext(factory.getSslContext());
         args.setHostnameVerifier(factory.getHostnameVerifier());
@@ -166,14 +130,7 @@ public class ApiMediationClientImpl implements ApiMediationClient {
     }
 
     void updateStorePaths(Ssl config) {
-        if (SecurityUtils.isKeyring(config.getKeyStore())) {
-            config.setKeyStore(SecurityUtils.formatKeyringUrl(config.getKeyStore()));
-            if (config.getKeyStorePassword() == null) config.setKeyStorePassword("password".toCharArray());
-        }
-        if (SecurityUtils.isKeyring(config.getTrustStore())) {
-            config.setTrustStore(SecurityUtils.formatKeyringUrl(config.getTrustStore()));
-            if (config.getTrustStorePassword() == null) config.setTrustStorePassword("password".toCharArray());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ApplicationInfoManager initializeApplicationInfoManager(ApiMediationServiceConfig config) throws ServiceDefinitionException {
@@ -188,6 +145,6 @@ public class ApiMediationClientImpl implements ApiMediationClient {
      * @return the inner EurekaClient instance.
      */
     public EurekaClient getEurekaClient() {
-        return eurekaClient;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

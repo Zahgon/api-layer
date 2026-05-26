@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -23,10 +22,7 @@ import org.zowe.apiml.product.discovery.StaticRegistrationResult;
 import org.zowe.apiml.discovery.staticdef.StaticServicesRegistrationService;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-
 import java.util.List;
-
-
 
 @RestController
 @RequiredArgsConstructor
@@ -39,17 +35,11 @@ public class StaticDefinitionsRefreshRestController {
 
     @GetMapping(produces = "application/json")
     public Mono<ResponseEntity<List<InstanceInfo>>> list() {
-        return Mono.just(
-            ResponseEntity.ok()
-                .body(registrationService.getStaticInstances()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(produces = "application/json")
     public Mono<ResponseEntity<StaticRegistrationResult>> reload() {
-        return Mono.just(ResponseEntity.ok())
-            .publishOn(Schedulers.boundedElastic())
-            .map(x ->  x.body(registrationService.reloadServices()));
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

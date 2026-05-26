@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters.security;
 
 import lombok.RequiredArgsConstructor;
@@ -24,9 +23,7 @@ import org.zowe.apiml.product.opentelemetry.OtelRequestContext;
 import org.zowe.apiml.security.common.config.AuthConfigurationProperties;
 import org.zowe.apiml.security.common.token.TokenAuthentication;
 import reactor.core.publisher.Mono;
-
 import java.net.ConnectException;
-
 import static org.apache.http.HttpStatus.SC_SERVICE_UNAVAILABLE;
 import static org.zowe.apiml.security.common.token.TokenAuthentication.createAuthenticated;
 
@@ -34,56 +31,22 @@ import static org.zowe.apiml.security.common.token.TokenAuthentication.createAut
 public class TokenAuthFilter extends AbstractTokenAuthFilter {
 
     private final TokenProvider tokenProvider;
+
     private final AuthConfigurationProperties authConfigurationProperties;
+
     private final AuthExceptionHandlerReactive authExceptionHandlerReactive;
 
     @Override
     protected AuthConfigurationProperties getAuthConfigurationProperties() {
-        return authConfigurationProperties;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .map(Authentication::isAuthenticated)
-            .defaultIfEmpty(false)
-            .flatMap(alreadyAuthenticated -> {
-                if (alreadyAuthenticated) {
-                    return chain.filter(exchange);
-                }
-
-                var token = resolveToken(exchange.getRequest()).filter(StringUtils::isNotBlank);
-                return token
-                    .map(jwt -> {
-                        var otelContext = OtelRequestContext.of(exchange);
-                        otelContext.authSourceType("JWT");
-                        return tokenProvider
-                            .validateToken(jwt)
-                            .flatMap(resp -> {
-                                if (StringUtils.isNotBlank(resp.getUserId())) {
-                                    Authentication authentication = createAuthenticated(resp.getUserId(), jwt, TokenAuthentication.Type.JWT);
-                                    return chain.filter(exchange)
-                                        .contextWrite(context -> ReactiveSecurityContextHolder.withAuthentication(authentication));
-                                }
-                                return authExceptionHandlerReactive.handleTokenNotValid(exchange);
-                            }).onErrorResume(ex -> {
-                                if (isServiceUnavailable(ex)) {
-                                    return authExceptionHandlerReactive.handleServiceUnavailable(exchange);
-                                } else {
-                                    return authExceptionHandlerReactive.handleTokenNotValid(exchange);
-                                }
-                            });
-                    }).orElseGet(() -> chain.filter(exchange));
-            });
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     private boolean isServiceUnavailable(Throwable ex) {
-        return ex instanceof ConnectException
-            || ex instanceof WebClientRequestException
-            || (ex instanceof WebClientResponseException webEx && webEx.getStatusCode().value() == SC_SERVICE_UNAVAILABLE);
+        return ex instanceof ConnectException || ex instanceof WebClientRequestException || (ex instanceof WebClientResponseException webEx && webEx.getStatusCode().value() == SC_SERVICE_UNAVAILABLE);
     }
-
 }

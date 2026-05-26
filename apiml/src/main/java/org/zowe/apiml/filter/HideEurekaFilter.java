@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,9 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.message.core.MessageService;
-
 import java.io.IOException;
-
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
@@ -36,23 +33,11 @@ public class HideEurekaFilter extends PreFluxFilter {
 
     public HideEurekaFilter(MessageService messageService) throws JsonProcessingException {
         super(Type.EXTERNAL_ONLY);
-        error404Message = new ObjectMapper().writeValueAsString(
-            messageService.createMessage("org.zowe.apiml.common.notFound").mapToView()
-        );
+        error404Message = new ObjectMapper().writeValueAsString(messageService.createMessage("org.zowe.apiml.common.notFound").mapToView());
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (
-            StringUtils.equals(request.getRequestURI(), "/eureka") ||
-            StringUtils.startsWith(request.getRequestURI(), "/eureka/")
-        ) {
-            response.addHeader(CONTENT_TYPE, APPLICATION_JSON);
-            response.getOutputStream().print(error404Message);
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } else {
-            chain.doFilter(request, response);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

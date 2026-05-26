@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.staticdef;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -26,7 +25,6 @@ import org.zowe.apiml.product.discovery.ServiceOverrideData;
 import org.zowe.apiml.product.discovery.StaticRegistrationResult;
 import org.zowe.apiml.product.discovery.StaticServicesRegistration;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +46,7 @@ public class StaticServicesRegistrationService implements StaticServicesRegistra
     private ApimlLogger apimlLog = ApimlLogger.empty();
 
     private final ServiceDefinitionProcessor serviceDefinitionProcessor;
+
     private final MetadataDefaultsService metadataDefaultsService;
 
     private final List<InstanceInfo> staticInstances = new CopyOnWriteArrayList<>();
@@ -61,24 +60,14 @@ public class StaticServicesRegistrationService implements StaticServicesRegistra
      * Lists information about registered static service instances.
      */
     public List<InstanceInfo> getStaticInstances() {
-        return staticInstances;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Registers all statically defined APIs in locations specified by configuration.
      */
     public void registerServices() {
-        try {
-            var result = registerServices(staticApiDefinitionsDirectories);
-
-            if (result.hasError()) {
-                log.error("Loading static definition failed: {}", result);
-            } else {
-                log.debug("Loaded static definition ended with the result: {}", result);
-            }
-        } catch (Exception e) {
-            log.error("Cannot load static definition of services", e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -86,62 +75,18 @@ public class StaticServicesRegistrationService implements StaticServicesRegistra
      * by reading the definitions again.
      */
     public synchronized StaticRegistrationResult reloadServices() {
-        List<InstanceInfo> oldStaticInstances = new ArrayList<>(staticInstances);
-
-        staticInstances.clear();
-        StaticRegistrationResult result = registerServices(staticApiDefinitionsDirectories);
-
-        InstanceRegistry registry = getRegistry();
-        for (InstanceInfo info : oldStaticInstances) {
-            if (!result.getRegisteredServices().contains(info.getInstanceId())) {
-                log.info("Instance {} is not defined in the new static API definitions. It will be removed", info.getInstanceId());
-                try {
-                    registry.cancel(info.getAppName(), info.getId(), false);
-                } catch (Exception e) {
-                    final Message msg = apimlLog.log("org.zowe.apiml.discovery.staticDefinitionRegistration", staticApiDefinitionsDirectories, e.getMessage());
-                    result.getErrors().add(msg);
-                }
-            }
-        }
-
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void register(StaticRegistrationResult result, InstanceInfo instanceInfo) {
-        try {
-            var registry = getRegistry();
-            registry.registerStatically(instanceInfo, false, false);
-        } catch (Exception e) {
-            final Message msg = apimlLog.log("org.zowe.apiml.discovery.staticDefinitionRegistration", staticApiDefinitionsDirectories, e.getMessage());
-            result.getErrors().add(msg);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Registers all statically defined APIs in a directory.
      */
     StaticRegistrationResult registerServices(String staticApiDefinitionsDirectories) {
-        StaticRegistrationResult result = new StaticRegistrationResult();
-
-        try {
-            result = serviceDefinitionProcessor.findStaticServicesData(staticApiDefinitionsDirectories);
-
-            // at first register service additional data, because static could be also updated
-            final Map<String, ServiceOverrideData> additionalServiceMetadata = result.getAdditionalServiceMetadata();
-            metadataDefaultsService.setAdditionalServiceMetadata(additionalServiceMetadata);
-
-            // register static services
-            for (InstanceInfo instanceInfo : result.getInstances()) {
-                result.getRegisteredServices().add(instanceInfo.getInstanceId());
-                staticInstances.add(instanceInfo);
-                register(result, instanceInfo);
-            }
-        } catch (Exception e) {
-            final Message msg = apimlLog.log("org.zowe.apiml.discovery.staticDefinitionUnexpectedError", staticApiDefinitionsDirectories, e.getMessage());
-            result.getErrors().add(msg);
-        }
-
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ApimlInstanceRegistry getRegistry() {

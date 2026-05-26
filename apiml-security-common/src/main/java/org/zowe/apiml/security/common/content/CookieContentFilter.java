@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.content;
 
 import org.zowe.apiml.security.common.config.AuthConfigurationProperties;
@@ -16,7 +15,6 @@ import org.zowe.apiml.security.common.token.TokenAuthentication;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -26,21 +24,15 @@ import java.util.Optional;
  * Authenticate the JWT token stored in the cookie
  */
 public class CookieContentFilter extends AbstractSecureContentFilter {
+
     private final AuthConfigurationProperties authConfigurationProperties;
 
-    public CookieContentFilter(AuthenticationManager authenticationManager,
-                               AuthenticationFailureHandler failureHandler,
-                               ResourceAccessExceptionHandler resourceAccessExceptionHandler,
-                               AuthConfigurationProperties authConfigurationProperties) {
+    public CookieContentFilter(AuthenticationManager authenticationManager, AuthenticationFailureHandler failureHandler, ResourceAccessExceptionHandler resourceAccessExceptionHandler, AuthConfigurationProperties authConfigurationProperties) {
         super(authenticationManager, failureHandler, resourceAccessExceptionHandler, new String[0]);
         this.authConfigurationProperties = authConfigurationProperties;
     }
 
-    public CookieContentFilter(AuthenticationManager authenticationManager,
-                               AuthenticationFailureHandler failureHandler,
-                               ResourceAccessExceptionHandler resourceAccessExceptionHandler,
-                               AuthConfigurationProperties authConfigurationProperties,
-                               String[] endpoints) {
+    public CookieContentFilter(AuthenticationManager authenticationManager, AuthenticationFailureHandler failureHandler, ResourceAccessExceptionHandler resourceAccessExceptionHandler, AuthConfigurationProperties authConfigurationProperties, String[] endpoints) {
         super(authenticationManager, failureHandler, resourceAccessExceptionHandler, endpoints);
         this.authConfigurationProperties = authConfigurationProperties;
     }
@@ -52,15 +44,6 @@ public class CookieContentFilter extends AbstractSecureContentFilter {
      * @return the {@link TokenAuthentication} object containing username and valid JWT token
      */
     public Optional<AbstractAuthenticationToken> extractContent(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return Optional.empty();
-        }
-
-        return Arrays.stream(cookies)
-            .filter(cookie -> cookie.getName().equals(authConfigurationProperties.getCookieProperties().getCookieName()))
-            .filter(cookie -> !cookie.getValue().isEmpty())
-            .findFirst()
-            .map(cookie -> new TokenAuthentication(cookie.getValue(), TokenAuthentication.Type.JWT));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

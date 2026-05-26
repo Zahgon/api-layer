@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.logging;
 
 import ch.qos.logback.classic.Level;
@@ -31,11 +30,7 @@ public class LogLevelInfoFilter extends TurboFilter {
 
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-        if (isLevelInfoOrLower(level) && isInternalLogger(logger) &&
-            (marker == null || !marker.getName().equals(APIML_MARKER))) {
-            return FilterReply.DENY;
-        }
-        return FilterReply.NEUTRAL;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean isLevelInfoOrLower(Level messageLevel) {

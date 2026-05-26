@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.scheduled;
 
 import lombok.RequiredArgsConstructor;
@@ -26,10 +25,8 @@ import org.zowe.apiml.product.constants.CoreService;
 import org.zowe.apiml.services.BasicInfoService;
 import org.zowe.apiml.services.ServiceInfo;
 import reactor.core.publisher.Flux;
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.APIML_ID;
 
 /**
@@ -54,21 +51,22 @@ import static org.zowe.apiml.constants.EurekaMetadataDefinition.APIML_ID;
 public class GatewayScanJob {
 
     private final BasicInfoService basicInfoService;
+
     private final EurekaRegistration serviceRegistration;
+
     private final GatewayIndexService gatewayIndexerService;
+
     private final InstanceInfoService instanceInfoService;
+
     @Value("${apiml.service.apimlId:#{null}}")
     private String currentApimlId;
+
     @Value("${apiml.gateway.maxSimultaneousRequests:20}")
     private int maxSimultaneousRequests;
 
     @Scheduled(initialDelay = 5000, fixedDelayString = "${apiml.gateway.refresh-interval-ms:30000}")
     public void startScanExternalGatewayJob() {
-
-        log.debug("Scan gateways job start");
-        doScanExternalGateway()
-                .subscribe();
-        addLocalServices();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void addLocalServices() {
@@ -81,11 +79,6 @@ public class GatewayScanJob {
      * reactive entry point  for the external gateways index refresh
      */
     protected Flux<List<ServiceInfo>> doScanExternalGateway() {
-        Flux<ServiceInstance> registeredGateways = instanceInfoService.getServiceInstances(CoreService.GATEWAY.getServiceId())
-            .filter(info -> !StringUtils.equals(info.getMetadata().getOrDefault(APIML_ID, "N/A"), currentApimlId));
-
-        return registeredGateways
-                .flatMap(gatewayIndexerService::indexGatewayServices, maxSimultaneousRequests);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

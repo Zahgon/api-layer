@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.server;
 
 import javax.net.ssl.SSLServerSocket;
@@ -15,7 +14,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-@SuppressWarnings("squid:S106") //ignoring the System.out System.err warinings
+//ignoring the System.out System.err warinings
+@SuppressWarnings("squid:S106")
 public class SocketServer implements Runnable {
 
     private SSLServerSocket serverSocket;
@@ -29,25 +29,10 @@ public class SocketServer implements Runnable {
 
     @Override
     public void run() {
-        try (Socket socket = serverSocket.accept()) {
-            newListener();
-            OutputStream outStream = socket.getOutputStream();
-            PrintWriter out = new PrintWriter(outStream);
-            out.print("HTTP/1.0 200 OK\r\n");
-            out.flush();
-            outStream.flush();
-            Thread.sleep(10); //primitive server closes too fast, client fails to read response, so it has to wait.
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void newListener() {
         (new Thread(this)).start();
     }
-
-
 }

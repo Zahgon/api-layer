@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.message.BasicHeader;
-
 import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,11 +34,11 @@ public class RequestUtils {
     }
 
     public static RequestUtils of(HttpRequest request) {
-        return new RequestUtils(request);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public List<Header> getHeaders() {
-        return getAllHeaders();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private List<Header> getAllHeaders() {
@@ -48,34 +46,19 @@ public class RequestUtils {
     }
 
     public List<Header> getHeader(String needle) {
-
-        return getAllHeaders().stream()
-            .filter(h -> h.getName().equalsIgnoreCase(needle))
-            .toList();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void setHeader(Header newHeader) {
-        List<Header> newHeaderList = getAllHeaders().stream()
-            .filter(h -> !h.getName().equalsIgnoreCase(newHeader.getName()))
-            .collect(Collectors.toList());
-        newHeaderList.add(newHeader);
-        request.setHeaders(newHeaderList.toArray(new Header[] {}));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void removeHeader(String needle) {
-        List<Header> newHeaderList = getAllHeaders().stream()
-            .filter(h -> !h.getName().equalsIgnoreCase(needle))
-            .toList();
-        request.setHeaders(newHeaderList.toArray(new Header[] {}));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public List<HttpCookie> getAllCookies() {
-        List<HttpCookie> cookieList = new ArrayList<>();
-        List<Header> cookieHeaders = getAllHeaders().stream()
-            .filter(h -> h.getName().equalsIgnoreCase(HttpHeaders.COOKIE)).toList();
-
-        cookieHeaders.forEach(h -> cookieList.addAll(getAllCookiesFromHeader(h)));
-        return cookieList;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private List<HttpCookie> getAllCookiesFromHeader(Header header) {
@@ -94,42 +77,18 @@ public class RequestUtils {
     }
 
     public List<HttpCookie> getCookie(String needle) {
-        return getAllCookies().stream().filter(c -> c.getName().equalsIgnoreCase(needle)).toList();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void setCookie(HttpCookie cookie) {
-        if (getHeader(HttpHeaders.COOKIE).isEmpty()) {
-            setHeader(new BasicHeader(HttpHeaders.COOKIE, cookie.toString()));
-        } else {
-            //cookie always added to first cookie header found
-            Header cookieHeader = getHeader(HttpHeaders.COOKIE).get(0);
-            List<HttpCookie> cookieList = getAllCookiesFromHeader(cookieHeader);
-            cookieList = cookieList.stream()
-                .filter(c -> !c.getName().equalsIgnoreCase(cookie.getName()))
-                .collect(Collectors.toList());
-            cookieList.add(cookie);
-            setHeader(getCookieHeader(cookieList));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Header getCookieHeader(List<HttpCookie> cookieList) {
-        return new BasicHeader(HttpHeaders.COOKIE, cookieList.stream()
-            .map(HttpCookie::toString)
-            .collect(Collectors.joining(";")));
+        return new BasicHeader(HttpHeaders.COOKIE, cookieList.stream().map(HttpCookie::toString).collect(Collectors.joining(";")));
     }
 
     public void removeCookie(String cookie) {
-        List<Header> cookieHeaders = getHeader(HttpHeaders.COOKIE);
-        for (Header header: cookieHeaders) {
-            List<HttpCookie> cookieList = getAllCookiesFromHeader(header);
-            cookieList = cookieList.stream()
-                .filter(c -> !c.getName().equalsIgnoreCase(cookie))
-                .toList();
-            if (cookieList.isEmpty()) {
-                removeHeader(HttpHeaders.COOKIE);
-            } else {
-                setHeader(getCookieHeader(cookieList));
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaasclient.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -53,23 +52,11 @@ public class DefaultZaasClientConfiguration {
 
     @Bean
     public ConfigProperties getConfigProperties() {
-        ConfigProperties configProperties = new ConfigProperties();
-        configProperties.setApimlHost(host);
-        configProperties.setApimlPort(port);
-        configProperties.setApimlBaseUrl(baseUrl);
-        configProperties.setKeyStorePath(keyStorePath);
-        configProperties.setKeyStorePassword(keyStorePassword);
-        configProperties.setKeyStoreType(keyStoreType);
-        configProperties.setTrustStorePath(trustStorePath);
-        configProperties.setTrustStorePassword(trustStorePassword);
-        configProperties.setTrustStoreType(trustStoreType);
-        configProperties.setNonStrictVerifySslCertificatesOfServices(nonStrictVerifySslCertificatesOfServices);
-        configProperties.setTokenPrefix(tokenPrefix);
-        return configProperties;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public ZaasClient zaasClient(ConfigProperties getConfigProperties) throws ZaasConfigurationException {
-        return new ZaasClientImpl(getConfigProperties);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

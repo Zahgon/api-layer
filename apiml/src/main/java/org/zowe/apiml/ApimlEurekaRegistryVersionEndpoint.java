@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
@@ -18,9 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.stereotype.Component;
-
 import java.util.regex.Pattern;
-
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Component
@@ -35,16 +32,7 @@ public class ApimlEurekaRegistryVersionEndpoint {
 
     @ReadOperation(produces = APPLICATION_JSON)
     public VersionDto status() {
-        long version = -1;
-        var hashCode = peerAwareInstanceRegistry.getApplications().getAppsHashCode();
-        var matcher = VERSION_PATTERN.matcher(hashCode);
-        if (matcher.find()) {
-            version = Long.parseLong(matcher.group(1));
-            log.debug("New Eureka registry version: {}", version);
-        } else {
-            log.debug("Unexpected Eureka registry hashCode: {}", hashCode);
-        }
-        return VersionDto.builder().version(version).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Builder
@@ -52,8 +40,5 @@ public class ApimlEurekaRegistryVersionEndpoint {
     static class VersionDto {
 
         private Long version;
-
     }
-
-
 }

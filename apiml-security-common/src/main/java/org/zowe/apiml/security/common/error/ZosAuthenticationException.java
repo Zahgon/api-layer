@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.error;
 
 import org.springframework.security.core.AuthenticationException;
@@ -29,10 +28,10 @@ public class ZosAuthenticationException extends AuthenticationException {
 
     @Override
     public String getMessage() {
-        return platformPwdErrno.shortErrorName + ": " + platformPwdErrno.explanation;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public PlatformPwdErrno getPlatformError() {
-        return platformPwdErrno;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

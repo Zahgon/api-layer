@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import java.io.FileInputStream;
@@ -33,8 +32,11 @@ public class Stores {
     private static final Pattern KEYRING_PATTERN = Pattern.compile("^(safkeyring[^:]*):/{2,4}([^/]+)/([^/]+)$");
 
     private KeyStore keyStore;
+
     private KeyStore trustStore;
+
     private final Config conf;
+
     private Map<String, Certificate> caList;
 
     public Stores(Config conf) {
@@ -43,32 +45,15 @@ public class Stores {
     }
 
     public static boolean isKeyring(String input) {
-        if (input == null) return false;
-        Matcher matcher = KEYRING_PATTERN.matcher(input);
-        return matcher.matches();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static String formatKeyringUrl(String input) {
-        if (input == null) return null;
-        Matcher matcher = KEYRING_PATTERN.matcher(input);
-        if (matcher.matches()) {
-            return matcher.group(1) + "://" + matcher.group(2) + "/" + matcher.group(3);
-        }
-        return input;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void init() {
-        try {
-            initKeystore();
-            if (trustStore == null) {
-                initTruststore();
-            }
-        } catch (FileNotFoundException e) {
-            throw new StoresNotInitializeException("Error while loading keystore file. Error message: " + e.getMessage() + "\n" +
-                "Possible solution: Verify correct path to the keystore. Change owner or permission to the keystore file.");
-        } catch (Exception e) {
-            throw new StoresNotInitializeException(e.getMessage());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void initTruststore() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
@@ -84,7 +69,6 @@ public class Stores {
         try (InputStream trustStoreIStream = new FileInputStream(conf.getTrustStore())) {
             this.trustStore = readKeyStore(trustStoreIStream, conf.getTrustPasswd().toCharArray(), conf.getTrustStoreType());
         }
-
     }
 
     private void initKeystore() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
@@ -112,62 +96,34 @@ public class Stores {
     }
 
     public Map<String, Certificate> getListOfCertificates() throws KeyStoreException {
-        if (this.caList != null) {
-            return this.caList;
-        }
-        this.caList = new HashMap<>();
-        Enumeration<String> aliases = trustStore.aliases();
-
-        while (aliases.hasMoreElements()) {
-            String certAuthAlias = aliases.nextElement();
-            this.caList.put(certAuthAlias, trustStore.getCertificate(certAuthAlias));
-        }
-        return this.caList;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public X509Certificate getX509Certificate(String alias) throws KeyStoreException {
-        Certificate[] certificate = getServerCertificateChain(alias);
-        if (certificate.length > 0) {
-            return (X509Certificate) certificate[0];
-        } else {
-            System.out.println("Alias \"" + alias + "\" is not available in keystore.");
-            throw new StoresNotInitializeException("No x509 certificate available in keystore");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Certificate[] getServerCertificateChain(String alias) throws KeyStoreException {
-        if (alias == null) {
-            alias = keyStore.aliases().nextElement();
-        }
-        return keyStore.getCertificateChain(alias);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static KeyStore readKeyStore(InputStream is, char[] pass, String type) throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException {
-        KeyStore keyStore = KeyStore.getInstance(type);
-        keyStore.load(is, pass);
-        return keyStore;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public KeyStore getKeyStore() {
-        return keyStore;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public KeyStore getTrustStore() {
-        return trustStore;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Config getConf() {
-        return conf;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static URL keyRingUrl(String uri) throws MalformedURLException {
-        if (!isKeyring(uri)) {
-            throw new StoresNotInitializeException("Incorrect key ring format: " + uri
-                + ". Make sure you use format safkeyring://userId/keyRing");
-        }
-
-        return new URL(formatKeyringUrl(uri));
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

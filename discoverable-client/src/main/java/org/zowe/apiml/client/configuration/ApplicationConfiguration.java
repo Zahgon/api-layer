@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.configuration;
 
 import org.springframework.context.annotation.Bean;
@@ -19,12 +18,7 @@ import org.zowe.apiml.message.yaml.YamlMessageServiceInstance;
 public class ApplicationConfiguration {
 
     @Bean
-     MessageService messageService() {
-        MessageService messageService = YamlMessageServiceInstance.getInstance();
-        messageService.loadMessages("/utility-log-messages.yml");
-        messageService.loadMessages("/api-messages.yml");
-        messageService.loadMessages("/log-messages.yml");
-        return messageService;
+    MessageService messageService() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

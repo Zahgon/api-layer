@@ -7,16 +7,13 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.websocket;
 
 import jakarta.websocket.ClientEndpointConfig;
 import jakarta.websocket.ClientEndpointConfig.Configurator;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
 import org.springframework.web.reactive.socket.client.TomcatWebSocketClient;
-
 import javax.net.ssl.SSLContext;
-
 import java.util.List;
 
 public class ApimlWebSocketClient extends TomcatWebSocketClient {
@@ -30,11 +27,6 @@ public class ApimlWebSocketClient extends TomcatWebSocketClient {
 
     @Override
     protected ClientEndpointConfig createEndpointConfig(Configurator configurator, List<String> subProtocols) {
-        return ClientEndpointConfig.Builder.create()
-                .configurator(configurator)
-                .preferredSubprotocols(subProtocols)
-                .sslContext(sslContext)
-                .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

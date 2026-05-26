@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.config;
 
 import jakarta.annotation.PostConstruct;
@@ -52,7 +51,6 @@ import org.zowe.apiml.zaas.cache.CachingClient;
 import org.zowe.apiml.zaas.cache.CachingServiceClient;
 import org.zowe.apiml.zaas.cache.LocalCachingClient;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSource;
-
 import javax.cache.Caching;
 import java.io.File;
 import java.time.Duration;
@@ -69,9 +67,11 @@ import java.util.List;
 public class CacheConfig {
 
     public static final String COMPOSITE_KEY_GENERATOR = "compositeKeyGenerator";
+
     public static final String COMPOSITE_KEY_GENERATOR_WITHOUT_LAST = "compositeKeyGeneratorWithoutLast";
 
     private static final String EHCACHE_STORAGE_ENV_PARAM_NAME = "ehcache.disk.store.dir";
+
     private static final String APIML_CACHE_STORAGE_LOCATION_ENV_PARAM_NAME = "apiml.cache.storage.location";
 
     @Value("${apiml.caching.enabled:true}")
@@ -82,18 +82,7 @@ public class CacheConfig {
 
     @PostConstruct
     public void afterPropertiesSet() {
-        if (cacheEnabled) {
-            if (System.getProperty(EHCACHE_STORAGE_ENV_PARAM_NAME) == null) {
-                String location = System.getProperty(APIML_CACHE_STORAGE_LOCATION_ENV_PARAM_NAME);
-                if (location == null) location = System.getProperty("user.dir");
-
-                System.setProperty(EHCACHE_STORAGE_ENV_PARAM_NAME, location);
-            }
-        } else {
-            log.warn("ZAAS is running in NoOp Cache mode. Do not use in production. " +
-                "To enable caching set configuration property apiml.caching.enabled to true."
-            );
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Primary
@@ -102,7 +91,7 @@ public class CacheConfig {
     @ConditionalOnProperty(value = "apiml.caching.enabled", havingValue = "true", matchIfMissing = true)
     @ConditionalOnProperty(name = "caching.storage.mode", havingValue = "inMemory", matchIfMissing = true)
     public CacheManager cacheManagerModulith() {
-        return createCacheManager();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     // fix for Redis IT (see setting CACHING_STORAGE_MODE='redis' for all service). This property is not related to microservices at all
@@ -111,122 +100,44 @@ public class CacheConfig {
     @ConditionalOnMissingBean(name = "modulithConfig")
     @ConditionalOnProperty(value = "apiml.caching.enabled", havingValue = "true", matchIfMissing = true)
     public CacheManager cacheManagerZaas() {
-        return createCacheManager();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public CacheManager createCacheManager() {
-        var caches = new HashMap<String, CacheConfiguration<?, ?>>();
-
-        var invalidatedJwtTokensConf = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                String.class, Boolean.class, ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.MB).heap(1, MemoryUnit.MB)
-            ).withService(new OffHeapDiskStoreConfiguration("pool1", 1, 1))
-            .withKeyCopier(IdentityCopier.identityCopier())
-            .withValueCopier(IdentityCopier.identityCopier())
-            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofDays(1)))
-            .build();
-
-        caches.put("invalidatedJwtTokens", invalidatedJwtTokensConf);
-
-        var validatedJwtTokensConf = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                String.class, TokenAuthentication.class, ResourcePoolsBuilder.newResourcePoolsBuilder().heap(1000, EntryUnit.ENTRIES)
-            )
-            .withKeyCopier(IdentityCopier.identityCopier())
-            .withValueCopier(SerializingCopier.asCopierClass())
-            // 1 minute to force zosmf tokens validation against zosmf for invalidated tokens
-            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofMinutes(1))).build();
-        caches.put("validatedJwtTokens", validatedJwtTokensConf);
-
-        var zosmfInfoConf = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                String.class, String.class, ResourcePoolsBuilder.newResourcePoolsBuilder().heap(10, EntryUnit.ENTRIES)
-            )
-            .withKeyCopier(IdentityCopier.identityCopier())
-            .withValueCopier(IdentityCopier.identityCopier())
-            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofHours(1))).build();
-        caches.put("zosmfInfo", zosmfInfoConf);
-
-        var zosmfAuthenticationEndpointConf = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                String.class, Boolean.class, ResourcePoolsBuilder.newResourcePoolsBuilder().heap(10, EntryUnit.ENTRIES)
-            )
-            .withKeyCopier(IdentityCopier.identityCopier())
-            .withValueCopier(IdentityCopier.identityCopier())
-            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofHours(1))).build();
-        caches.put("zosmfAuthenticationEndpoint", zosmfAuthenticationEndpointConf);
-
-        var zosmfJwtEndpointConf = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                HttpHeaders.class, Boolean.class, ResourcePoolsBuilder.newResourcePoolsBuilder().heap(10, EntryUnit.ENTRIES)
-            )
-            .withKeyCopier(SerializingCopier.asCopierClass())
-            .withValueCopier(IdentityCopier.identityCopier())
-            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofHours(1))).build();
-        caches.put("zosmfJwtEndpoint", zosmfJwtEndpointConf);
-
-        var validationOIDCTokenConf = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                AuthSource.class, Boolean.class, ResourcePoolsBuilder.newResourcePoolsBuilder().heap(1000, EntryUnit.ENTRIES)
-            )
-            .withKeyCopier(IdentityCopier.identityCopier())
-            .withValueCopier(IdentityCopier.identityCopier())
-            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(20))).build();
-        caches.put("validationOIDCToken", validationOIDCTokenConf);
-
-        var parseOIDCTokenConf = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                AuthSource.class, AuthSource.Parsed.class, ResourcePoolsBuilder.newResourcePoolsBuilder().heap(1000, EntryUnit.ENTRIES)
-            )
-            .withKeyCopier(IdentityCopier.identityCopier())
-            .withValueCopier(IdentityCopier.identityCopier())
-            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(20))).build();
-        caches.put("parseOIDCToken", parseOIDCTokenConf);
-
-        var trustedCertificatesConf = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                String.class, List.class, ResourcePoolsBuilder.newResourcePoolsBuilder().heap(1000, EntryUnit.ENTRIES)
-            )
-            .withKeyCopier(IdentityCopier.identityCopier())
-            .withValueCopier(IdentityCopier.identityCopier())
-            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofHours(1))).build();
-        caches.put("trustedCertificates", trustedCertificatesConf);
-
-        EhcacheCachingProvider provider = (EhcacheCachingProvider) Caching.getCachingProvider("org.ehcache.jsr107.EhcacheCachingProvider");
-        var serviceProvider = new OffHeapDiskStoreProviderConfiguration("pool1");
-        var localPersStore = new DefaultPersistenceConfiguration(new File(cacheDirectory));
-
-        org.ehcache.config.Configuration configuration = new DefaultConfiguration(caches, provider.getDefaultClassLoader(), serviceProvider, localPersStore);
-
-        var cacheManager = provider.getCacheManager(provider.getDefaultURI(), configuration);
-
-        return new JCacheCacheManager(cacheManager);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @ConditionalOnProperty(value = "apiml.caching.enabled", havingValue = "false")
     @Bean("cacheManager")
     @ConditionalOnMissingBean(name = "modulithConfig")
     public CacheManager cacheManagerNoOp() {
-        return new NoOpCacheManager();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean(CacheConfig.COMPOSITE_KEY_GENERATOR)
     public KeyGenerator getCompositeKeyGenerator() {
-        return new CompositeKeyGenerator();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean(CacheConfig.COMPOSITE_KEY_GENERATOR_WITHOUT_LAST)
     public KeyGenerator getCompositeKeyGeneratorWithoutLast() {
-        return new CompositeKeyGeneratorWithoutLast();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public CacheUtils cacheUtils() {
-        return new CacheUtils();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "modulithConfig")
     public CachingClient cachingServiceClient(GatewayClient gatewayClient, @Qualifier("restTemplateWithKeystore") RestTemplate restTemplate) {
-        return new CachingServiceClient(restTemplate, gatewayClient);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @ConditionalOnMissingBean
     public CachingClient cachingClient(Storage storage, HttpsConfig httpsConfig) {
-        return new LocalCachingClient(storage, httpsConfig);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gzip;
 
 import jakarta.servlet.http.HttpServletResponse;
-
 
 public final class GZipResponseUtils {
 
@@ -40,7 +38,7 @@ public final class GZipResponseUtils {
      * @return true if the response should be 0, even if it is isn't.
      */
     public static boolean shouldGzippedBodyBeZero(byte[] compressedBytes) {
-        return compressedBytes.length == EMPTY_GZIPPED_CONTENT_SIZE;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -56,7 +54,7 @@ public final class GZipResponseUtils {
      * @return true if the response should be 0, even if it is isn't.
      */
     public static boolean shouldBodyBeZero(int responseStatus) {
-        return responseStatus == HttpServletResponse.SC_NO_CONTENT || responseStatus == HttpServletResponse.SC_NOT_MODIFIED;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -72,11 +70,6 @@ public final class GZipResponseUtils {
      *                          method and the set header is ignored.
      */
     public static void addGzipHeader(final HttpServletResponse response) throws GZipResponseException {
-        response.setHeader("Content-Encoding", "gzip");
-        boolean containsEncoding = response.containsHeader("Content-Encoding");
-        if (!containsEncoding) {
-            throw new GZipResponseException("Failure when attempting to set "
-                + "Content-Encoding: gzip");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

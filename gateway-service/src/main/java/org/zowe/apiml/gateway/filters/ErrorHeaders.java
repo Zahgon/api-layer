@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.zowe.apiml.constants.ApimlConstants;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,32 +26,30 @@ public class ErrorHeaders implements ClientResponse.Headers {
     }
 
     public ErrorHeaders(String message) {
-         httpHeaders.add(ApimlConstants.AUTH_FAIL_HEADER, message);
+        httpHeaders.add(ApimlConstants.AUTH_FAIL_HEADER, message);
     }
 
     @Override
     public OptionalLong contentLength() {
-        return toOptionalLong(this.httpHeaders.getContentLength());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Optional<MediaType> contentType() {
-        return Optional.ofNullable(this.httpHeaders.getContentType());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public List<String> header(String headerName) {
-        List<String> headerValues = this.httpHeaders.get(headerName);
-        return (headerValues != null ? headerValues : Collections.emptyList());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public HttpHeaders asHttpHeaders() {
-        return this.httpHeaders;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private OptionalLong toOptionalLong(long value) {
         return (value != -1 ? OptionalLong.of(value) : OptionalLong.empty());
     }
-
 }

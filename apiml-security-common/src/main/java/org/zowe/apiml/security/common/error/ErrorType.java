@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.error;
 
 /**
@@ -16,6 +15,7 @@ package org.zowe.apiml.security.common.error;
  */
 // TODO Find better message for BAD_CREDENTIALS. For now we make the response consistent with the non-modulith
 public enum ErrorType {
+
     BAD_CREDENTIALS("org.zowe.apiml.security.login.invalidCredentials", "Invalid Credentials", "Provide a valid username and password."),
     TOKEN_NOT_VALID("org.zowe.apiml.common.unauthorized", "The request has not been applied because it lacks valid authentication credentials.", "The accessed resource requires authentication. The request is missing valid authentication credentials or the token expired."),
     BAD_ACCESS_TOKEN_BODY("org.zowe.apiml.security.query.invalidAccessTokenBody", "Personal Access Token body in the request is not valid.", "Use a valid body in the request. Format of a message: {validity: int , scopes: [string]}."),
@@ -36,7 +36,9 @@ public enum ErrorType {
     IDENTITY_MAPPING_FAILED("org.zowe.apiml.zaas.security.schema.x509.mappingFailed", "No user was found", "Ask your security administrator to connect your token or client certificate with your mainframe user.");
 
     private final String errorMessageKey;
+
     private final String defaultMessage;
+
     private final String defaultAction;
 
     ErrorType(String errorMessageKey, String defaultMessage, String defaultAction) {
@@ -46,23 +48,18 @@ public enum ErrorType {
     }
 
     public String getErrorMessageKey() {
-        return errorMessageKey;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getDefaultMessage() {
-        return defaultMessage;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getDefaultAction() {
-        return defaultAction;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static ErrorType fromMessageKey(String messageKey) {
-        for (ErrorType errorType : ErrorType.values()) {
-            if (errorType.errorMessageKey.equals(messageKey)) {
-                return errorType;
-            }
-        }
-        throw new IllegalArgumentException("Message key '" + messageKey + "' is invalid");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

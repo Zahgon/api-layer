@@ -7,16 +7,13 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.service.impl;
 
 import org.zowe.apiml.client.exception.PetNotFoundException;
 import org.zowe.apiml.client.model.Pet;
 import org.zowe.apiml.client.service.PetService;
 import org.springframework.stereotype.Service;
-
 import jakarta.annotation.PostConstruct;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -27,7 +24,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Service("petService")
 public class PetServiceImpl implements PetService {
+
     private final List<Pet> pets;
+
     private final AtomicLong counter;
 
     public PetServiceImpl() {
@@ -40,10 +39,7 @@ public class PetServiceImpl implements PetService {
      */
     @PostConstruct
     public void init() {
-        pets.add(new Pet(counter.incrementAndGet(), "Falco")); // for get integration test
-        pets.add(new Pet(counter.incrementAndGet(), "Jeník")); // for get  integration test
-        pets.add(new Pet(counter.incrementAndGet(), "Molly")); // for update integration test
-        pets.add(new Pet(counter.incrementAndGet(), "Toby")); // for delete integration test
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -53,9 +49,7 @@ public class PetServiceImpl implements PetService {
      */
     @Override
     public Pet save(Pet pet) {
-        pet.setId(counter.incrementAndGet());
-        pets.add(pet);
-        return pet;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -65,10 +59,7 @@ public class PetServiceImpl implements PetService {
      */
     @Override
     public Pet getById(Long id) {
-        return pets.stream()
-            .filter(pet -> pet.getId().equals(id))
-            .findFirst()
-            .orElse(null);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -77,7 +68,7 @@ public class PetServiceImpl implements PetService {
      */
     @Override
     public List<Pet> getAll() {
-        return pets;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -87,13 +78,7 @@ public class PetServiceImpl implements PetService {
      */
     @Override
     public Pet update(Pet pet) {
-        Pet petToUpdate = getById(pet.getId());
-        if (petToUpdate == null) {
-            return null;
-        }
-        int index = pets.indexOf(petToUpdate);
-        pets.set(index, pet);
-        return pets.get(index);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -102,8 +87,6 @@ public class PetServiceImpl implements PetService {
      */
     @Override
     public void deleteById(Long id) {
-        if (!pets.removeIf(pet -> pet.getId().equals(id))) {
-            throw new PetNotFoundException("Pet with provided id is not found", id);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

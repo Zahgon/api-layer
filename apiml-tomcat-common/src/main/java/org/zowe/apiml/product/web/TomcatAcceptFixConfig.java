@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.web;
 
 import lombok.experimental.Delegate;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
@@ -52,10 +50,14 @@ public class TomcatAcceptFixConfig {
     int retryRebindTimeoutSecs;
 
     private static final Field ENDPOINT_FIELD;
+
     private static final Field NIO_SOCKET_FIELD;
 
-    private static final MethodHandle IMPL_CLOSE_SELECTABGLE_CHANNEL_HANLE; // NOSONAR
-    private static final MethodHandle IMPL_CONFIGURE_BLOCKING; // NOSONAR
+    // NOSONAR
+    private static final MethodHandle IMPL_CLOSE_SELECTABGLE_CHANNEL_HANLE;
+
+    // NOSONAR
+    private static final MethodHandle IMPL_CONFIGURE_BLOCKING;
 
     /**
      * To mitigate parallel treatment of socket rebinding
@@ -66,19 +68,21 @@ public class TomcatAcceptFixConfig {
         try {
             ENDPOINT_FIELD = AbstractProtocol.class.getDeclaredField("endpoint");
             NIO_SOCKET_FIELD = NioEndpoint.class.getDeclaredField("serverSock");
-
             Method implCloseSelectableChannel = AbstractSelectableChannel.class.getDeclaredMethod("implCloseSelectableChannel");
-            implCloseSelectableChannel.setAccessible(true); // NOSONAR
+            // NOSONAR
+            implCloseSelectableChannel.setAccessible(true);
             IMPL_CLOSE_SELECTABGLE_CHANNEL_HANLE = MethodHandles.lookup().unreflect(implCloseSelectableChannel);
-
             Method implConfigureBlocking = AbstractSelectableChannel.class.getDeclaredMethod("implConfigureBlocking", boolean.class);
-            implConfigureBlocking.setAccessible(true); // NOSONAR
+            // NOSONAR
+            implConfigureBlocking.setAccessible(true);
             IMPL_CONFIGURE_BLOCKING = MethodHandles.lookup().unreflect(implConfigureBlocking);
         } catch (NoSuchFieldException | NoSuchMethodException | SecurityException | IllegalAccessException e) {
             throw new IllegalStateException("Unknown structure of protocols", e);
         }
-        ENDPOINT_FIELD.setAccessible(true); // NOSONAR
-        NIO_SOCKET_FIELD.setAccessible(true); // NOSONAR
+        // NOSONAR
+        ENDPOINT_FIELD.setAccessible(true);
+        // NOSONAR
+        NIO_SOCKET_FIELD.setAccessible(true);
     }
 
     /**
@@ -91,11 +95,11 @@ public class TomcatAcceptFixConfig {
     private void update(AbstractProtocol<?> abstractProtocol, Runnable rebindHandler) {
         try {
             AbstractEndpoint<?, ?> abstractEndpoint = (AbstractEndpoint<Object, Object>) ENDPOINT_FIELD.get(abstractProtocol);
-
             if (abstractEndpoint instanceof NioEndpoint) {
                 ServerSocketChannel serverSocketChannel = (ServerSocketChannel) NIO_SOCKET_FIELD.get(abstractEndpoint);
                 serverSocketChannel = new FixedServerSocketChannel(serverSocketChannel, abstractEndpoint, rebindHandler);
-                NIO_SOCKET_FIELD.set(abstractEndpoint, serverSocketChannel); // NOSONAR
+                // NOSONAR
+                NIO_SOCKET_FIELD.set(abstractEndpoint, serverSocketChannel);
             } else {
                 log.warn("Unsupported protocol: {}", abstractEndpoint.getClass().getName());
             }
@@ -126,13 +130,7 @@ public class TomcatAcceptFixConfig {
      */
     @Bean
     public TomcatConnectorCustomizer tomcatAcceptorFix() {
-        return connector -> connector.addLifecycleListener(event -> {
-            if (event.getLifecycle().getState() == LifecycleState.STARTED) {
-                update(connector);
-
-                log.debug("TomcatAcceptFixConfig applied");
-            }
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -140,7 +138,7 @@ public class TomcatAcceptFixConfig {
      */
     @PreDestroy
     public void stopping() {
-        running.set(false);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -180,24 +178,12 @@ public class TomcatAcceptFixConfig {
 
         @Override
         protected void implCloseSelectableChannel() throws IOException {
-            try {
-                IMPL_CLOSE_SELECTABGLE_CHANNEL_HANLE.invoke(socket);
-            } catch (IOException | RuntimeException e) {
-                throw e;
-            } catch (Throwable t) {
-                throw new IllegalStateException(t);
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         protected void implConfigureBlocking(boolean block) throws IOException {
-            try {
-                IMPL_CONFIGURE_BLOCKING.invoke(socket, block);
-            } catch (IOException | RuntimeException e) {
-                throw e;
-            } catch (Throwable t) {
-                throw new IllegalStateException(t);
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -235,10 +221,8 @@ public class TomcatAcceptFixConfig {
                 try {
                     // socket must be closed before new binding
                     socket.close();
-
                     // till TCP/IP stack is running again try to bind the port
                     bindWithWait();
-
                     // in case of successfully update the connector instance, it is not handled by this wrapper anymore
                     rebindHandler.run();
                 } catch (InterruptedException e) {
@@ -250,42 +234,16 @@ public class TomcatAcceptFixConfig {
         }
 
         boolean isRecycledClass(Throwable t) {
-            return NETWORK_RECYCLED_EXCEPTION_CLASS.equals(t.getClass().getName());
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         boolean isTcpStackRestarted(Throwable t) {
-            if ((t.getMessage() != null) && t.getMessage().contains("EDC5122I")) {
-                return true;
-            }
-
-            if (isRecycledClass(t)) {
-                return true;
-            }
-
-            Throwable cause = t.getCause();
-            if ((cause != null) && (cause != t)) {
-                return isTcpStackRestarted(cause);
-            }
-
-            return false;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public SocketChannel accept() throws IOException {
-            // obtain current state of rebinding to detection parallel actions
-            final int stateBefore = state.get();
-            try {
-                return socket.accept();
-            } catch (IOException ioe) {
-                if (isTcpStackRestarted(ioe)) {
-                    // the fix solve just one issue about stopped TCP/IP stack
-                    log.debug("The TCP/IP stack was probably restarted. The socket of Tomcat will rebind.");
-                    rebind(stateBefore);
-                    return socket.accept();
-                }
-                throw ioe;
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
 
     /**
@@ -294,20 +252,31 @@ public class TomcatAcceptFixConfig {
     private interface Overridden {
 
         SocketChannel accept() throws IOException;
+
         int validOps();
+
         ServerSocketChannel bind(SocketAddress local) throws IOException;
+
         SelectorProvider provider();
+
         boolean isRegistered();
+
         SelectionKey keyFor(Selector sel);
+
         SelectionKey register(Selector sel, int ops, Object att);
+
         void implCloseChannel() throws IOException;
+
         boolean isBlocking();
+
         Object blockingLock();
+
         SelectableChannel configureBlocking(boolean block) throws IOException;
+
         SelectionKey register(Selector sel, int ops) throws ClosedChannelException;
+
         void close() throws IOException;
+
         boolean isOpen();
-
     }
-
 }

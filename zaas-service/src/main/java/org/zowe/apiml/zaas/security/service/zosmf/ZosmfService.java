@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.zosmf;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -55,13 +54,11 @@ import org.zowe.apiml.zaas.security.service.AuthenticationService;
 import org.zowe.apiml.zaas.security.service.TokenCreationService;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSource;
 import org.zowe.apiml.zaas.security.service.token.JWKResolver;
-
 import javax.management.ServiceNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-
 import static org.zowe.apiml.zaas.security.service.zosmf.ZosmfService.TokenType.JWT;
 import static org.zowe.apiml.zaas.security.service.zosmf.ZosmfService.TokenType.LTPA;
 
@@ -73,6 +70,7 @@ import static org.zowe.apiml.zaas.security.service.zosmf.ZosmfService.TokenType.
 public class ZosmfService extends AbstractZosmfService {
 
     private static final String JWT_ENDPOINT_ERROR_MSGID = "org.zowe.apiml.security.auth.zosmf.jwtEndpointError";
+
     private static final String CACHE_INVALIDATED_JWT_TOKENS = "invalidatedJwtTokens";
 
     /**
@@ -82,11 +80,9 @@ public class ZosmfService extends AbstractZosmfService {
     @Getter
     public enum TokenType {
 
-        JWT("jwtToken"),
-        LTPA("LtpaToken2");
+        JWT("jwtToken"), LTPA("LtpaToken2");
 
         private final String cookieName;
-
     }
 
     /**
@@ -98,6 +94,7 @@ public class ZosmfService extends AbstractZosmfService {
     public static class AuthenticationResponse {
 
         private String domain;
+
         private final Map<TokenType, String> tokens;
     }
 
@@ -116,30 +113,20 @@ public class ZosmfService extends AbstractZosmfService {
 
         @JsonProperty(ZOSMF_DOMAIN)
         private String safRealm;
-
     }
 
     private final List<TokenValidationStrategy> tokenValidationStrategy;
+
     private final AuthenticationService authenticationService;
+
     private final JWKResolver jwkResolver;
+
     private ZosmfService meAsProxy;
+
     private TokenCreationService tokenCreationService;
 
-    public ZosmfService(
-        final AuthConfigurationProperties authConfigurationProperties,
-        final @Qualifier("restTemplateWithoutKeystore") RestTemplate restTemplateWithoutKeystore,
-        final ObjectMapper securityObjectMapper,
-        final ApplicationContext applicationContext,
-        final AuthenticationService authenticationService,
-        List<TokenValidationStrategy> tokenValidationStrategy,
-        JWKResolver jwkResolver
-    ) {
-        super(
-                applicationContext,
-                authConfigurationProperties,
-                restTemplateWithoutKeystore,
-                securityObjectMapper
-        );
+    public ZosmfService(final AuthConfigurationProperties authConfigurationProperties, @Qualifier("restTemplateWithoutKeystore") final RestTemplate restTemplateWithoutKeystore, final ObjectMapper securityObjectMapper, final ApplicationContext applicationContext, final AuthenticationService authenticationService, List<TokenValidationStrategy> tokenValidationStrategy, JWKResolver jwkResolver) {
+        super(applicationContext, authConfigurationProperties, restTemplateWithoutKeystore, securityObjectMapper);
         this.tokenValidationStrategy = tokenValidationStrategy;
         this.authenticationService = authenticationService;
         this.jwkResolver = jwkResolver;
@@ -148,43 +135,17 @@ public class ZosmfService extends AbstractZosmfService {
     @PostConstruct
     @Override
     public void afterPropertiesSet() {
-        super.afterPropertiesSet();
-        meAsProxy = applicationContext.getBean(ZosmfService.class);
-        tokenCreationService = applicationContext.getBean(TokenCreationService.class);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @Retryable(value = {TokenNotValidException.class}, maxAttempts = 2, backoff = @Backoff(value = 1500))
+    @Retryable(value = { TokenNotValidException.class }, maxAttempts = 2, backoff = @Backoff(value = 1500))
     public AuthenticationResponse authenticate(Authentication authentication) {
-        AuthenticationResponse authenticationResponse;
-        if (loginEndpointExists()) {
-            authenticationResponse = issueAuthenticationRequest(
-                    authentication,
-                    getURI(getZosmfServiceId(), ZOSMF_AUTHENTICATE_END_POINT),
-                    HttpMethod.POST);
-
-            if (meAsProxy.isInvalidated(authenticationResponse.getTokens().get(JWT))) {
-                invalidate(LTPA, authenticationResponse.getTokens().get(LTPA));
-                throw new TokenNotValidException("Invalid token returned from zosmf");
-            }
-        } else {
-            String zosmfInfoURIEndpoint = getURI(getZosmfServiceId(), ZOSMF_INFO_END_POINT);
-            authenticationResponse = issueAuthenticationRequest(
-                    authentication,
-                    zosmfInfoURIEndpoint,
-                    HttpMethod.GET);
-            authenticationResponse.setDomain(meAsProxy.getZosmfRealm(zosmfInfoURIEndpoint));
-        }
-        return authenticationResponse;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Retryable(maxAttempts = 2, backoff = @Backoff(value = 1500))
     public ResponseEntity<String> changePassword(Authentication authentication) {
-        ResponseEntity<String> changePasswordResponse;
-        changePasswordResponse = issueChangePasswordRequest(
-                authentication,
-                getURI(getZosmfServiceId(), ZOSMF_AUTHENTICATE_END_POINT),
-                HttpMethod.PUT);
-        return changePasswordResponse;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -195,7 +156,7 @@ public class ZosmfService extends AbstractZosmfService {
      */
     @Cacheable(value = CACHE_INVALIDATED_JWT_TOKENS, unless = "true", key = "#jwtToken", condition = "#jwtToken != null")
     public Boolean isInvalidated(String jwtToken) {
-        return Boolean.FALSE;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -203,53 +164,14 @@ public class ZosmfService extends AbstractZosmfService {
      */
     @Cacheable("zosmfInfo")
     public String getZosmfRealm(String infoURIEndpoint) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(ZOSMF_CSRF_HEADER, "");
-
-        try {
-            final ResponseEntity<ZosmfInfo> info = restTemplateWithoutKeystore.exchange(
-                    infoURIEndpoint,
-                    HttpMethod.GET,
-                    new HttpEntity<>(headers),
-                    ZosmfInfo.class
-            );
-
-            ZosmfInfo zosmfInfo = info.getBody();
-
-            if (zosmfInfo == null || StringUtils.isEmpty(zosmfInfo.getSafRealm())) {
-                apimlLog.log("apiml.security.zosmfDomainIsEmpty", ZOSMF_DOMAIN);
-                throw new AuthenticationServiceException("z/OSMF domain cannot be read.");
-            }
-
-            return zosmfInfo.getSafRealm();
-        } catch (RuntimeException re) {
-            throw handleExceptionOnCall(infoURIEndpoint, re);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @SuppressWarnings("java:S128") // Break in ZOWE case is left intentionally
+    // Break in ZOWE case is left intentionally
+    @SuppressWarnings("java:S128")
     public ZaasTokenResponse exchangeAuthenticationForZosmfToken(String token, AuthSource.Parsed authSource) throws ServiceNotFoundException {
-        switch (authSource.getOrigin()) {
-            case ZOSMF:
-                return ZaasTokenResponse.builder().cookieName(JWT.getCookieName()).token(token).build();
-            case ZOWE:
-                String ltpaToken = authenticationService.getLtpaToken(token);
-                if (ltpaToken != null) {
-                    return ZaasTokenResponse.builder().cookieName(LTPA.getCookieName()).token(ltpaToken).build();
-                }
-            default:
-                Map<ZosmfService.TokenType, String> zosmfTokens = tokenCreationService.createZosmfTokensWithoutCredentials(authSource.getUserId());
-
-                if (zosmfTokens.containsKey(JWT)) {
-                    return ZaasTokenResponse.builder().cookieName(JWT.getCookieName()).token(zosmfTokens.get(JWT)).build();
-                } else if (zosmfTokens.containsKey(LTPA)) {
-                    return ZaasTokenResponse.builder().cookieName(LTPA.getCookieName()).token(zosmfTokens.get(LTPA)).build();
-                }
-        }
-
-        throw new ServiceNotFoundException("Unable to obtain a token from z/OSMF service.");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * Verify whether the service is actually accessible.
@@ -259,40 +181,7 @@ public class ZosmfService extends AbstractZosmfService {
      * @return true when it's possible to access the Info endpoint via GET.
      */
     public boolean isAccessible() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(ZOSMF_CSRF_HEADER, "");
-
-        String infoURIEndpoint;
-        try {
-            infoURIEndpoint = getURI(getZosmfServiceId(), ZOSMF_INFO_END_POINT);
-        } catch (ServiceNotAccessibleException e) {
-            log.debug("URI not available because z/OSMF instance '{}' is not registered or wrong URL in Discovery Service: {}", getZosmfServiceId(), e.getMessage());
-            return false;
-        }
-
-        log.debug("Verifying z/OSMF accessibility on info endpoint: {}", infoURIEndpoint);
-        try {
-            final ResponseEntity<ZosmfInfo> info = restTemplateWithoutKeystore
-                    .exchange(
-                            infoURIEndpoint,
-                            HttpMethod.GET,
-                            new HttpEntity<>(headers),
-                            ZosmfInfo.class
-                    );
-
-            if (info.getStatusCode() != HttpStatus.OK) {
-                log.error("Unexpected status code {} from z/OSMF accessing URI {}\n"
-                        + "Response from z/OSMF was \"{}\"", info.getStatusCode(), infoURIEndpoint, info.getBody());
-            }
-
-            return info.getStatusCode() == HttpStatus.OK;
-        } catch (RuntimeException ex) {
-            if (ex instanceof HttpClientErrorException.Unauthorized) {
-                return true;
-            }
-            handleExceptionOnCall(infoURIEndpoint, ex);
-            return false;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String getURI(String serviceId, String path) {
@@ -314,19 +203,7 @@ public class ZosmfService extends AbstractZosmfService {
      * @return AuthenticationResponse containing auth token, either LTPA or JWT
      */
     protected AuthenticationResponse issueAuthenticationRequest(Authentication authentication, String url, HttpMethod httpMethod) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, getAuthenticationValue(authentication));
-        headers.add(ZOSMF_CSRF_HEADER, "");
-
-        try {
-            final ResponseEntity<String> response = restTemplateWithoutKeystore.exchange(
-                    url,
-                    httpMethod,
-                    new HttpEntity<>(null, headers), String.class);
-            return getAuthenticationResponse(response);
-        } catch (RuntimeException re) {
-            throw handleExceptionOnCall(url, re);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -337,28 +214,7 @@ public class ZosmfService extends AbstractZosmfService {
      * @return ResponseEntity
      */
     protected ResponseEntity<String> issueChangePasswordRequest(Authentication authentication, String url, HttpMethod httpMethod) {
-        log.debug("Changing password via z/OSMF");
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(ZOSMF_CSRF_HEADER, "");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        try {
-            return restTemplateWithoutKeystore.exchange(
-                    url,
-                    httpMethod,
-                    new HttpEntity<>(new ChangePasswordRequest((LoginRequest) authentication.getCredentials()), headers),
-                    String.class);
-        } catch (HttpServerErrorException e) {
-            throw handleServerErrorOnChangePasswordCall(e);
-        } catch (HttpClientErrorException.NotFound | HttpClientErrorException.MethodNotAllowed e) {
-            apimlLog.log("org.zowe.apiml.security.auth.zosmf.changePwd.notAvailable", e.getStatusCode());
-            throw new ServiceNotAccessibleException("Change password endpoint is not available in z/OSMF", e);
-        } catch (HttpClientErrorException e) {
-            // TODO https://github.com/zowe/api-layer/issues/2995 - API ML will return 401 in these cases now, the message is still not accurate
-            log.debug("Request to {} failed with status {}: {}", url, e.getStatusCode(), e.getMessage());
-            throw new BadCredentialsException("Client error in change password: " + e.getResponseBodyAsString(), e);
-        } catch (RuntimeException re) {
-            throw handleExceptionOnCall(url, re);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private RuntimeException handleServerErrorOnChangePasswordCall(HttpServerErrorException e) {
@@ -386,30 +242,7 @@ public class ZosmfService extends AbstractZosmfService {
      */
     @Cacheable(value = "zosmfAuthenticationEndpoint", key = "#httpMethod.name()")
     public boolean authenticationEndpointExists(HttpMethod httpMethod, HttpHeaders headers) {
-        String url;
-        try {
-            url = getURI(getZosmfServiceId(), ZOSMF_AUTHENTICATE_END_POINT);
-        } catch (ServiceNotAccessibleException e) {
-            log.debug("authentication endpoint is not available because z/OSMF instance '{}'' is not registered or wrong URL in Discovery Service: {}", getZosmfServiceId(), e.getMessage());
-            return false;
-        }
-
-        try {
-            restTemplateWithoutKeystore.exchange(url, httpMethod, new HttpEntity<>(null, headers), String.class);
-        } catch (HttpClientErrorException hce) {
-            if (HttpStatus.UNAUTHORIZED.equals(hce.getStatusCode())) {
-                return true;
-            } else if (HttpStatus.NOT_FOUND.equals(hce.getStatusCode())) {
-                apimlLog.log("org.zowe.apiml.security.auth.zosmf.jwtNotFound");
-                return false;
-            } else {
-                log.warn("z/OSMF authentication endpoint with HTTP method {} has failed with status code: {}", httpMethod.name(), hce.getStatusCode(), hce);
-                return false;
-            }
-        } catch (HttpServerErrorException serverError) {
-            log.warn("z/OSMF internal error", serverError);
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -419,35 +252,7 @@ public class ZosmfService extends AbstractZosmfService {
      */
     @Cacheable(value = "zosmfJwtEndpoint")
     public boolean jwtEndpointExists(HttpHeaders headers) {
-        String url;
-        try {
-            url = getURI(getZosmfServiceId(), authConfigurationProperties.getZosmf().getJwtEndpoint());
-        } catch (ServiceNotAccessibleException e) {
-            log.debug("jwt endpoint is not available because z/OSMF instance '{}' is not registered or wrong URL in Discovery Service", getZosmfServiceId());
-            return false;
-        }
-
-        try {
-            restTemplateWithoutKeystore.exchange(url, HttpMethod.GET, new HttpEntity<>(null, headers), String.class);
-        } catch (HttpClientErrorException hce) {
-            if (HttpStatus.UNAUTHORIZED.equals(hce.getStatusCode())) {
-                return true;
-            } else if (HttpStatus.NOT_FOUND.equals(hce.getStatusCode())) {
-                apimlLog.log("org.zowe.apiml.security.auth.zosmf.jwtNotFound");
-                return false;
-            } else {
-                // other 400 family code
-                apimlLog.log(JWT_ENDPOINT_ERROR_MSGID, url, hce.getStatusCode().value() + ": " + hce.getMessage());
-                return false;
-            }
-        } catch (HttpServerErrorException serverError) {
-            apimlLog.log(JWT_ENDPOINT_ERROR_MSGID, url, serverError.getStatusCode().value() + ": " + serverError.getMessage());
-            return false;
-        } catch (Exception e) {
-            apimlLog.log(JWT_ENDPOINT_ERROR_MSGID, url, e.getMessage());
-            return false;
-        }
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -456,10 +261,7 @@ public class ZosmfService extends AbstractZosmfService {
      * @return true, if zosmf login endpoint is presented
      */
     public boolean loginEndpointExists() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(ZOSMF_CSRF_HEADER, "");
-        headers.add("Authorization", "Basic Og==");
-        return meAsProxy.authenticationEndpointExists(HttpMethod.POST, headers);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -468,7 +270,7 @@ public class ZosmfService extends AbstractZosmfService {
      * @return true, if zosmf logout endpoint is presented
      */
     public boolean logoutEndpointExists() {
-        return meAsProxy.authenticationEndpointExists(HttpMethod.DELETE, null);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -477,10 +279,7 @@ public class ZosmfService extends AbstractZosmfService {
      * @return true if endpoint exists, otherwise false
      */
     public boolean jwtBuilderEndpointExists() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(ZOSMF_CSRF_HEADER, "");
-        headers.add("Authorization", "Basic Og==");
-        return meAsProxy.jwtEndpointExists(headers);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -492,33 +291,7 @@ public class ZosmfService extends AbstractZosmfService {
      * @throws TokenNotValidException if all token validation strategies evaluate token as invalid
      */
     public boolean validate(String token) {
-        log.debug("ZosmfService validating token: ...{}", StringUtils.right(token, 15));
-        TokenValidationRequest request = new TokenValidationRequest(TokenType.JWT, token, getURI(getZosmfServiceId()), getEndpointMap());
-
-        var isTokenValid = Optional.<Boolean>empty();
-
-        for (TokenValidationStrategy s : tokenValidationStrategy) {
-            log.debug("Trying to validate token with strategy: {}", s.toString());
-            try {
-                s.validate(request);
-                if (requestIsAuthenticated(request)) {
-                    log.debug("Token validity has been successfully determined: {}", request.getAuthenticated());
-                    isTokenValid = Optional.of(true);
-                    break;
-                } else {
-                    isTokenValid = Optional.of(false);
-                }
-            } catch (RuntimeException re) {
-                log.debug("Exception during token validation:", re);
-            }
-        }
-
-        log.debug("Token validation strategies exhausted, final validation status: {}", request.getAuthenticated());
-
-        if (isTokenValid.orElseThrow( () -> new ServiceNotAccessibleException("All token validation strategies has failed with " + request.getZosmfBaseUrl()))) {
-            return true;
-        }
-        throw new TokenNotValidException("Token is not valid by any of zosmf validation strategies");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean requestIsAuthenticated(TokenValidationRequest request) {
@@ -526,34 +299,11 @@ public class ZosmfService extends AbstractZosmfService {
     }
 
     public Map<String, Boolean> getEndpointMap() {
-        Map<String, Boolean> endpointMap = new HashMap<>();
-
-        endpointMap.put(getURI(getZosmfServiceId(), ZOSMF_AUTHENTICATE_END_POINT), loginEndpointExists());
-
-        return endpointMap;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void invalidate(TokenType type, String token) {
-        if (logoutEndpointExists()) {
-            final String url = getURI(getZosmfServiceId(), ZOSMF_AUTHENTICATE_END_POINT);
-
-            final HttpHeaders headers = new HttpHeaders();
-            headers.add(ZOSMF_CSRF_HEADER, "");
-            headers.add(HttpHeaders.COOKIE, type.getCookieName() + "=" + token);
-
-            try {
-                ResponseEntity<String> re = restTemplateWithoutKeystore.exchange(url, HttpMethod.DELETE,
-                        new HttpEntity<>(null, headers), String.class);
-
-                if (re.getStatusCode().is2xxSuccessful())
-                    return;
-                apimlLog.log("org.zowe.apiml.security.serviceUnavailable", url, re.getStatusCode());
-                throw new ServiceNotAccessibleException("Could not get an access to z/OSMF service.");
-            } catch (RuntimeException re) {
-                throw handleExceptionOnCall(url, re);
-            }
-        }
-        log.warn("The request to invalidate an auth token was unsuccessful, z/OSMF invalidate endpoint not available");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -564,24 +314,10 @@ public class ZosmfService extends AbstractZosmfService {
      * @return AuthenticationResponse with all supported tokens from responseEntity
      */
     protected ZosmfService.AuthenticationResponse getAuthenticationResponse(ResponseEntity<String> responseEntity) {
-        final List<String> cookies = responseEntity.getHeaders().get(HttpHeaders.SET_COOKIE);
-        final EnumMap<TokenType, String> tokens = new EnumMap<>(ZosmfService.TokenType.class);
-        if (cookies != null) {
-            for (final ZosmfService.TokenType tokenType : ZosmfService.TokenType.values()) {
-                final String token = readTokenFromCookie(cookies, tokenType.getCookieName());
-                if (token != null) tokens.put(tokenType, token);
-            }
-        }
-        return new ZosmfService.AuthenticationResponse(tokens);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public JsonWebKeySet getPublicKeys() {
-        var jwkZosmfUrl = getURI(getZosmfServiceId(), authConfigurationProperties.getZosmf().getJwtEndpoint());
-        try {
-            return jwkResolver.resolve(jwkZosmfUrl);
-        } catch (JoseException | IOException e) {
-            log.debug("Unable to get JWKs from z/OSMF: {}", e.getMessage(), e);
-            return new JsonWebKeySet(Collections.emptyList());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

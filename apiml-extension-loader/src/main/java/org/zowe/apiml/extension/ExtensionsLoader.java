@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.extension;
 
 import lombok.NonNull;
@@ -18,13 +17,11 @@ import org.springframework.boot.context.event.ApplicationContextInitializedEvent
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-
 import java.util.Arrays;
 
 /**
  * Loader of extensions
-*
-*/
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class ExtensionsLoader implements ApplicationListener<ApplicationContextInitializedEvent> {
@@ -34,30 +31,6 @@ public class ExtensionsLoader implements ApplicationListener<ApplicationContextI
 
     @Override
     public void onApplicationEvent(ApplicationContextInitializedEvent event) {
-        if (event.getApplicationContext() instanceof BeanDefinitionRegistry registry) {
-            ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(new AnnotationConfigApplicationContext());
-
-            String[] extensionsBasePackages = configReader.getBasePackages();
-            log.info("Loading extensions defined in {} packages", Arrays.toString(extensionsBasePackages));
-            if (extensionsBasePackages.length > 0) {
-                try {
-                    scanner.scan(configReader.getBasePackages());
-
-                    String[] beanNames = scanner.getRegistry().getBeanDefinitionNames();
-                    for (String name : beanNames) {
-                        if (!registry.containsBeanDefinition(name)) {
-                            registry.registerBeanDefinition(name, scanner.getRegistry().getBeanDefinition(name));
-                        } else {
-                            log.info("Bean with name " + name + " is already registered in the context");
-                        }
-                    }
-                } catch (Exception e) {
-                    log.error("Failed loading extensions", e);
-                }
-            }
-        } else {
-            log.error("Expected Spring context to be a BeanDefinitionRegistry. Extensions are not loaded");
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

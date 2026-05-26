@@ -7,13 +7,11 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.netflix.eureka.CloudEurekaClient;
-
 import java.util.List;
 
 /**
@@ -24,11 +22,10 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class AdditionalEurekaClientsHolder {
+
     private final List<CloudEurekaClient> discoveryClients;
 
     public void shutdown() {
-        if (discoveryClients != null) {
-            discoveryClients.forEach(CloudEurekaClient::shutdown);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

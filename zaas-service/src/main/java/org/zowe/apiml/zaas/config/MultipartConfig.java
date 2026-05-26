@@ -7,32 +7,20 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
-
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @Configuration
-public class MultipartConfig    {
+public class MultipartConfig {
 
     @Bean
     public MultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver() {
-            @Override
-            public boolean isMultipart(HttpServletRequest request) {
-                String method = request.getMethod().toLowerCase();
-                if (!Arrays.asList("put", "post").contains(method)) {
-                    return false;
-                }
-                String contentType = request.getContentType();
-                return (contentType != null && contentType.toLowerCase().startsWith("multipart/"));
-            }
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

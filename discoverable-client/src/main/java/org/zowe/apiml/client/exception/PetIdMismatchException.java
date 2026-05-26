@@ -7,15 +7,17 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.exception;
 
 /**
  * An exception is thrown when the pet ID is mismatched
  */
 public class PetIdMismatchException extends RuntimeException {
+
     private final Long pathId;
+
     private final Long bodyId;
+
     public PetIdMismatchException(String message, Long pathId, Long bodyId) {
         super(message);
         this.pathId = pathId;
@@ -23,10 +25,10 @@ public class PetIdMismatchException extends RuntimeException {
     }
 
     public Long getPathId() {
-        return pathId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Long getBodyId() {
-        return bodyId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

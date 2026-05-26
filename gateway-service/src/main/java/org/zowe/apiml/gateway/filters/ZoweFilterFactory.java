@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,9 +19,7 @@ import org.zowe.apiml.gateway.service.InstanceInfoService;
 import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.zaas.ZaasTokenResponse;
 import reactor.core.publisher.Mono;
-
 import java.util.function.Function;
-
 
 @Service
 public class ZoweFilterFactory extends AbstractTokenFilterFactory<AbstractTokenFilterFactory.Config> {
@@ -39,23 +36,16 @@ public class ZoweFilterFactory extends AbstractTokenFilterFactory<AbstractTokenF
 
     @Override
     protected AuthenticationScheme getAuthenticationScheme() {
-        return AuthenticationScheme.ZOWE_JWT;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Function<RequestCredentials, Mono<AuthorizationResponse<ZaasTokenResponse>>> getAuthorizationResponseTransformer(ServerWebExchange exchange) {
-        return requestCredentials -> zaasSchemeTransform.zoweJwt(requestCredentials, exchange);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Mono<Void> processResponse(ServerWebExchange exchange, GatewayFilterChain chain, AuthorizationResponse<ZaasTokenResponse> tokenResponse) {
-        var response = tokenResponse.getBody();
-        if (StringUtils.isNotEmpty(customHeader) && response != null) {
-            var request = exchange.getRequest().mutate().headers(headers -> headers.add(customHeader, response.getToken())).build();
-            exchange = exchange.mutate().request(request).build();
-        }
-
-        return super.processResponse(exchange, chain, tokenResponse);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

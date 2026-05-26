@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters.proxyheaders;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ import org.springframework.http.server.reactive.SslInfo;
 import org.springframework.web.server.ServerWebExchange;
 import org.zowe.apiml.security.HttpsConfig;
 import org.zowe.apiml.security.SecurityUtils;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.KeyStoreException;
@@ -52,7 +50,6 @@ import java.util.regex.Pattern;
  * -------------------------+-------------------------------+---------------------------
  * trusted signature        |        forward headers        |      forward headers
  */
-
 @Slf4j
 public class X509AndGwAwareXForwardedHeadersFilter extends XForwardedHeadersFilter {
 
@@ -60,8 +57,11 @@ public class X509AndGwAwareXForwardedHeadersFilter extends XForwardedHeadersFilt
     public static final String FORWARDED_HEADER = "Forwarded";
 
     final Set<String> certificateChainBase64;
+
     final Predicate<String> isProxyTrusted;
+
     final String trustedProxiesRegex;
+
     final AtomicReference<Set<String>> trustedAdditionalGateways;
 
     /*
@@ -71,18 +71,13 @@ public class X509AndGwAwareXForwardedHeadersFilter extends XForwardedHeadersFilt
      * @param additionalRegistrationGatewayRegistry cache of apiml gateway ip addresses from additional registrations
      *
      */
-    public X509AndGwAwareXForwardedHeadersFilter(
-        HttpsConfig httpsConfig,
-        String trustedProxiesPattern,
-        AdditionalRegistrationGatewayRegistry additionalRegistrationGatewayRegistry)
-        throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    public X509AndGwAwareXForwardedHeadersFilter(HttpsConfig httpsConfig, String trustedProxiesPattern, AdditionalRegistrationGatewayRegistry additionalRegistrationGatewayRegistry) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         // Trustworthiness of a proxy is evaluated by this class,
         // hence the spring filter must trust everything and not interfere
         super(".*");
         certificateChainBase64 = SecurityUtils.loadCertificateChainBase64(httpsConfig);
         trustedProxiesRegex = trustedProxiesPattern;
         trustedAdditionalGateways = additionalRegistrationGatewayRegistry.getAdditionalGatewayIpAddressesReference();
-
         Predicate<String> isTrusted = host -> trustedAdditionalGateways.get().contains(host);
         if (StringUtils.isEmpty(trustedProxiesRegex)) {
             isTrusted = isTrusted.or(host -> false);
@@ -95,44 +90,7 @@ public class X509AndGwAwareXForwardedHeadersFilter extends XForwardedHeadersFilt
 
     @Override
     public HttpHeaders filter(HttpHeaders input, ServerWebExchange exchange) {
-        if (!hasXForwardedHeader(input)) return super.filter(input, exchange);
-
-        boolean trustedSourceByX509 = Optional.ofNullable(exchange.getRequest().getSslInfo())
-            .map(SslInfo::getPeerCertificates)
-            .filter(certs -> certs.length > 0)
-            .map(certs -> Arrays.stream(certs)
-                .map(cert -> {
-                    String base64 = SecurityUtils.base64EncodePublicKey(cert);
-                    log.debug("Certificate base64: {}", base64);
-                    return base64;
-                })
-                .allMatch(certificateChainBase64::contains)
-            )
-            .orElse(false);
-
-        if (!trustedSourceByX509) {
-            ServerHttpRequest request = exchange.getRequest();
-            InetSocketAddress remoteAddress = request.getRemoteAddress();
-            if (remoteAddress == null) {
-                log.debug("Remote address is null and cannot be evaluated for trusted proxy.");
-                return super.filter(removeXForwardHttpHeaders(input), exchange);
-            }
-            if (!isProxyTrusted.test(remoteAddress.getHostString())) {
-                //Mask the address if it is not trusted so it cannot be used to build the forward headers
-                ServerWebExchange sanitizedExchange = exchange.mutate().request(
-                    new ServerHttpRequestDecorator(request) {
-                        @Override
-                        public InetSocketAddress getRemoteAddress() {
-                            return null;
-                        }
-                    }
-                ).build();
-                certificateChainBase64.forEach(s -> log.debug("Certificate chain base64: {}", s));
-                log.debug("Remote address not trusted. Trusted proxies pattern: {}, remote address: {}", trustedProxiesRegex, remoteAddress);
-                return super.filter(removeXForwardHttpHeaders(input), sanitizedExchange);
-            }
-        }
-        return super.filter(input, exchange);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private HttpHeaders removeXForwardHttpHeaders(HttpHeaders input) {
@@ -146,16 +104,10 @@ public class X509AndGwAwareXForwardedHeadersFilter extends XForwardedHeadersFilt
     }
 
     private boolean isXForwardedHeader(String header) {
-        return header.equalsIgnoreCase(X_FORWARDED_FOR_HEADER) ||
-            header.equalsIgnoreCase(X_FORWARDED_HOST_HEADER) ||
-            header.equalsIgnoreCase(X_FORWARDED_PORT_HEADER) ||
-            header.equalsIgnoreCase(X_FORWARDED_PROTO_HEADER) ||
-            header.equalsIgnoreCase(X_FORWARDED_PREFIX_HEADER) ||
-            header.equalsIgnoreCase(FORWARDED_HEADER);
+        return header.equalsIgnoreCase(X_FORWARDED_FOR_HEADER) || header.equalsIgnoreCase(X_FORWARDED_HOST_HEADER) || header.equalsIgnoreCase(X_FORWARDED_PORT_HEADER) || header.equalsIgnoreCase(X_FORWARDED_PROTO_HEADER) || header.equalsIgnoreCase(X_FORWARDED_PREFIX_HEADER) || header.equalsIgnoreCase(FORWARDED_HEADER);
     }
 
     private boolean hasXForwardedHeader(HttpHeaders headers) {
-        return headers.keySet().stream()
-            .anyMatch(this::isXForwardedHeader);
+        return headers.keySet().stream().anyMatch(this::isXForwardedHeader);
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.instance.lookup;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -18,7 +17,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EurekaServiceInstance;
 import org.zowe.apiml.constants.EurekaMetadataDefinition;
 import org.zowe.apiml.product.instance.InstanceNotFoundException;
-
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -33,19 +31,11 @@ public class InstanceLookupExecutor {
 
     private InstanceInfo findEurekaInstance(String serviceId) {
         var services = discoveryClient.getServices();
-
         if (StringUtils.isEmpty(serviceId) || services.stream().noneMatch(serviceId::equalsIgnoreCase)) {
             throw new InstanceNotFoundException("Service '" + serviceId + "' is not registered to Discovery Service");
         }
-
         var instances = discoveryClient.getInstances(serviceId);
-        return instances.stream()
-            .filter(EurekaServiceInstance.class::isInstance)
-            .map(EurekaServiceInstance.class::cast)
-            .map(EurekaServiceInstance::getInstanceInfo)
-            .filter(instanceInfo -> EurekaMetadataDefinition.RegistrationType.of(instanceInfo.getMetadata()).isPrimary())
-            .findFirst()
-            .orElseThrow(() -> new InstanceNotFoundException("'" + serviceId + "' has no running instances registered to Discovery Service"));
+        return instances.stream().filter(EurekaServiceInstance.class::isInstance).map(EurekaServiceInstance.class::cast).map(EurekaServiceInstance::getInstanceInfo).filter(instanceInfo -> EurekaMetadataDefinition.RegistrationType.of(instanceInfo.getMetadata()).isPrimary()).findFirst().orElseThrow(() -> new InstanceNotFoundException("'" + serviceId + "' has no running instances registered to Discovery Service"));
     }
 
     /**
@@ -55,24 +45,7 @@ public class InstanceLookupExecutor {
      * @param action                Consumer interface lambda to process and accept the retrieved InstanceInfo
      * @param handleFailureConsumer BiConsumer interface lambda to provide exception handling logic
      */
-    public void run(String serviceId,
-                    Consumer<InstanceInfo> action,
-                    BiConsumer<Exception, Boolean> handleFailureConsumer) {
-        log.debug("Started instance finder");
-
-        try {
-            InstanceInfo instanceInfo = findEurekaInstance(serviceId);
-            log.debug("App found {}", instanceInfo.getAppName());
-
-            action.accept(instanceInfo);
-        } catch (InstanceNotFoundException | RetryException e) {
-            log.debug(e.getMessage());
-            handleFailureConsumer.accept(e, false);
-        } catch (Exception e) {
-            handleFailureConsumer.accept(e, true);
-            log.debug("Unexpected exception while retrieving '{}' service from Eureka", serviceId, e);
-        }
-
+    public void run(String serviceId, Consumer<InstanceInfo> action, BiConsumer<Exception, Boolean> handleFailureConsumer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

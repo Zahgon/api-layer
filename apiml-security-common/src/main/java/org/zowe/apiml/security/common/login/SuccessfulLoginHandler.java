@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.login;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,11 +38,7 @@ public class SuccessfulLoginHandler implements AuthenticationSuccessHandler {
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        TokenAuthentication tokenAuthentication = (TokenAuthentication) authentication;
-        String token = tokenAuthentication.getCredentials();
-
-        setCookie(token, response);
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -55,16 +50,8 @@ public class SuccessfulLoginHandler implements AuthenticationSuccessHandler {
     private void setCookie(String token, HttpServletResponse response) {
         // SameSite attribute is not supported in Cookie used in HttpServletResponse.addCookie,
         // so specify Set-Cookie header directly
-
         AuthConfigurationProperties.CookieProperties cp = authConfigurationProperties.getCookieProperties();
-        String cookieHeader = new CookieUtil.CookieHeaderBuilder(cp.getCookieName(), token)
-            .path(cp.getCookiePath())
-            .sameSite(cp.getCookieSameSite().getValue())
-            .maxAge(cp.getCookieMaxAge())
-            .httpOnly(true)
-            .secure(cp.isCookieSecure())
-            .build();
-
+        String cookieHeader = new CookieUtil.CookieHeaderBuilder(cp.getCookieName(), token).path(cp.getCookiePath()).sameSite(cp.getCookieSameSite().getValue()).maxAge(cp.getCookieMaxAge()).httpOnly(true).secure(cp.isCookieSecure()).build();
         response.addHeader("Set-Cookie", cookieHeader);
     }
 }

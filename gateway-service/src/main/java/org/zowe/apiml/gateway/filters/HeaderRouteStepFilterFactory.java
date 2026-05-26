@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import lombok.Data;
@@ -26,7 +25,7 @@ import org.springframework.stereotype.Service;
  *      "node"              > null (removed)
  */
 @Service
-public class HeaderRouteStepFilterFactory extends AbstractGatewayFilterFactory<HeaderRouteStepFilterFactory.Config>  {
+public class HeaderRouteStepFilterFactory extends AbstractGatewayFilterFactory<HeaderRouteStepFilterFactory.Config> {
 
     public HeaderRouteStepFilterFactory() {
         super(Config.class);
@@ -34,29 +33,12 @@ public class HeaderRouteStepFilterFactory extends AbstractGatewayFilterFactory<H
 
     @Override
     public GatewayFilter apply(Config config) {
-        String header = config.getHeader();
-        return (exchange, chain) -> {
-            if (exchange.getRequest().getHeaders().containsKey(header)) {
-                exchange = exchange.mutate().request(request -> request.headers(headers -> {
-                    String headerValue = headers.getFirst(header);
-                    int index = headerValue.indexOf("/");
-                    if ((index >= 0) && (index + 1 < headerValue.length())) {
-                        headers.set(header, headerValue.substring(index + 1));
-                    } else {
-                        headers.remove(header);
-                    }
-                })).build();
-            }
-
-            return chain.filter(exchange);
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
     public static class Config {
 
         private String header;
-
     }
-
 }

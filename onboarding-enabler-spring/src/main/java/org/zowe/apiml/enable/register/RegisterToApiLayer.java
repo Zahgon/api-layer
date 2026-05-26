@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.enable.register;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.message.yaml.YamlMessageService;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -39,12 +37,14 @@ public class RegisterToApiLayer {
     private final ApiMediationClient apiMediationClient;
 
     private final ApiMediationServiceConfig newConfig;
+
     private ApiMediationServiceConfig config;
 
     @Value("${apiml.enabled:true}")
     private boolean apimlEnabled;
 
     private static final MessageService messages = new YamlMessageService();
+
     private static final ApimlLogger logger;
 
     static {
@@ -54,31 +54,12 @@ public class RegisterToApiLayer {
 
     @EventListener(ContextRefreshedEvent.class)
     public void onContextRefreshedEventEvent() {
-        if (apimlEnabled) {
-            if (apiMediationClient.getEurekaClient() != null) {
-                if (config != null) {
-                    logger.log("org.zowe.apiml.enabler.registration.renew"
-                        , config.getBaseUrl(), config.getServiceIpAddress(), config.getDiscoveryServiceUrls()
-                        , newConfig.getBaseUrl(), newConfig.getServiceIpAddress(), newConfig.getDiscoveryServiceUrls()
-                    );
-                }
-
-                unregister();
-            } else {
-                logger.log("org.zowe.apiml.enabler.registration.initial"
-                    , newConfig.getBaseUrl(), newConfig.getServiceIpAddress(), newConfig.getDiscoveryServiceUrls()
-                );
-            }
-
-            register(newConfig);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @EventListener(ContextClosedEvent.class)
     public void onContextClosedEvent() {
-        if (apiMediationClient.getEurekaClient() != null) {
-            unregister();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void unregister() {
@@ -86,18 +67,13 @@ public class RegisterToApiLayer {
     }
 
     private void register(ApiMediationServiceConfig newConfig) {
-
         this.config = newConfig;
-
         try {
             apiMediationClient.register(config);
-
-            logger.log("org.zowe.apiml.enabler.registration.successful",
-                config.getBaseUrl(), config.getServiceIpAddress(), config.getDiscoveryServiceUrls());
+            logger.log("org.zowe.apiml.enabler.registration.successful", config.getBaseUrl(), config.getServiceIpAddress(), config.getDiscoveryServiceUrls());
             log.debug("Registering to API Mediation Layer with settings: {}", config.toString());
         } catch (ServiceDefinitionException e) {
-            logger.log("org.zowe.apiml.enabler.registration.fail"
-                , config.getBaseUrl(), config.getServiceIpAddress(), config.getDiscoveryServiceUrls(), e.toString());
+            logger.log("org.zowe.apiml.enabler.registration.fail", config.getBaseUrl(), config.getServiceIpAddress(), config.getDiscoveryServiceUrls(), e.toString());
             log.debug(String.format("Service %s registration to API ML failed: ", config.getBaseUrl()), e);
         }
     }

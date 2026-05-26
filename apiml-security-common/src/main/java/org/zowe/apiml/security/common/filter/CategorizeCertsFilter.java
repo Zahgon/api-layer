@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.filter;
 
 import jakarta.servlet.FilterChain;
@@ -27,7 +26,6 @@ import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.util.CertificateLoggingUtils;
 import org.zowe.apiml.security.common.verify.CertificateValidator;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.cert.Certificate;
@@ -35,7 +33,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.function.Predicate;
-
 import static org.zowe.apiml.util.ServletRequestUtils.isClientCertificateIgnored;
 
 /**
@@ -46,8 +43,11 @@ import static org.zowe.apiml.util.ServletRequestUtils.isClientCertificateIgnored
 public class CategorizeCertsFilter extends OncePerRequestFilter {
 
     public static final String ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE = "client.auth.X509Certificate";
+
     public static final String ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE = "jakarta.servlet.request.X509Certificate";
+
     public static final String LOG_FORMAT_FILTERING_CERTIFICATES = "Filtering certificates: {} -> {}";
+
     public static final String CLIENT_CERT_HEADER = "Client-Cert";
 
     @InjectApimlLogger
@@ -66,12 +66,7 @@ public class CategorizeCertsFilter extends OncePerRequestFilter {
      * @param filteredCerts The array of certificates after filtering for authentication
      */
     private void logIgnoredCertificates(X509Certificate[] originalCerts, X509Certificate[] filteredCerts) {
-        CertificateLoggingUtils.logIgnoredCertificates(
-            originalCerts,
-            filteredCerts,
-            publicKeyCertificatesBase64,
-            log
-        );
+        CertificateLoggingUtils.logIgnoredCertificates(originalCerts, filteredCerts, publicKeyCertificatesBase64, log);
     }
 
     /**
@@ -95,11 +90,9 @@ public class CategorizeCertsFilter extends OncePerRequestFilter {
                     // add the client certificate to the certs array
                     String subjectDN = ((X509Certificate) clientCert.get()).getSubjectX500Principal().getName();
                     log.debug("Found client certificate in header, adding it to the request. Subject DN: {}", subjectDN);
-
-                    X509Certificate[] headerCerts = new X509Certificate[]{(X509Certificate) clientCert.get()};
+                    X509Certificate[] headerCerts = new X509Certificate[] { (X509Certificate) clientCert.get() };
                     X509Certificate[] clientAuthCerts = selectCerts(headerCerts, certificateForClientAuth);
                     logIgnoredCertificates(headerCerts, clientAuthCerts);
-
                     httpServletRequest.setAttribute(ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE, clientAuthCerts);
                     return;
                 } else if (isClientCertificateIgnored(httpServletRequest)) {
@@ -109,25 +102,19 @@ public class CategorizeCertsFilter extends OncePerRequestFilter {
                     return;
                 }
             }
-
             X509Certificate[] clientAuthCerts = selectCerts(certs, certificateForClientAuth);
             logIgnoredCertificates(certs, clientAuthCerts);
-
             httpServletRequest.setAttribute(ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE, clientAuthCerts);
             httpServletRequest.setAttribute(ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE, selectCerts(certs, apimlCertificate));
-
             log.debug(LOG_FORMAT_FILTERING_CERTIFICATES, ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE, httpServletRequest.getAttribute(ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE));
         }
     }
 
     private Optional<Certificate> getClientCertFromHeader(HttpServletRequest request) {
         String certFromHeader = request.getHeader(CLIENT_CERT_HEADER);
-
         if (StringUtils.isNotEmpty(certFromHeader)) {
             try {
-                Certificate certificate = CertificateFactory
-                    .getInstance("X.509")
-                    .generateCertificate(new ByteArrayInputStream(Base64.getDecoder().decode(certFromHeader)));
+                Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(Base64.getDecoder().decode(certFromHeader)));
                 return Optional.of(certificate);
             } catch (Exception e) {
                 apimlLog.log("org.zowe.apiml.security.common.filter.errorParsingCertificate", request.getRemoteHost(), e.getMessage(), certFromHeader);
@@ -148,18 +135,12 @@ public class CategorizeCertsFilter extends OncePerRequestFilter {
 
             @Override
             public String getHeader(String name) {
-                if (CLIENT_CERT_HEADER.equalsIgnoreCase(name)) {
-                    return null;
-                }
-                return super.getHeader(name);
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             @Override
             public Enumeration<String> getHeaders(String name) {
-                if (CLIENT_CERT_HEADER.equalsIgnoreCase(name)) {
-                    return Collections.enumeration(new LinkedList<>());
-                }
-                return super.getHeaders(name);
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
         };
     }
@@ -171,11 +152,10 @@ public class CategorizeCertsFilter extends OncePerRequestFilter {
      * @param request     request to process
      * @param response    response of call
      * @param filterChain chain of filters to evaluate
-     **/
+     */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        categorizeCerts(request);
-        filterChain.doFilter(mutate(request), response);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -190,17 +170,12 @@ public class CategorizeCertsFilter extends OncePerRequestFilter {
      * @return A new array containing only the certificates that match the predicate.
      */
     public static X509Certificate[] selectCerts(X509Certificate[] certs, Predicate<X509Certificate> test) {
-        return Optional.ofNullable(certs)
-            .stream()
-            .flatMap(Arrays::stream)
-            .filter(Objects::nonNull)
-            .filter(test)
-            .toArray(X509Certificate[]::new);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Setter
     Predicate<X509Certificate> certificateForClientAuth = crt -> !getPublicKeyCertificatesBase64().contains(CertificateLoggingUtils.base64EncodePublicKey(crt));
+
     @Setter
     Predicate<X509Certificate> apimlCertificate = crt -> getPublicKeyCertificatesBase64().contains(CertificateLoggingUtils.base64EncodePublicKey(crt));
-
 }

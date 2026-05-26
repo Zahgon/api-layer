@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import java.io.Serializable;
@@ -24,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class X509AuthSource implements AuthSource {
+
     public static final AuthSourceType type = AuthSourceType.CLIENT_CERT;
+
     /**
      * X509 client certificate
      */
@@ -33,35 +34,44 @@ public class X509AuthSource implements AuthSource {
 
     @Override
     public X509Certificate getRawSource() {
-        return source;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public AuthSourceType getType() {
-        return AuthSourceType.CLIENT_CERT;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @RequiredArgsConstructor
     @Getter
     @EqualsAndHashCode
     public static class Parsed implements AuthSource.Parsed, X509Parsed, Serializable {
+
         private static final long serialVersionUID = 8152448925361577715L;
 
         private final String userId;
+
         private final Date creation;
+
         private final Date expiration;
+
         private final Origin origin;
+
         private final String publicKey;
+
         private final String distinguishedName;
 
         public String getCommonName() {
-            return userId;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 
     public interface X509Parsed {
+
         String getCommonName();
+
         String getPublicKey();
+
         String getDistinguishedName();
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import java.util.Collection;
@@ -20,14 +19,13 @@ public class RobinRoundIterator<T> {
     private final AtomicInteger lastIndex = new AtomicInteger(-1);
 
     public Iterator<T> getIterator(Collection<T> input) {
-        int offset = lastIndex.updateAndGet(prev -> input.isEmpty() ? 0 : (prev + 1) % input.size());
-
-        return new RoundIterator(input, offset);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private class RoundIterator implements Iterator<T> {
 
         private final Collection<T> collection;
+
         private int remaining;
 
         private Iterator<T> iteratorOriginal;
@@ -43,20 +41,12 @@ public class RobinRoundIterator<T> {
 
         @Override
         public boolean hasNext() {
-            return remaining > 0;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public T next() {
-            if (remaining <= 0) throw new NoSuchElementException();
-
-            remaining--;
-            if (!iteratorOriginal.hasNext()) {
-                iteratorOriginal = collection.iterator();
-            }
-
-            return iteratorOriginal.next();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
-
 }

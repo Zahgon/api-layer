@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.gateway;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -23,7 +22,6 @@ import org.zowe.apiml.product.instance.InstanceInitializationException;
 import org.zowe.apiml.product.instance.ServiceAddress;
 import org.zowe.apiml.product.instance.lookup.InstanceLookupExecutor;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
-
 import java.net.URI;
 
 /**
@@ -31,11 +29,14 @@ import java.net.URI;
  * Its meant to be created as a bean, as it is for example by SecurityServiceConfiguration in security-service-client-spring
  */
 @Slf4j
-@RequiredArgsConstructor // TODO remove this once modulith is complete and fix for microservice setup
+// TODO remove this once modulith is complete and fix for microservice setup
+@RequiredArgsConstructor
 public class GatewayInstanceInitializer {
 
     private final InstanceLookupExecutor instanceLookupExecutor;
+
     private final ApplicationEventPublisher applicationEventPublisher;
+
     private final GatewayClient gatewayClient;
 
     @InjectApimlLogger
@@ -46,40 +47,14 @@ public class GatewayInstanceInitializer {
             String gatewayHomePage = instanceInfo.getHomePageUrl();
             URI uri = new URI(gatewayHomePage);
             log.debug("Gateway homePageUrl: " + gatewayHomePage);
-            return ServiceAddress.builder()
-                .scheme(uri.getScheme())
-                .hostname(uri.getHost() + ":" + uri.getPort())
-                .build();
+            return ServiceAddress.builder().scheme(uri.getScheme()).hostname(uri.getHost() + ":" + uri.getPort()).build();
         } catch (Exception e) {
             throw new InstanceInitializationException(e.getMessage());
         }
-
     }
 
-    @EventListener({HeartbeatEvent.class, ApplicationReadyEvent.class})
+    @EventListener({ HeartbeatEvent.class, ApplicationReadyEvent.class })
     public void init() {
-
-        log.debug("GatewayInstanceInitializer starting asynchronous initialization of Gateway configuration");
-
-        instanceLookupExecutor.run(
-            CoreService.GATEWAY.getServiceId(),
-            instance -> {
-                ServiceAddress foundGatewayConfigProperties = process(instance);
-
-                log.debug(
-                    "GatewayInstanceInitializer has been initialized with Gateway instance on url: {}://{}",
-                    foundGatewayConfigProperties.getScheme(),
-                    foundGatewayConfigProperties.getHostname()
-                );
-
-                gatewayClient.setGatewayConfigProperties(foundGatewayConfigProperties);
-                applicationEventPublisher.publishEvent(new GatewayLookupCompleteEvent(this));
-            },
-            (exception, isStopped) -> {
-                if (Boolean.TRUE.equals(isStopped)) {
-                    apimlLog.log("org.zowe.apiml.common.gatewayInstanceInitializerStopped", exception.getMessage());
-                }
-            }
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

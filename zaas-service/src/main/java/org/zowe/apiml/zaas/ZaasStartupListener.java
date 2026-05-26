@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.product.service.ServiceStartupEventHandler;
 import org.zowe.apiml.zaas.security.login.Providers;
-
 import java.time.Duration;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,46 +30,22 @@ public class ZaasStartupListener implements ApplicationListener<ApplicationReady
     private int interval;
 
     private final Providers providers;
+
     private final ApplicationEventPublisher publisher;
+
     private final ServiceStartupEventHandler handler;
 
     private AtomicReference<Timer> timer = new AtomicReference<>();
 
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        if (providers.isZosfmUsed()) {
-            timer.set(new Timer());
-            timer.get().scheduleAtFixedRate(new TimerTask() {
-
-                @Override
-                public void run() {
-                    if (event.getApplicationContext() != null && !event.getApplicationContext().isActive()) {
-                        cancel();
-                        return;
-                    }
-
-                    if (providers.isZosmfAvailableAndOnline()) {
-                        cancel();
-                        notifyStartup();
-                    }
-                }
-
-            }, 0, Duration.ofSeconds(interval).toMillis());
-        } else {
-            notifyStartup();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void onContextClosed() {
-        if (timer.get() != null) {
-            timer.get().cancel();
-            timer.set(null);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void notifyStartup() {
-        handler.onServiceStartup("ZAAS",
-            ServiceStartupEventHandler.DEFAULT_DELAY_FACTOR);
-        publisher.publishEvent(new ZaasServiceAvailableEvent(providers.isZosfmUsed() ? "zosmf" : "saf"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

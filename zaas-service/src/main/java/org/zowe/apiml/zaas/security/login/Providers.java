@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.login;
 
 import lombok.RequiredArgsConstructor;
@@ -21,17 +20,19 @@ import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.config.AuthConfigurationProperties;
 import org.zowe.apiml.security.common.error.ServiceNotAccessibleException;
-
 import java.util.List;
-
 import static org.zowe.apiml.security.common.config.AuthConfigurationProperties.JWT_AUTOCONFIGURATION_MODE.*;
 
 @Slf4j
 @RequiredArgsConstructor
 public class Providers {
+
     private final DiscoveryClient discoveryClient;
+
     private final AuthConfigurationProperties authConfigurationProperties;
+
     private final CompoundAuthProvider compoundAuthProvider;
+
     private final ZosmfService zosmfService;
 
     @InjectApimlLogger
@@ -44,25 +45,7 @@ public class Providers {
      * @throws AuthenticationServiceException if the z/OSMF service id is not configured
      */
     public boolean isZosmfAvailable() {
-        String zosmfServiceId = authConfigurationProperties.validatedZosmfServiceId();
-
-        try {
-            this.discoveryClient.probe();
-            List<String> ids = this.discoveryClient.getServices();
-            if (!ids.isEmpty()) {
-                boolean isZosmfRegisteredAndPropagated = !this.discoveryClient.getInstances(zosmfServiceId).isEmpty();
-                if (!isZosmfRegisteredAndPropagated) {
-                    apimlLog.log("org.zowe.apiml.security.auth.zosmf.serviceId", zosmfServiceId);
-                }
-                log.debug("z/OSMF registered with the Discovery Service and propagated to ZAAS: {}", isZosmfRegisteredAndPropagated);
-                return isZosmfRegisteredAndPropagated;
-            } else {
-                throw new ServiceNotAccessibleException("No registered services");
-            }
-        } catch (RuntimeException e) {
-            log.debug("Discovery Service is not available yet: {}", e.getMessage());
-            return false;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -71,7 +54,7 @@ public class Providers {
      * @return service ID of z/OSMF instance
      */
     public String getZosmfServiceId() {
-        return authConfigurationProperties.validatedZosmfServiceId();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -80,18 +63,7 @@ public class Providers {
      * @return true if the service is registered and properly responds.
      */
     public boolean isZosmfAvailableAndOnline() {
-        try {
-            boolean isAvailable = isZosmfAvailable();
-            boolean isAccessible = zosmfService.isAccessible();
-
-            log.debug("z/OSMF is registered and propagated to the DS: {} and is accessible based on the information: {}", isAvailable, isAccessible);
-
-            return isAvailable && isAccessible;
-        } catch (ServiceNotAccessibleException e) {
-            log.debug("z/OSMF is not registered to the ZAAS yet: {}", e.getMessage());
-
-            return false;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -100,7 +72,7 @@ public class Providers {
      * @return Usage of the ZOSMF service in the system.
      */
     public boolean isZosfmUsed() {
-        return compoundAuthProvider.getLoginAuthProviderName().equalsIgnoreCase(LoginProvider.ZOSMF.toString());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -109,7 +81,7 @@ public class Providers {
      * @return True is the instance support JWT ; false if its LTPA
      */
     public boolean zosmfSupportsJwt() {
-      return authConfigurationProperties.getZosmf().getJwtAutoconfiguration() != LTPA;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -119,6 +91,6 @@ public class Providers {
      * @return true if configuration was set to indicate zOSMF supports LTPA.
      */
     public boolean isZosmfConfigurationSetToLtpa() {
-        return authConfigurationProperties.getZosmf().getJwtAutoconfiguration() == AuthConfigurationProperties.JWT_AUTOCONFIGURATION_MODE.LTPA;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

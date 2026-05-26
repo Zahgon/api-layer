@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import io.micronaut.runtime.Micronaut;
@@ -15,6 +14,6 @@ import io.micronaut.runtime.Micronaut;
 public class Application {
 
     public static void main(String[] args) {
-        Micronaut.run(Application.class, args);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

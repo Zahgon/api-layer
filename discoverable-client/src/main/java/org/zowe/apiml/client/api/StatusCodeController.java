@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,20 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class StatusCodeController {
 
-
     @GetMapping(value = "/api/v1/status-code")
-    @Operation(summary = "Parametrized status code",
-        tags = {"Other Operations"})
+    @Operation(summary = "Parametrized status code", tags = { "Other Operations" })
     public ResponseEntity<String> returnStatusCodeForGET(@RequestParam(value = "code", defaultValue = "200") int statusCode) {
-        log.info("Calling GET from gateway, status code: {}", statusCode);
-        return ResponseEntity.status(statusCode).body("status code: " + statusCode);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(value = "/api/v1/status-code")
-    @Operation(summary = "Parametrized status code",
-        tags = {"Other Operations"})
+    @Operation(summary = "Parametrized status code", tags = { "Other Operations" })
     public ResponseEntity<String> returnStatusCodeForPOST(@RequestParam(value = "code", defaultValue = "200") int statusCode) {
-        log.info("Calling POST from gateway, status code: {}", statusCode);
-        return ResponseEntity.status(statusCode).body("status code: " + statusCode);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

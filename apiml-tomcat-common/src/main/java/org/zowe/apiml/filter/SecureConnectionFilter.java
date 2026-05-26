@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import jakarta.servlet.FilterChain;
@@ -17,22 +16,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.zowe.commons.attls.*;
-
 import java.io.IOException;
 
 public class SecureConnectionFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        try {
-            if (InboundAttls.get().getStatConn() == StatConn.SECURE) {
-                filterChain.doFilter(request, response);
-            } else {
-                AttlsErrorHandler.handleError(response, "Inbound AT-TLS context is not initialized or connection is not secure." );
-            }
-        } catch (ContextIsNotInitializedException | UnknownEnumValueException | IoctlCallException | UnsatisfiedLinkError e) {
-            logger.error("Can't read from AT-TLS context", e);
-            AttlsErrorHandler.handleError(response, "Connection is not secure. " + e.getMessage());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

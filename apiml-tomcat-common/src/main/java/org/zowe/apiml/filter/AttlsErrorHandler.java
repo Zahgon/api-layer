@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -22,8 +20,6 @@ public class AttlsErrorHandler {
     }
 
     public static void handleError(HttpServletResponse response, String errorMessage) throws IOException {
-        response.setStatus(500);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getWriter(), errorMessage);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.redis.config;
 
 import io.lettuce.core.ClientOptions;
@@ -24,7 +23,6 @@ import org.zowe.apiml.caching.service.redis.RedisOperator;
 import org.zowe.apiml.caching.service.redis.RedisStorage;
 import org.zowe.apiml.message.core.MessageService;
 import org.zowe.apiml.message.log.ApimlLogger;
-
 import java.io.File;
 import java.time.Duration;
 
@@ -33,63 +31,25 @@ import java.time.Duration;
 @Slf4j
 @ConditionalOnProperty(name = "caching.storage.mode", havingValue = "redis")
 public class RedisConfiguration {
-    private final RedisConfig redisConfig;
 
+    private final RedisConfig redisConfig;
 
     @Bean
     public Storage redis(MessageService messageService) {
-        log.info("Using redis configuration {}", redisConfig);
-
-        RedisURI redisUri = createRedisUri();
-        RedisClient redisClient = createRedisClient();
-
-        return new RedisStorage(new RedisOperator(redisClient, redisUri, ApimlLogger.of(RedisOperator.class, messageService)));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Package protected for unit testing.
      */
     RedisURI createRedisUri() {
-        RedisURI.Builder uriBuilder = RedisURI.builder()
-            .withSsl(redisConfig.usesSsl())
-            .withAuthentication(redisConfig.getUsername(), redisConfig.getPassword())
-            .withTimeout(Duration.ofSeconds(redisConfig.getTimeout()));
-
-        if (redisConfig.usesSentinel()) {
-            RedisConfig.Sentinel sentinelConfig = redisConfig.getSentinel();
-            uriBuilder.withSentinelMasterId(sentinelConfig.getMasterInstance());
-
-            for (RedisConfig.Sentinel.SentinelNode sentinelNode : sentinelConfig.getNodes()) {
-                uriBuilder.withSentinel(sentinelNode.getHost(), sentinelNode.getPort(), new String(sentinelNode.getPassword())); // NOSONAR
-            }
-
-        } else {
-            uriBuilder
-                .withHost(redisConfig.getHost())
-                .withPort(redisConfig.getPort());
-        }
-
-        return uriBuilder.build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Package protected for unit testing.
      */
     RedisClient createRedisClient() {
-        RedisClient redisClient = RedisClient.create();
-
-        if (redisConfig.usesSsl()) {
-            RedisConfig.SslConfig sslConfig = redisConfig.getSsl();
-
-            SslOptions sslOptions = SslOptions.builder()
-                .jdkSslProvider()
-                .keystore(new File(sslConfig.getKeyStore()), sslConfig.getKeyStorePassword().toCharArray())
-                .truststore(new File(sslConfig.getTrustStore()), sslConfig.getTrustStorePassword())
-                .build();
-
-            redisClient.setOptions(ClientOptions.builder().sslOptions(sslOptions).build());
-        }
-
-        return redisClient;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

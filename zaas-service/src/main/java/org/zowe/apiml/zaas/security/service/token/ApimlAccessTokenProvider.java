@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.token;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,7 +23,6 @@ import org.zowe.apiml.zaas.cache.CachingClient;
 import org.zowe.apiml.zaas.cache.CachingServiceClient;
 import org.zowe.apiml.zaas.cache.CachingServiceClientException;
 import org.zowe.apiml.zaas.security.service.AuthenticationService;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -42,72 +40,32 @@ import java.util.Set;
 public class ApimlAccessTokenProvider implements AccessTokenProvider {
 
     static final String INVALID_TOKENS_KEY = "invalidTokens";
+
     static final String INVALID_USERS_KEY = "invalidUsers";
+
     static final String INVALID_SCOPES_KEY = "invalidScopes";
 
     private final CachingClient cachingServiceClient;
+
     private final AuthenticationService authenticationService;
+
     @Qualifier("oidcJwkMapper")
     private final ObjectMapper objectMapper;
 
     public void invalidateToken(String token) throws CachingServiceClientException, JsonProcessingException {
-        String hashedValue = getHash(token);
-        QueryResponse queryResponse = authenticationService.parseJwtWithSignature(token);
-        AccessTokenContainer container = new AccessTokenContainer();
-        container.setTokenValue(hashedValue);
-        container.setIssuedAt(LocalDateTime.ofInstant(queryResponse.getCreation().toInstant(), ZoneId.systemDefault()));
-        container.setExpiresAt(LocalDateTime.ofInstant(queryResponse.getExpiration().toInstant(), ZoneId.systemDefault()));
-
-        String json = objectMapper.writeValueAsString(container);
-        cachingServiceClient.appendList(INVALID_TOKENS_KEY, new CachingServiceClient.KeyValue(hashedValue, json));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void invalidateAllTokensForUser(String userId, long timestamp) throws CachingServiceClientException {
-        String hashedUserId = getHash(userId.trim().toUpperCase());
-        if (timestamp == 0) {
-            timestamp = System.currentTimeMillis();
-        }
-        log.debug("hashedUserId {}, timestamp {}", hashedUserId, timestamp);
-        cachingServiceClient.appendList(INVALID_USERS_KEY, new CachingServiceClient.KeyValue(hashedUserId, Long.toString(timestamp)));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void invalidateAllTokensForService(String serviceId, long timestamp) throws CachingServiceClientException {
-        String hashedServiceId = getHash(serviceId);
-        if (timestamp == 0) {
-            timestamp = System.currentTimeMillis();
-        }
-        log.debug("serviceIdHash {}, timestamp {}", hashedServiceId, timestamp);
-        cachingServiceClient.appendList(INVALID_SCOPES_KEY, new CachingServiceClient.KeyValue(hashedServiceId, Long.toString(timestamp)));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean isInvalidated(String token) throws CachingServiceClientException {
-        byte[] salt = getSalt();
-        QueryResponse parsedToken = authenticationService.parseJwtWithSignature(token);
-        String hashedToken = getHash(token, salt);
-        String hashedUserId = getHash(parsedToken.getUserId().trim().toUpperCase(), salt);
-        List<String> hashedServiceIds = parsedToken.getScopes().stream().map(scope -> getHash(scope, salt)).toList();
-
-        Map<String, Map<String, String>> cacheMap = cachingServiceClient.readAllMaps();
-        if (cacheMap != null && !cacheMap.isEmpty()) {
-            Map<String, String> invalidTokens = cacheMap.get(INVALID_TOKENS_KEY);
-            Map<String, String> invalidUsers = cacheMap.get(INVALID_USERS_KEY);
-            Map<String, String> invalidScopes = cacheMap.get(INVALID_SCOPES_KEY);
-            Optional<Boolean> isInvalidated = checkInvalidToken(invalidTokens, hashedToken);
-            if (isInvalidated.isEmpty()) {
-                isInvalidated = checkRule(invalidUsers, hashedUserId, parsedToken);
-            }
-            for (String hashedServiceId : hashedServiceIds) {
-                if (isInvalidated.isEmpty()) {
-                    isInvalidated = checkRule(invalidScopes, hashedServiceId, parsedToken);
-                } else {
-                    break;
-                }
-            }
-            if (isInvalidated.isPresent()) {
-                return isInvalidated.get();
-            }
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Optional<Boolean> checkInvalidToken(Map<String, String> invalidTokens, String tokenId) {
@@ -141,9 +99,7 @@ public class ApimlAccessTokenProvider implements AccessTokenProvider {
     }
 
     public void evictNonRelevantTokensAndRules() {
-        cachingServiceClient.evictTokens(INVALID_TOKENS_KEY);
-        cachingServiceClient.evictRules(INVALID_USERS_KEY);
-        cachingServiceClient.evictRules(INVALID_SCOPES_KEY);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String getHash(String token, byte[] salt) throws CachingServiceClientException {
@@ -151,49 +107,23 @@ public class ApimlAccessTokenProvider implements AccessTokenProvider {
     }
 
     public String getHash(String token) throws CachingServiceClientException {
-        return getSecurePassword(token, getSalt());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     String initializeSalt() throws CachingServiceClientException, SecureTokenInitializationException {
-        String localSalt;
-        try {
-            CachingServiceClient.KeyValue keyValue = cachingServiceClient.read("salt");
-            localSalt = keyValue.getValue();
-        } catch (CachingServiceClientException | StorageException e) {
-            log.debug("Cannot read salt.", e);
-            if (e.getCause() != null) {
-                // it could be because of timeout for example
-                throw e;
-            }
-            // a null value was returned
-            byte[] newSalt = generateSalt();
-            storeSalt(newSalt);
-            localSalt = new String(newSalt);
-        }
-
-        return localSalt;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getToken(String username, int expirationTime, Set<String> scopes) {
-        int expiration = Math.min(expirationTime, 90);
-        if (expiration <= 0) {
-            expiration = 90;
-        }
-        return authenticationService.createLongLivedJwtToken(username, expiration, scopes);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean isValidForScopes(String jwtToken, String serviceId) {
-        if (serviceId != null) {
-            QueryResponse parsedToken = authenticationService.parseJwtWithSignature(jwtToken);
-            if (parsedToken != null && parsedToken.getScopes() != null) {
-                return parsedToken.getScopes().contains(serviceId.toLowerCase());
-            }
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public byte[] getSalt() throws CachingServiceClientException {
-        return initializeSalt().getBytes();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void storeSalt(byte[] salt) throws CachingServiceClientException {
@@ -201,30 +131,10 @@ public class ApimlAccessTokenProvider implements AccessTokenProvider {
     }
 
     public static byte[] generateSalt() {
-        byte[] salt = new byte[16];
-        try {
-            SecureRandom.getInstanceStrong().nextBytes(salt);
-            return salt;
-        } catch (NoSuchAlgorithmException e) {
-            throw new SecureTokenInitializationException(e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static String getSecurePassword(String password, byte[] salt) {
-        String generatedPassword = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(salt);
-            byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte aByte : bytes) {
-                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-            }
-            generatedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            log.error("Could not generate hash", e);
-        }
-        return generatedPassword;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }
-

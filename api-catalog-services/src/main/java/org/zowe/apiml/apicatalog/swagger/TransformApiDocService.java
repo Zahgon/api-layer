@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.swagger;
 
 import jakarta.validation.UnexpectedTypeException;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.zowe.apiml.apicatalog.exceptions.ApiDocTransformationException;
 import org.zowe.apiml.apicatalog.model.ApiDocInfo;
 import org.zowe.apiml.apicatalog.swagger.api.AbstractApiDocService;
-
 import java.util.function.Function;
 
 /**
@@ -38,13 +36,6 @@ public class TransformApiDocService {
      * @throws UnexpectedTypeException       if response is not a Swagger/OpenAPI type object
      */
     public String transformApiDoc(String serviceId, ApiDocInfo apiDocInfo) {
-        //maybe null check of apidocinfo
-        AbstractApiDocService<?, ?> abstractApiDocService = beanApiDocFactory.apply(apiDocInfo.getApiDocContent());
-        if (abstractApiDocService == null) {
-            throw new UnexpectedTypeException("Response is not a Swagger or OpenAPI type object.");
-        }
-
-        return abstractApiDocService.transformApiDoc(serviceId, apiDocInfo);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

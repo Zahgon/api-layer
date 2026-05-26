@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.security;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,20 +36,6 @@ public class ApiCatalogLogoutSuccessHandler implements ServerLogoutSuccessHandle
      */
     @Override
     public Mono<Void> onLogoutSuccess(WebFilterExchange exchange, Authentication authentication) {
-        return exchange.getExchange().getSession()
-            .flatMap(WebSession::invalidate)
-            .then(Mono.defer(() -> {
-                var response = exchange.getExchange().getResponse();
-                response.addCookie(ResponseCookie.from(authConfigurationProperties.getCookieProperties().getCookieName())
-                    .path(authConfigurationProperties.getCookieProperties().getCookiePath())
-                    .secure(true)
-                    .httpOnly(true)
-                    .maxAge(0L)
-                    .build()
-                );
-                response.setStatusCode(HttpStatusCode.valueOf(HttpServletResponse.SC_OK));
-                return Mono.empty();
-            }));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

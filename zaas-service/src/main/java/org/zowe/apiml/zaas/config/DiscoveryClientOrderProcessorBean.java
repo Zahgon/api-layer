@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.config;
 
 import com.netflix.discovery.EurekaClient;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -25,12 +23,6 @@ public class DiscoveryClientOrderProcessorBean implements BeanFactoryPostProcess
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        Stream.of(DiscoveryClient.class, EurekaClient.class)
-            .map(beanFactory::getBeanNamesForType)
-            .flatMap(Arrays::stream)
-            .distinct()
-            .map(beanFactory::getBeanDefinition)
-            .forEach(bd -> bd.setDependsOn("scopedTarget.zosmfService", "eurekaAutoServiceRegistration"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

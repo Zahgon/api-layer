@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import lombok.RequiredArgsConstructor;
@@ -31,9 +30,7 @@ import org.zowe.apiml.product.constants.CoreService;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.product.service.ServiceStartupEventHandler;
 import org.zowe.apiml.zaas.ZaasServiceAvailableEvent;
-
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import static org.springframework.boot.actuate.health.Status.DOWN;
 import static org.springframework.boot.actuate.health.Status.UP;
 
@@ -49,6 +46,7 @@ import static org.springframework.boot.actuate.health.Status.UP;
 public class GatewayHealthIndicator extends AbstractHealthIndicator {
 
     private final ApplicationContext applicationContext;
+
     private final ServiceStartupEventHandler serviceStartupEventHandler;
 
     @InjectApimlLogger
@@ -58,41 +56,16 @@ public class GatewayHealthIndicator extends AbstractHealthIndicator {
     private String apiCatalogServiceId;
 
     private AtomicBoolean discoveryAvailable = new AtomicBoolean(false);
+
     private AtomicBoolean zaasAvailable = new AtomicBoolean(false);
+
     private AtomicBoolean catalogAvailable = new AtomicBoolean(false);
 
     private AtomicBoolean startedInformationPublished = new AtomicBoolean(false);
 
     @Override
     protected void doHealthCheck(Builder builder) throws Exception {
-        var anyCatalogIsAvailable = StringUtils.isNotBlank(apiCatalogServiceId);
-        DiscoveryClient discoveryClient;
-        try {
-            discoveryClient = applicationContext.getBean(DiscoveryClient.class);
-        } catch (BeansException e) {
-            log.debug("DiscoveryClient is not available", e);
-            return;
-        }
-
-        catalogAvailable.set(anyCatalogIsAvailable && !discoveryClient.getInstances(apiCatalogServiceId).isEmpty());
-
-        // Keeping for backwards compatibility, in modulith the amount of gateways is the amount of authentication services available
-        var gatewayCount = discoveryClient.getInstances(CoreService.GATEWAY.getServiceId()).size();
-        var zaasCount = gatewayCount;
-
-        builder.status(toStatus(discoveryAvailable.get() && zaasAvailable.get()))
-            .withDetail(CoreService.DISCOVERY.getServiceId(), toStatus(discoveryAvailable.get()).getCode())
-            .withDetail(CoreService.ZAAS.getServiceId(), toStatus(zaasAvailable.get()).getCode())
-            .withDetail("gatewayCount", gatewayCount)
-            .withDetail("zaasCount", zaasCount);
-
-        if (anyCatalogIsAvailable) {
-            builder.withDetail(CoreService.API_CATALOG.getServiceId(), toStatus(catalogAvailable.get()).getCode());
-        }
-
-        if (isFullyUp()) {
-            onFullyUp();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean isFullyUp() {
@@ -107,47 +80,29 @@ public class GatewayHealthIndicator extends AbstractHealthIndicator {
 
     @EventListener
     public void onApplicationEvent(ZaasServiceAvailableEvent event) {
-        zaasAvailable.set(true);
-        if (isFullyUp()) {
-            onFullyUp();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @EventListener
     public void onApplicationEvent(EurekaRegistryAvailableEvent event) {
-        discoveryAvailable.set(true);
-        if (isFullyUp()) {
-            onFullyUp();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @EventListener
     public void onApplicationEvent(EurekaInstanceRegisteredEvent event) {
-        var instanceInfo = event.getInstanceInfo();
-        if (String.valueOf(instanceInfo.getAppName()).equalsIgnoreCase(apiCatalogServiceId) && catalogAvailable.compareAndSet(false, true)) {
-            serviceStartupEventHandler.onServiceStartup("API Catalog Service", ServiceStartupEventHandler.DEFAULT_DELAY_FACTOR);
-        }
-        if (isFullyUp()) {
-            onFullyUp();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @EventListener
     public void onApplicationEvent(ApiCatalogServiceAvailableEvent event) {
-        if (catalogAvailable.compareAndSet(false, true)) {
-            serviceStartupEventHandler.onServiceStartup("API Catalog Service", ServiceStartupEventHandler.DEFAULT_DELAY_FACTOR);
-        }
-        if (isFullyUp()) {
-            onFullyUp();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     boolean isStartedInformationPublished() {
-        return startedInformationPublished.get();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private Status toStatus(boolean up) {
         return up ? UP : DOWN;
     }
-
 }

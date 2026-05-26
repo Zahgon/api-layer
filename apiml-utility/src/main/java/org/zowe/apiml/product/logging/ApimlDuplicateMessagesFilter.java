@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.logging;
 
 import ch.qos.logback.classic.Level;
@@ -19,7 +18,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Marker;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
-
 import java.util.Objects;
 
 /**
@@ -33,12 +31,7 @@ public class ApimlDuplicateMessagesFilter extends DuplicateMessageFilter {
 
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-        if (level.isGreaterOrEqual(logger.getEffectiveLevel())) {
-            String formattedMessage = getLogMessage(format, params, t);
-            // Sent the entire formatted message to the parent to ensure exact duplicates are filtered out
-            return super.decide(marker, logger, level, getMessageHash(formattedMessage), params, t);
-        }
-        return FilterReply.DENY;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String getMessageHash(String message) {
@@ -47,18 +40,13 @@ public class ApimlDuplicateMessagesFilter extends DuplicateMessageFilter {
 
     private String getLogMessage(String format, Object[] params, Throwable t) {
         FormattingTuple formattingTuple = getFormattedMessage(format, params, t);
-        return new StringBuilder()
-                .append(formattingTuple.getMessage())
-                .append(formattingTuple.getThrowable() == null ? "" : "\n")
-                .append(String.join("\n", ExceptionUtils.getStackFrames(formattingTuple.getThrowable())))
-                .toString();
+        return new StringBuilder().append(formattingTuple.getMessage()).append(formattingTuple.getThrowable() == null ? "" : "\n").append(String.join("\n", ExceptionUtils.getStackFrames(formattingTuple.getThrowable()))).toString();
     }
 
     private FormattingTuple getFormattedMessage(String format, Object[] params, Throwable t) {
         if (params == null || params.length == 0) {
             return new FormattingTuple(format, params, t);
         }
-
         if (t == null) {
             Throwable throwable = EventArgUtil.extractThrowable(params);
             if (throwable == null) {
@@ -66,7 +54,6 @@ public class ApimlDuplicateMessagesFilter extends DuplicateMessageFilter {
             }
             return MessageFormatter.arrayFormat(format, EventArgUtil.trimmedCopy(params), throwable);
         }
-
         return MessageFormatter.arrayFormat(format, params, t);
     }
 }

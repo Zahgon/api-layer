@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.ws;
 
 import org.springframework.http.HttpHeaders;
@@ -17,15 +16,9 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 public class HeaderSocketServerHandler extends AbstractWebSocketHandler {
-    @Override
-    public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage)
-            throws Exception {
-        String incomingMessage = webSocketMessage.getPayload().toString();
-        HttpHeaders headers = webSocketSession.getHandshakeHeaders();
 
-        webSocketSession.sendMessage(new TextMessage(headers.toString()));
-        if (incomingMessage.equals("bye")) {
-            webSocketSession.close();
-        }
+    @Override
+    public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) throws Exception {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

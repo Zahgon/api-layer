@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.login.dummy;
 
 import lombok.AllArgsConstructor;
@@ -22,7 +21,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +36,8 @@ public class InMemoryUserDetailsService implements UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     private char[] toCharArray(String i) {
-        if (i == null) return new char[0];
+        if (i == null)
+            return new char[0];
         return i.toCharArray();
     }
 
@@ -50,22 +49,7 @@ public class InMemoryUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-
-        // Hard coding the users. All passwords must be encoded.
-        final List<AppUser> users = Arrays.asList(
-            new AppUser(1, "user", toCharArray(passwordEncoder.encode("user"))), // NOSONAR
-            new AppUser(2, "expire", toCharArray(passwordEncoder.encode("expire"))) // NOSONAR
-        );
-
-        return users.stream()
-            .filter(f -> f.getUsername().equals(username))
-            .map(appUser ->
-                // The "User" class is provided by Spring and represents a model class for user to be returned by UserDetailsService
-                // And used by auth manager to verify and check user authentication.
-                new User(appUser.getUsername(), new String(appUser.getPassword()), AuthorityUtils.NO_AUTHORITIES) // NOSONAR
-            )
-            .findFirst()
-            .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found."));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     // A class represent the user saved in the database.
@@ -74,9 +58,9 @@ public class InMemoryUserDetailsService implements UserDetailsService {
     private static class AppUser {
 
         private Integer id;
+
         private String username;
+
         private char[] password;
-
     }
-
 }

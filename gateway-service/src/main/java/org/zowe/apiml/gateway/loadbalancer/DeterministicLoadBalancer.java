@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.loadbalancer;
 
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -30,14 +29,12 @@ import org.zowe.apiml.gateway.caching.LoadBalancerCache;
 import org.zowe.apiml.gateway.caching.LoadBalancerCache.LoadBalancerCacheRecord;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
-
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.zowe.apiml.constants.ApimlConstants.X_INSTANCEID;
 import static reactor.core.publisher.Flux.just;
@@ -49,17 +46,16 @@ import static reactor.core.publisher.Flux.just;
 public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInstanceListSupplier {
 
     public static final String HEADER_PREFIX = "Bearer ";
+
     private static final String HEADER_NONE_SIGNATURE = Base64.getEncoder().encodeToString("{\"typ\":\"JWT\",\"alg\":\"none\"}".getBytes(StandardCharsets.UTF_8));
 
     private final LoadBalancerCache cache;
+
     private final int expirationTime;
+
     private final Clock clock;
 
-    public DeterministicLoadBalancer(ServiceInstanceListSupplier delegate,
-                                     ReactiveLoadBalancer.Factory<ServiceInstance> loadBalancerClientFactory,
-                                     LoadBalancerCache cache,
-                                     int expirationTime,
-                                     Clock clock) {
+    public DeterministicLoadBalancer(ServiceInstanceListSupplier delegate, ReactiveLoadBalancer.Factory<ServiceInstance> loadBalancerClientFactory, LoadBalancerCache cache, int expirationTime, Clock clock) {
         super(delegate, loadBalancerClientFactory);
         this.cache = cache;
         this.expirationTime = expirationTime;
@@ -76,52 +72,7 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
      */
     @Override
     public Flux<List<ServiceInstance>> get(Request request) {
-        String serviceId = getServiceId();
-        if (serviceId == null) {
-            return Flux.empty();
-        }
-
-        var requestContext = request.getContext();
-        var instanceId = getInstanceId(requestContext);
-        if (instanceId != null) {
-            // if instanceId is set in headers use it
-            try {
-                return delegate.get(request)
-                    .map(serviceInstances -> checkInstanceIdHeader(instanceId, serviceInstances));
-            } catch (ResponseStatusException ex) {
-                return Flux.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Service instance not found for the provided instance ID"));
-            }
-        }
-
-        var userId = getSub(requestContext);
-        if (userId == null) {
-            // if no userId is available return all
-            log.debug("No authentication present on request, not filtering the service: {}", serviceId);
-            return delegate.get(request);
-        }
-
-        return delegate.get(request)
-            .flatMap(serviceInstances -> {
-                if (serviceInstances.isEmpty()) {
-                    // no instances available - just return
-                    log.debug("No services selected");
-                    return Flux.just(serviceInstances);
-                }
-
-                boolean stickySession = lbTypeIsAuthentication(serviceInstances.iterator().next());
-                if (!stickySession) {
-                    // service does not support sticky session by userId, just return
-                    log.debug("Service {} does not support sticky session", serviceId);
-                    return Flux.just(serviceInstances);
-                }
-
-                log.debug("Obtain service instances for {} from the cache", serviceId);
-                return cache.retrieve(userId, serviceId)
-                    .onErrorResume(t -> Mono.empty())
-                    .flatMapMany(cacheRecord -> filterInstances(userId, serviceId, cacheRecord, serviceInstances))
-                    .switchIfEmpty(Flux.just(serviceInstances));
-            })
-            .doOnError(e -> log.debug("Error in determining service instances", e));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -137,8 +88,7 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
 
     private String getSub(Object requestContext) {
         if (requestContext instanceof RequestDataContext ctx) {
-            var token = Optional.ofNullable(getTokenFromCookie(ctx))
-                                .orElseGet(() -> getTokenFromHeader(ctx));
+            var token = Optional.ofNullable(getTokenFromCookie(ctx)).orElseGet(() -> getTokenFromHeader(ctx));
             return extractSubFromToken(token);
         }
         return null;
@@ -166,20 +116,13 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
      * @param serviceInstances the list of service instances to filter
      * @return the filtered list of service instances
      */
-    private Flux<List<ServiceInstance>> filterInstances(
-        String user,
-        String serviceId,
-        LoadBalancerCacheRecord cacheRecord,
-        List<ServiceInstance> serviceInstances
-    ) {
+    private Flux<List<ServiceInstance>> filterInstances(String user, String serviceId, LoadBalancerCacheRecord cacheRecord, List<ServiceInstance> serviceInstances) {
         if (isNotBlank(cacheRecord.getInstanceId())) {
             if (isTooOld(cacheRecord.getCreationTime())) {
-                return cache.delete(user, serviceId)
-                    .thenMany(chooseOne(user, serviceInstances));
+                return cache.delete(user, serviceId).thenMany(chooseOne(user, serviceInstances));
             }
             return chooseOne(cacheRecord.getInstanceId(), user, serviceInstances);
         }
-
         return chooseOne(user, serviceInstances);
     }
 
@@ -215,9 +158,7 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
      */
     private List<ServiceInstance> checkInstanceIdHeader(String instanceId, List<ServiceInstance> serviceInstances) {
         if (instanceId != null) {
-            List<ServiceInstance> filteredInstances = serviceInstances.stream()
-                .filter(instance -> instanceId.equals(instance.getInstanceId()))
-                .toList();
+            List<ServiceInstance> filteredInstances = serviceInstances.stream().filter(instance -> instanceId.equals(instance.getInstanceId())).toList();
             if (!filteredInstances.isEmpty()) {
                 return filteredInstances;
             }
@@ -225,7 +166,6 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
         }
         return serviceInstances;
     }
-
 
     /**
      * Selected the preferred instance if not null, if the preferred instance is not found or is null a new preference is created
@@ -241,8 +181,7 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
             stream = stream.filter(instance -> instanceId.equals(instance.getInstanceId()));
         }
         ServiceInstance chosenInstance = stream.findAny().orElse(serviceInstances.get(0));
-        return cache.store(user, chosenInstance.getServiceId(), new LoadBalancerCacheRecord(chosenInstance.getInstanceId()))
-            .thenMany(just(Collections.singletonList(chosenInstance)));
+        return cache.store(user, chosenInstance.getServiceId(), new LoadBalancerCacheRecord(chosenInstance.getInstanceId())).thenMany(just(Collections.singletonList(chosenInstance)));
     }
 
     /**
@@ -266,14 +205,13 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
     }
 
     private String removeJwtSign(String jwtToken) throws BadJWTException {
-        if (jwtToken == null) return null;
-
+        if (jwtToken == null)
+            return null;
         int firstDot = jwtToken.indexOf('.');
         int lastDot = jwtToken.lastIndexOf('.');
         if ((firstDot < 0) || (firstDot >= lastDot)) {
             throw new BadJWTException("Invalid JWT format");
         }
-
         return HEADER_NONE_SIGNATURE + jwtToken.substring(firstDot, lastDot + 1);
     }
 
@@ -284,16 +222,15 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
          */
         try {
             var jwtWithoutSignature = removeJwtSign(jwt);
-
-            var claims = JWTParser.parse(jwtWithoutSignature)
-                .getJWTClaimsSet();
+            var claims = JWTParser.parse(jwtWithoutSignature).getJWTClaimsSet();
             if (claims.getExpirationTime().toInstant().isBefore(clock.instant())) {
                 throw new ExpiredJWTException("JWT Token is expired");
             }
             return claims;
         } catch (RuntimeException | ParseException | BadJWTException exception) {
             log.debug("Exception when trying to parse the JWT token {}: {}", jwt, exception.getMessage());
-            return null; // NOSONAR
+            // NOSONAR
+            return null;
         }
     }
 
@@ -306,5 +243,4 @@ public class DeterministicLoadBalancer extends SameInstancePreferenceServiceInst
         }
         return null;
     }
-
 }

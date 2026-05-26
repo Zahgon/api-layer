@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.logging;
 
 import ch.qos.logback.classic.Level;
@@ -16,46 +15,17 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Marker;
-
 import java.util.Arrays;
 import java.util.List;
 
 public class ApimlDependencyLogHider extends TurboFilter {
 
-    private static final List<String> IGNORED_MESSAGE_KEYWORDS = Arrays.asList(
-        "Tomcat initialized", "Tomcat started on port(s)",
-        "lease doesn't exist", "Not Found (Renew)",
-        "route 53",
-        "dirty timestamp", "Using the existing instanceInfo instead of the new instanceInfo as the registrant",
-        "eureka.server.peer-node-read-timeout-ms",
-        "Found more than one MBeanServer instance",
-        "Network level connection to peer",
-        "DS: Registry: expired lease for",
-        "The replication of task {} failed with response code {}",
-        "Peer wants us to take the instance information from it, since the timestamp differs",
-
-        "No routes found from RouteLocator",
-        "Exception Processing ErrorPage",
-        "Error while sending response to client",
-        "Request execution error",
-        "The Hystrix timeout",
-        ".*Error during filtering.*Token is not valid.*",
-        ".*Endpoint ID .* contains invalid characters.*",
-        "org.zowe.apiml.gateway.error.NotFound",
-        "HV000001: Hibernate Validator",
-        "You already have RibbonLoadBalancerClient on your classpath.*"); // Known fact, fix in Zowe V2
+    private static final List<String> IGNORED_MESSAGE_KEYWORDS = Arrays.asList("Tomcat initialized", "Tomcat started on port(s)", "lease doesn't exist", "Not Found (Renew)", "route 53", "dirty timestamp", "Using the existing instanceInfo instead of the new instanceInfo as the registrant", "eureka.server.peer-node-read-timeout-ms", "Found more than one MBeanServer instance", "Network level connection to peer", "DS: Registry: expired lease for", "The replication of task {} failed with response code {}", "Peer wants us to take the instance information from it, since the timestamp differs", "No routes found from RouteLocator", "Exception Processing ErrorPage", "Error while sending response to client", "Request execution error", "The Hystrix timeout", ".*Error during filtering.*Token is not valid.*", ".*Endpoint ID .* contains invalid characters.*", "org.zowe.apiml.gateway.error.NotFound", "HV000001: Hibernate Validator", // Known fact, fix in Zowe V2
+    "You already have RibbonLoadBalancerClient on your classpath.*");
 
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-        if (format == null || isLowThanInfoLevel(logger.getEffectiveLevel())) {
-            return FilterReply.NEUTRAL;
-        }
-
-        if (t != null) {
-            format += String.join("", ExceptionUtils.getStackFrames(t));
-        }
-
-        return getFilterReply(format);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean isLowThanInfoLevel(Level level) {
@@ -63,14 +33,13 @@ public class ApimlDependencyLogHider extends TurboFilter {
     }
 
     private FilterReply getFilterReply(String format) {
-        boolean ignored = IGNORED_MESSAGE_KEYWORDS.stream()
-            .anyMatch(keyword -> {
-                if (keyword.contains(".*")) {
-                    return format.matches(keyword);
-                } else {
-                    return format.contains(keyword);
-                }
-            });
+        boolean ignored = IGNORED_MESSAGE_KEYWORDS.stream().anyMatch(keyword -> {
+            if (keyword.contains(".*")) {
+                return format.matches(keyword);
+            } else {
+                return format.contains(keyword);
+            }
+        });
         return ignored ? FilterReply.DENY : FilterReply.NEUTRAL;
     }
 }

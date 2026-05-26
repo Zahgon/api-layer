@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import lombok.*;
@@ -24,7 +23,6 @@ import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.util.CertificateLoggingUtils;
 import org.zowe.apiml.security.common.verify.CertificateValidator;
 import reactor.core.publisher.Mono;
-
 import java.io.ByteArrayInputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -34,9 +32,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.function.Predicate;
-
 import static org.zowe.apiml.security.common.filter.CategorizeCertsFilter.*;
-
 
 /**
  * This GlobalFilter processes client certificates present in the TLS handshake or in a specific header.
@@ -52,21 +48,18 @@ public class CategorizeCertsWebFilter implements WebFilter, Ordered {
 
     @Getter
     private final Set<String> publicKeyCertificatesBase64;
+
     private final CertificateValidator certificateValidator;
 
     @Setter
-    private Predicate<X509Certificate> certificateForClientAuth = cert ->
-        !getPublicKeyCertificatesBase64().contains(CertificateLoggingUtils.base64EncodePublicKey(cert));
+    private Predicate<X509Certificate> certificateForClientAuth = cert -> !getPublicKeyCertificatesBase64().contains(CertificateLoggingUtils.base64EncodePublicKey(cert));
 
     @Setter
-    private Predicate<X509Certificate> apimlCertificate = cert ->
-        getPublicKeyCertificatesBase64().contains(CertificateLoggingUtils.base64EncodePublicKey(cert));
+    private Predicate<X509Certificate> apimlCertificate = cert -> getPublicKeyCertificatesBase64().contains(CertificateLoggingUtils.base64EncodePublicKey(cert));
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ServerWebExchange updatedExchange = categorizeCerts(exchange);
-        ServerHttpRequest mutatedRequest = mutateRequestToRemoveHeader(updatedExchange.getRequest());
-        return chain.filter(updatedExchange.mutate().request(mutatedRequest).build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -76,58 +69,32 @@ public class CategorizeCertsWebFilter implements WebFilter, Ordered {
      * @param exchange The current server web exchange.
      */
     private ServerWebExchange categorizeCerts(ServerWebExchange exchange) {
-        Optional<X509Certificate[]> certsFromTlsOpt = Optional.of(exchange)
-            .map(ServerWebExchange::getRequest)
-            .map(ServerHttpRequest::getSslInfo)
-            .map(SslInfo::getPeerCertificates)
-            .filter(Objects::nonNull)
-            .filter(ssl -> ssl.length > 0);
-
+        Optional<X509Certificate[]> certsFromTlsOpt = Optional.of(exchange).map(ServerWebExchange::getRequest).map(ServerHttpRequest::getSslInfo).map(SslInfo::getPeerCertificates).filter(Objects::nonNull).filter(ssl -> ssl.length > 0);
         ServerHttpRequest.Builder requestBuilder = exchange.getRequest().mutate();
-
         certsFromTlsOpt.ifPresent(certsFromTls -> {
             Optional<X509Certificate> clientCertFromHeader = getClientCertFromHeader(exchange.getRequest());
-
-            if (certificateValidator.isForwardingEnabled() &&
-                certificateValidator.hasGatewayChain(certsFromTls) &&
-                clientCertFromHeader.isPresent()) {
-
+            if (certificateValidator.isForwardingEnabled() && certificateValidator.hasGatewayChain(certsFromTls) && clientCertFromHeader.isPresent()) {
                 certificateValidator.updateAPIMLPublicKeyCertificates(certsFromTls);
-
-                X509Certificate[] clientAuthCerts = selectCerts(
-                    new X509Certificate[]{clientCertFromHeader.get()},
-                    certificateForClientAuth
-                );
-
-                logIgnoredCertificates(new X509Certificate[]{clientCertFromHeader.get()}, clientAuthCerts);
-
+                X509Certificate[] clientAuthCerts = selectCerts(new X509Certificate[] { clientCertFromHeader.get() }, certificateForClientAuth);
+                logIgnoredCertificates(new X509Certificate[] { clientCertFromHeader.get() }, clientAuthCerts);
                 exchange.getAttributes().put(ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE, clientAuthCerts);
                 log.debug(LOG_FORMAT_FILTERING_CERTIFICATES, ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE, Arrays.toString(clientAuthCerts));
-
                 exchange.getAttributes().put(ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE, certsFromTls);
                 log.debug("Retaining full TLS certificate chain in attribute {}: {}", ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE, Arrays.toString(certsFromTls));
-
                 var sslInfo = SimpleSslInfo.builder().peerCertificates(clientAuthCerts).build();
                 requestBuilder.sslInfo(sslInfo);
-
             } else {
                 X509Certificate[] clientAuthCerts = selectCerts(certsFromTls, certificateForClientAuth);
-
                 logIgnoredCertificates(certsFromTls, clientAuthCerts);
-
                 exchange.getAttributes().put(ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE, clientAuthCerts);
                 log.debug(LOG_FORMAT_FILTERING_CERTIFICATES, ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE, Arrays.toString(clientAuthCerts));
-
                 X509Certificate[] apimlFilteredCerts = selectCerts(certsFromTls, apimlCertificate);
                 exchange.getAttributes().put(ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE, apimlFilteredCerts);
                 log.debug(LOG_FORMAT_FILTERING_CERTIFICATES, ATTR_NAME_JAKARTA_SERVLET_REQUEST_X509_CERTIFICATE, Arrays.toString(apimlFilteredCerts));
                 var sslInfo = SimpleSslInfo.builder().peerCertificates(clientAuthCerts).build();
                 requestBuilder.sslInfo(sslInfo);
-
             }
-
         });
-
         if (certsFromTlsOpt.isEmpty()) {
             log.debug("No TLS peer certificates found in the request.");
         }
@@ -142,12 +109,7 @@ public class CategorizeCertsWebFilter implements WebFilter, Ordered {
      * @param filteredCerts The array of certificates after filtering for authentication
      */
     private void logIgnoredCertificates(X509Certificate[] originalCerts, X509Certificate[] filteredCerts) {
-        CertificateLoggingUtils.logIgnoredCertificates(
-            originalCerts,
-            filteredCerts,
-            publicKeyCertificatesBase64,
-            log
-        );
+        CertificateLoggingUtils.logIgnoredCertificates(originalCerts, filteredCerts, publicKeyCertificatesBase64, log);
     }
 
     /**
@@ -158,13 +120,10 @@ public class CategorizeCertsWebFilter implements WebFilter, Ordered {
      */
     private Optional<X509Certificate> getClientCertFromHeader(ServerHttpRequest request) {
         String certFromHeader = request.getHeaders().getFirst(CLIENT_CERT_HEADER);
-
         if (StringUtils.isNotEmpty(certFromHeader)) {
             try {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
-                Certificate certificate = cf.generateCertificate(
-                    new ByteArrayInputStream(Base64.getDecoder().decode(certFromHeader))
-                );
+                Certificate certificate = cf.generateCertificate(new ByteArrayInputStream(Base64.getDecoder().decode(certFromHeader)));
                 if (certificate instanceof X509Certificate x509certificate) {
                     log.debug("Successfully parsed X.509 certificate from header {}.", certFromHeader);
                     return Optional.of(x509certificate);
@@ -186,11 +145,8 @@ public class CategorizeCertsWebFilter implements WebFilter, Ordered {
      * @return A new ServerHttpRequest instance without the CLIENT_CERT_HEADER.
      */
     private ServerHttpRequest mutateRequestToRemoveHeader(ServerHttpRequest originalRequest) {
-        return originalRequest.mutate()
-            .headers(httpHeaders -> httpHeaders.remove(CLIENT_CERT_HEADER))
-            .build();
+        return originalRequest.mutate().headers(httpHeaders -> httpHeaders.remove(CLIENT_CERT_HEADER)).build();
     }
-
 
     /**
      * Defines the order of this filter. It should run relatively early
@@ -200,7 +156,7 @@ public class CategorizeCertsWebFilter implements WebFilter, Ordered {
      */
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Builder
@@ -208,7 +164,7 @@ public class CategorizeCertsWebFilter implements WebFilter, Ordered {
     static class SimpleSslInfo implements SslInfo {
 
         String sessionId;
-        X509Certificate[] peerCertificates;
 
+        X509Certificate[] peerCertificates;
     }
 }

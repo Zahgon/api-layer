@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,33 +27,19 @@ public class TokenProvider extends AbstractAuthProviderFilter<QueryResponse> {
     }
 
     public String getEndpointPath() {
-        return "/zaas/api/v1/auth/query";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected Mono<QueryResponse> processResponse(WebClient.RequestHeadersSpec<?> rhs) {
-        return rhs
-            .retrieve()
-            .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.empty())
-            .bodyToMono(QueryResponse.class)
-            .onErrorResume(exception -> exception instanceof WebClientResponseException.Unauthorized ? Mono.just(new QueryResponse()) : Mono.error(exception));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected WebClient.RequestHeadersSpec<?> createRequest(ServiceInstance instance, String token) {
-        return webClient.get()
-            .uri(getEndpointUrl(instance))
-            .headers(httpHeaders -> httpHeaders.set(HttpHeaders.COOKIE, "apimlAuthenticationToken=" + token));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Mono<QueryResponse> validateToken(String token) {
-        return getZaasInstances()
-            .collectList()
-            .flatMap(instances ->
-            invoke(
-                instances,
-                instance -> createRequest(instance, token)
-            )
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.util;
 
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -20,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.zowe.apiml.security.common.token.TokenExpireException;
 import org.zowe.apiml.security.common.token.TokenFormatNotValidException;
 import org.zowe.apiml.security.common.token.TokenNotValidException;
-
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
@@ -45,22 +43,7 @@ public class JwtUtils {
      * @throws TokenNotValidException in case of invalid input, or TokenExpireException if JWT is expired
      */
     public JWTClaimsSet getJwtClaims(String jwt) {
-        /*
-         * Removes signature, because we don't have key to verify z/OS tokens, and we just need to read claim.
-         * Verification is done by SAF itself. JWT library doesn't parse signed key without verification.
-         */
-        try {
-            String jwtWithoutSignature = removeJwtSign(jwt);
-            var token = JWTParser.parse(jwtWithoutSignature);
-            var claims = token.getJWTClaimsSet();
-
-            if (claims.getExpirationTime().toInstant().isBefore(Instant.now())) {
-                throw new ExpiredJWTException("JWT token is expired");
-            }
-            return token.getJWTClaimsSet();
-        } catch (RuntimeException | ParseException | BadJWTException exception) {
-            throw handleJwtParserException(exception);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -72,15 +55,7 @@ public class JwtUtils {
      * @throws BadJWTException
      */
     public String removeJwtSign(String jwtToken) throws BadJWTException {
-        if (jwtToken == null) return null;
-
-        int firstDot = jwtToken.indexOf('.');
-        int lastDot = jwtToken.lastIndexOf('.');
-        if ((firstDot < 0) || (firstDot >= lastDot)) {
-            throw new BadJWTException("Invalid JWT format");
-        }
-
-        return HEADER_NONE_SIGNATURE + jwtToken.substring(firstDot, lastDot + 1);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -90,17 +65,7 @@ public class JwtUtils {
      * @return translated exception (better messaging and allow subsequent handling)
      */
     public RuntimeException handleJwtParserException(Exception exception) {
-        if (exception instanceof ExpiredJWTException) {
-            log.debug("Token is expired.");
-            return new TokenExpireException("Token is expired.", exception);
-        }
-        if (exception instanceof BadJWTException || exception instanceof ParseException) {
-            log.debug(TOKEN_IS_NOT_VALID_DUE_TO, exception.getMessage());
-            return new TokenNotValidException("Token is not valid.", exception);
-        }
-
-        log.debug(TOKEN_IS_NOT_VALID_DUE_TO, exception.getMessage());
-        return new TokenNotValidException("An internal error occurred while validating the token therefore the token is no longer valid.", exception);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -112,29 +77,7 @@ public class JwtUtils {
      * @throws TokenFormatNotValidException in case of the field value cannot be extracted from the token, is null, or empty
      */
     public List<String> getFieldValuesFromToken(String token, List<String> pathToField) throws TokenFormatNotValidException {
-        if (token == null || pathToField == null || pathToField.isEmpty() || StringUtils.isBlank(pathToField.get(0))) {
-            throw new IllegalArgumentException("Token and field path must not be null or empty");
-        }
-
-        try {
-            var claims = getJwtClaims(token);
-            List<String> fieldValues;
-            if (pathToField.size() == 1) {
-                fieldValues = extractHighLevelField(claims, pathToField);
-            } else {
-                fieldValues = extractNestedFields(claims, pathToField);
-            }
-
-            fieldValues = fieldValues.stream().filter(StringUtils::isNotBlank).toList();
-            if (fieldValues.isEmpty()) {
-                throw new IllegalArgumentException();
-            } else {
-                return fieldValues;
-            }
-        } catch (Exception e) {
-            throw new TokenFormatNotValidException(
-                String.format("Cannot extract value from field %s. The field does not exist, is empty, or is an object.", String.join(".", pathToField)));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private List<String> extractHighLevelField(JWTClaimsSet claims, List<String> pathToField) {
@@ -145,7 +88,6 @@ public class JwtUtils {
     private List<String> extractNestedFields(JWTClaimsSet claims, List<String> pathToField) {
         var iterator = pathToField.iterator();
         var key = iterator.next();
-
         var claim = claims.getClaim(key);
         while (iterator.hasNext()) {
             key = iterator.next();
@@ -153,7 +95,6 @@ public class JwtUtils {
                 claim = val.get(key);
             }
         }
-
         return extractValueAsList(((Map) claim).get(key));
     }
 
@@ -166,7 +107,5 @@ public class JwtUtils {
         } else {
             throw new IllegalArgumentException("Field value is neither String nor List of Strings");
         }
-
     }
-
 }

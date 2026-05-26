@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ public class AppReadyListener {
      */
     @EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        handler.onServiceStartup("API Catalog Service", ServiceStartupEventHandler.DEFAULT_DELAY_FACTOR);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

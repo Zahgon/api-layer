@@ -7,13 +7,11 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -29,9 +27,7 @@ public class ObjectUtil {
      * @param message detail message to be used in the event
      */
     public static void requireNotNull(Object param, String message) {
-        if (param == null) {
-            throw new IllegalArgumentException(message);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -42,21 +38,12 @@ public class ObjectUtil {
      * @param message detail message to be used in the event
      */
     public static void requireNotEmpty(String param, String message) {
-        if (StringUtils.isEmpty(param)) {
-            throw new IllegalArgumentException(message);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     public Map<String, String> getThreadContextMap(ThreadLocal<Map<String, String>> threadConfigurationContext) {
-        Map<String, String>  aMap = threadConfigurationContext.get();
-        if (aMap == null) {
-            aMap = new HashMap<>();
-            threadConfigurationContext.set(aMap);
-        }
-        return aMap;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * Merges two Maps using deep merge method. The properties in secondMap have higher priority over defaultConfigurationMap,
@@ -67,16 +54,7 @@ public class ObjectUtil {
      * @return
      */
     public Map<String, Object> mergeConfigurations(Map<String, Object> firstMap, Map<String, Object> secondMap) {
-
-        if ((firstMap != null) && (secondMap != null)) {
-            return mergeMapsDeep(firstMap, secondMap);
-        }
-
-        if (secondMap != null) {
-            return  secondMap;
-        }
-
-        return firstMap;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -87,10 +65,10 @@ public class ObjectUtil {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (map1.get(key) instanceof Map && value instanceof Map) {
-                map1.put(key, mergeMapsDeep((Map) map1.get(key), (Map)value));
+                map1.put(key, mergeMapsDeep((Map) map1.get(key), (Map) value));
             } else if (map1.get(key) instanceof List && value instanceof List) {
                 Collection<Object> originalChild = (Collection<Object>) map1.get(key);
-                for (Object each : (Collection<?>)value) {
+                for (Object each : (Collection<?>) value) {
                     if (!originalChild.contains(each)) {
                         originalChild.add(each);
                     }
@@ -108,17 +86,6 @@ public class ObjectUtil {
      * @return String describing method with name and arguments types
      */
     public static String getMethodIdentifier(Method method) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(method.getName());
-        sb.append('(');
-
-        int i = 0;
-        for (final Class<?> clazz : method.getParameterTypes()) {
-            if (i++ > 0) sb.append(',');
-            sb.append(clazz);
-        }
-        sb.append(')');
-        return sb.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

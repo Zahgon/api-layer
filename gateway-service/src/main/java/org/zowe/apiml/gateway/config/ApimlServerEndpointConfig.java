@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.config;
 
 import jakarta.websocket.Decoder;
@@ -16,21 +15,18 @@ import jakarta.websocket.Endpoint;
 import jakarta.websocket.Extension;
 import jakarta.websocket.server.ServerEndpointConfig;
 import org.springframework.util.Assert;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ApimlServerEndpointConfig extends ServerEndpointConfig.Configurator
-    implements ServerEndpointConfig {
+public class ApimlServerEndpointConfig extends ServerEndpointConfig.Configurator implements ServerEndpointConfig {
 
     private final String path;
 
     private final Endpoint endpoint;
 
     private List<String> protocols = new ArrayList<>();
-
 
     /**
      * Constructor with a path and an {@code jakarta.websocket.Endpoint}.
@@ -45,59 +41,58 @@ public class ApimlServerEndpointConfig extends ServerEndpointConfig.Configurator
         this.endpoint = endpoint;
     }
 
-
     @Override
     public List<Class<? extends Encoder>> getEncoders() {
-        return new ArrayList<>();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public List<Class<? extends Decoder>> getDecoders() {
-        return new ArrayList<>();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Map<String, Object> getUserProperties() {
-        return new HashMap<>();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Class<?> getEndpointClass() {
-        return this.endpoint.getClass();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getPath() {
-        return this.path;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void setSubprotocols(List<String> protocols) {
-        this.protocols = protocols;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public List<String> getSubprotocols() {
-        return this.protocols;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public List<Extension> getExtensions() {
-        return new ArrayList<>();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public ServerEndpointConfig.Configurator getConfigurator() {
-        return this;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
-        return (T) this.endpoint;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String toString() {
-        return "DefaultServerEndpointConfig for path '" + getPath() + "': " + getEndpointClass();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

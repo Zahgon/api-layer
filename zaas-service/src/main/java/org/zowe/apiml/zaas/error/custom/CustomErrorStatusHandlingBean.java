@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.error.custom;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,8 +22,6 @@ public class CustomErrorStatusHandlingBean implements WebServerFactoryCustomizer
 
     @Override
     public void customize(ConfigurableServletWebServerFactory factory) {
-        factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/not_found"));
-        factory.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/internal_error"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

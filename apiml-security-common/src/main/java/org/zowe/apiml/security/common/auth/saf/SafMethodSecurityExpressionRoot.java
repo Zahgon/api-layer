@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.auth.saf;
 
 import lombok.RequiredArgsConstructor;
@@ -18,15 +17,16 @@ import org.zowe.apiml.security.common.config.SafSecurityConfigurationProperties;
 @Component
 @RequiredArgsConstructor
 public class SafMethodSecurityExpressionRoot {
+
     private final SafSecurityConfigurationProperties safSecurityConfigurationProperties;
+
     private final SafResourceAccessVerifying safResourceAccessVerifying;
 
-    public boolean hasSafResourceAccess(String resourceClass, String resourceName, String accessLevel,MethodSecurityExpressionOperations operations) {
-        return safResourceAccessVerifying.hasSafResourceAccess(operations.getAuthentication(), resourceClass, resourceName, accessLevel);
+    public boolean hasSafResourceAccess(String resourceClass, String resourceName, String accessLevel, MethodSecurityExpressionOperations operations) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    public boolean hasSafServiceResourceAccess(String resourceNameSuffix, String accessLevel,MethodSecurityExpressionOperations operations) {
-        return hasSafResourceAccess(safSecurityConfigurationProperties.getServiceResourceClass(), safSecurityConfigurationProperties.getServiceResourceNamePrefix() + resourceNameSuffix, accessLevel, operations);
+    public boolean hasSafServiceResourceAccess(String resourceNameSuffix, String accessLevel, MethodSecurityExpressionOperations operations) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

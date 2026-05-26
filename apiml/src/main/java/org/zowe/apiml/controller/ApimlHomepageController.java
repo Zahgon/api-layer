@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.controller;
 
 import io.swagger.v3.oas.annotations.Hidden;
@@ -26,7 +25,6 @@ import org.zowe.apiml.product.version.VersionInfoDetails;
 import org.zowe.apiml.product.version.VersionService;
 import org.zowe.apiml.zaas.security.login.Providers;
 import org.zowe.apiml.zaas.security.service.JwtSecurity;
-
 import java.util.List;
 
 /**
@@ -38,28 +36,30 @@ import java.util.List;
 public class ApimlHomepageController {
 
     private static final String SUCCESS_ICON_NAME = "success";
+
     private static final String WARNING_ICON_NAME = "warning";
 
     private final DiscoveryClient discoveryClient;
+
     private final VersionService versionService;
 
     private final ApplicationInfo applicationInfo;
+
     private final ApplicationContext applicationContext;
 
     private String buildString;
+
     private String zoweVersionText;
 
     @PostConstruct
     public void init() {
-        initializeBuildInfos();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Hidden
     @GetMapping("/")
     public String home(Model model) {
-
-        initializeParameters(model);
-        return "home";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void initializeBuildInfos() {
@@ -86,7 +86,6 @@ public class ApimlHomepageController {
             model.addAttribute("authStatusText", "Authentication service is not ready");
             model.addAttribute("authIconName", WARNING_ICON_NAME);
         }
-
         model.addAttribute("catalogLink", "/apicatalog/ui/v1");
         model.addAttribute("isAnyCatalogAvailable", true);
         model.addAttribute("catalogIconName", SUCCESS_ICON_NAME);
@@ -112,6 +111,4 @@ public class ApimlHomepageController {
         }
         return 0;
     }
-
 }
-

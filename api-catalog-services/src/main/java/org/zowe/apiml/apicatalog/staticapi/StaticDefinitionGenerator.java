@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.staticapi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,40 +36,15 @@ public class StaticDefinitionGenerator {
     private static final Pattern p = Pattern.compile("^[A-Za-z][A-Za-z0-9-]*$");
 
     public StaticAPIResponse generateFile(String fileContent, String serviceId) throws IOException {
-        if (!serviceIdIsValid(serviceId)) {
-            return getInvalidResponse(serviceId);
-        }
-        String absoluteFilePath = getAbsolutePath(serviceId);
-
-        checkIfFileExists(absoluteFilePath);
-        String message = "The static definition file has been created by the user! Its location is: %s";
-        return writeContentToFile(fileContent, absoluteFilePath, String.format(message, absoluteFilePath));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public StaticAPIResponse overrideFile(String fileContent, String serviceId) throws IOException {
-        if (!serviceIdIsValid(serviceId)) {
-            return getInvalidResponse(serviceId);
-        }
-        String absoluteFilePath = getAbsolutePath(serviceId);
-
-        String message = "The static definition file %s has been overwritten by the user!";
-        return writeContentToFile(fileContent, absoluteFilePath, String.format(message, absoluteFilePath));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public StaticAPIResponse deleteFile(String serviceId) throws IOException {
-        if (!serviceIdIsValid(serviceId)) {
-            return getInvalidResponse(serviceId);
-        }
-        String absoluteFilePath = getAbsolutePath(serviceId);
-
-        File fileForDeletion = new File(absoluteFilePath);
-
-        if (FileUtils.directoryContains(new File(retrieveStaticDefLocation()), fileForDeletion)) {
-            Files.delete(fileForDeletion.toPath());
-            return new StaticAPIResponse(200, "The static definition file %s has been deleted by the user!");
-        }
-        return new StaticAPIResponse(404, "The static definition file %s does not exist!");
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String getAbsolutePath(String serviceId) {
@@ -131,4 +104,3 @@ public class StaticDefinitionGenerator {
         return false;
     }
 }
-

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security;
 
 import org.apache.hc.client5.http.ConnectionKeepAliveStrategy;
@@ -29,18 +28,6 @@ public class ApimlKeepAliveStrategy implements ConnectionKeepAliveStrategy {
 
     @Override
     public TimeValue getKeepAliveDuration(HttpResponse response, HttpContext context) {
-        BasicHeaderElementIterator it = new BasicHeaderElementIterator
-            (response.headerIterator(HTTP.CONN_KEEP_ALIVE));
-        while (it.hasNext()) {
-            HeaderElement he = it.next();
-            String param = he.getName();
-            String value = he.getValue();
-            if (value != null && param.equalsIgnoreCase
-                ("timeout")) {
-                return TimeValue.ofMilliseconds(Long.parseLong(value) * 1000);
-            }
-        }
-
-        return TimeValue.ofMilliseconds(KEEPALIVE_TIMOUT_MILLIS);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

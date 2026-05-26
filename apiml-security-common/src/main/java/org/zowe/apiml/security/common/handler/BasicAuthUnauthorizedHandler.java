@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.handler;
 
 import org.zowe.apiml.security.common.error.AuthExceptionHandler;
@@ -15,7 +14,6 @@ import org.zowe.apiml.constants.ApimlConstants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,8 +38,6 @@ public class BasicAuthUnauthorizedHandler extends UnauthorizedHandler {
      */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws ServletException {
-        response.addHeader(HttpHeaders.WWW_AUTHENTICATE, ApimlConstants.BASIC_AUTHENTICATION_PREFIX);
-
-        super.commence(request, response, authException);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

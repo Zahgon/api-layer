@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.vsam.config;
 
 import lombok.RequiredArgsConstructor;
@@ -24,15 +23,14 @@ import org.zowe.apiml.message.log.ApimlLogger;
 @Configuration
 @RequiredArgsConstructor
 public class VsamConfiguration {
-    private final VsamConfig vsamConfig;
-    private final VsamInitializer vsamInitializer;
 
+    private final VsamConfig vsamConfig;
+
+    private final VsamInitializer vsamInitializer;
 
     @ConditionalOnProperty(name = "caching.storage.mode", havingValue = "vsam")
     @Bean
     public Storage vsam(MessageService messageService, EvictionStrategyProducer evictionStrategyProducer) {
-        var logger = ApimlLogger.of(VsamStorage.class, messageService);
-        logger.log("org.zowe.apiml.cache.storage.deprecated", "vsam");
-        return new VsamStorage(vsamConfig, vsamInitializer, logger, evictionStrategyProducer);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

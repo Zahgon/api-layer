@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.springframework.web.cors.CorsConfiguration;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +24,11 @@ import java.util.regex.Pattern;
 public class CorsUtils {
 
     private final List<String> allowedCorsHttpMethods;
+
     private final boolean corsEnabled;
+
     private static final Pattern gatewayRoutesPattern = Pattern.compile("apiml\\.routes\\.[^.]*\\.gateway\\S*");
+
     private final List<String> corsAllowedEndpoints;
 
     public CorsUtils(boolean corsEnabled, List<String> corsAllowedMethods, @NonNull List<String> allowedEndpoints) {
@@ -37,18 +38,11 @@ public class CorsUtils {
     }
 
     public boolean isCorsEnabledForService(Map<String, String> metadata) {
-        String isCorsEnabledForService = metadata.get("apiml.corsEnabled");
-        return Boolean.parseBoolean(isCorsEnabledForService);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void setCorsConfiguration(String serviceId, Map<String, String> metadata, TriConsumer<String, String, CorsConfiguration> entryMapper) {
-        if (corsEnabled) {
-            var corsConfiguration = setAllowedOriginsForService(serviceId, metadata);
-            metadata.entrySet().stream()
-                .filter(entry -> gatewayRoutesPattern.matcher(entry.getKey()).find())
-                .forEach(entry ->
-                    entryMapper.accept(entry.getValue(), serviceId, corsConfiguration));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private CorsConfiguration setAllowedOriginsForService(String serviceId, Map<String, String> metadata) {
@@ -63,8 +57,7 @@ public class CorsUtils {
             } else {
                 // Origins specified: split by comma, add to whitelist
                 log.debug("For service {}, set [{}] as allowed origins", serviceId, Arrays.toString(corsAllowedOriginsForService.split(",")));
-                Arrays.stream(corsAllowedOriginsForService.split(","))
-                    .forEach(config::addAllowedOrigin);
+                Arrays.stream(corsAllowedOriginsForService.split(",")).forEach(config::addAllowedOrigin);
             }
             config.setAllowCredentials(true);
             config.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
@@ -76,19 +69,6 @@ public class CorsUtils {
     }
 
     public void registerDefaultCorsConfiguration(BiConsumer<String, CorsConfiguration> pathMapper) {
-        final CorsConfiguration config = new CorsConfiguration();
-        List<String> pathsToEnable;
-
-        if (corsEnabled) {
-            config.setAllowCredentials(true);
-            config.addAllowedOriginPattern(CorsConfiguration.ALL); //NOSONAR this is a replication of existing code
-            config.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
-            config.setAllowedMethods(allowedCorsHttpMethods);
-            pathsToEnable = corsAllowedEndpoints;
-        } else {
-            pathsToEnable = Collections.singletonList("/**");
-        }
-        pathsToEnable.forEach(path -> pathMapper.accept(path, config));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.configuration;
 
 import org.apache.catalina.connector.Connector;
@@ -17,7 +16,6 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.util.List;
 
 /**
@@ -28,24 +26,19 @@ public class TomcatConfiguration {
 
     @Bean
     public TomcatConnectorCustomizer urlTomcatCustomizer() {
-        return new UrlTomcatCustomizer();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public ServletWebServerFactory servletContainer(List<TomcatConnectorCustomizer> connectorCustomizers) {
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-        tomcat.setProtocol(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
-        tomcat.addConnectorCustomizers(connectorCustomizers.toArray(new TomcatConnectorCustomizer[0]));
-        return tomcat;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static class UrlTomcatCustomizer implements TomcatConnectorCustomizer {
 
         @Override
         public void customize(Connector connector) {
-            connector.setAllowBackslash(true);
-            connector.setEncodedSolidusHandling(EncodedSolidusHandling.PASS_THROUGH.getValue());
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
 }

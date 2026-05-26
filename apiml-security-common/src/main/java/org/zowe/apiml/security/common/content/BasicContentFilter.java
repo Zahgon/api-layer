@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.content;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.zowe.apiml.constants.ApimlConstants;
 import org.zowe.apiml.security.common.error.ResourceAccessExceptionHandler;
-
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -32,16 +30,11 @@ import java.util.Optional;
 @Slf4j
 public class BasicContentFilter extends AbstractSecureContentFilter {
 
-    public BasicContentFilter(AuthenticationManager authenticationManager,
-                              AuthenticationFailureHandler failureHandler,
-                              ResourceAccessExceptionHandler resourceAccessExceptionHandler) {
+    public BasicContentFilter(AuthenticationManager authenticationManager, AuthenticationFailureHandler failureHandler, ResourceAccessExceptionHandler resourceAccessExceptionHandler) {
         super(authenticationManager, failureHandler, resourceAccessExceptionHandler, new String[0]);
     }
 
-    public BasicContentFilter(AuthenticationManager authenticationManager,
-                              AuthenticationFailureHandler failureHandler,
-                              ResourceAccessExceptionHandler resourceAccessExceptionHandler,
-                              String[] endpoints) {
+    public BasicContentFilter(AuthenticationManager authenticationManager, AuthenticationFailureHandler failureHandler, ResourceAccessExceptionHandler resourceAccessExceptionHandler, String[] endpoints) {
         super(authenticationManager, failureHandler, resourceAccessExceptionHandler, endpoints);
     }
 
@@ -52,15 +45,7 @@ public class BasicContentFilter extends AbstractSecureContentFilter {
      * @return the decoded credentials
      */
     public Optional<AbstractAuthenticationToken> extractContent(HttpServletRequest request) {
-        return Optional.ofNullable(
-            request.getHeader(HttpHeaders.AUTHORIZATION)
-        ).filter(
-            header -> header.startsWith(ApimlConstants.BASIC_AUTHENTICATION_PREFIX)
-        ).map(
-            header -> header.replaceFirst(ApimlConstants.BASIC_AUTHENTICATION_PREFIX, "").trim()
-        )
-            .filter(base64Credentials -> !base64Credentials.isEmpty())
-            .map(this::mapBase64Credentials);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -83,10 +68,7 @@ public class BasicContentFilter extends AbstractSecureContentFilter {
                     for (int i = 0; i < password.length; i++) {
                         passwordChars[i] = (char) password[i];
                     }
-                    return new UsernamePasswordAuthenticationToken(
-                            new String(Arrays.copyOfRange(credentials, 0, index), StandardCharsets.UTF_8),
-                            passwordChars
-                    );
+                    return new UsernamePasswordAuthenticationToken(new String(Arrays.copyOfRange(credentials, 0, index), StandardCharsets.UTF_8), passwordChars);
                 } finally {
                     if (password != null) {
                         Arrays.fill(password, (byte) 0);
@@ -100,7 +82,6 @@ public class BasicContentFilter extends AbstractSecureContentFilter {
                 Arrays.fill(credentials, (byte) 0);
             }
         }
-
         return new UsernamePasswordAuthenticationToken(null, null);
     }
 }

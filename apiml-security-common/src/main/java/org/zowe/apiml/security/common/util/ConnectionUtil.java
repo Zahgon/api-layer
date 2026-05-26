@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.util;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -21,11 +20,9 @@ import org.zowe.apiml.security.SecurityUtils;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.client.HttpClientSecurityUtils;
 import reactor.netty.tcp.SslProvider;
-
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509KeyManager;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.security.KeyStore;
@@ -45,59 +42,11 @@ public class ConnectionUtil {
      * @return io.netty.handler.ssl.SslContext for http client.
      */
     public SslContext getSslContext(HttpConfig config, boolean setKeystore) throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
-        var builder = SslContextBuilder.forClient();
-
-        var trustStore = SecurityUtils.loadKeyStore(config.getTrustStoreType(), config.getTrustStorePath(), config.getTrustStorePassword());
-        var trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(trustStore);
-        builder.trustManager(trustManagerFactory);
-
-        var keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-
-        if (setKeystore) {
-            log.debug("Loading keystore: {}: {}", config.getKeyStoreType(), config.getKeyStorePath());
-            var keyStore = SecurityUtils.loadKeyStore(
-                config.getKeyStoreType(), config.getKeyStorePath(), config.getKeyStorePassword());
-            keyManagerFactory.init(keyStore, config.getKeyStorePassword());
-            builder.keyManager(x509KeyManagerSelectedAlias(config, keyManagerFactory));
-        } else {
-            log.debug("ConnectionUtil.getSslContext - no keystore: using empty keystore");
-            var emptyKeystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            emptyKeystore.load(null, null);
-            keyManagerFactory.init(emptyKeystore, null);
-            builder.keyManager(keyManagerFactory);
-        }
-
-        if (!isHostnameVerificationEnabled(config)) {
-            log.debug("ConnectionUtil.getSslContext - NONSTRICT mode: disabling endpointIdentificationAlgorithm");
-            builder.endpointIdentificationAlgorithm(null);
-        }
-
-        return builder.build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public HttpClient getHttpClient(HttpConfig config, HttpClient httpClient, boolean useClientCert) throws UnrecoverableKeyException, CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {
-        var sslContextBuilder = SslProvider.builder().sslContext(ConnectionUtil.getSslContext(config, useClientCert));
-        log.debug("ConnectionUtil.getHttpClient - SSL config: verifySslCertificatesOfServices={}, nonStrictVerifySslCertificatesOfServices={}, hostnameVerificationEnabled={}, useClientCert={}",
-            config.isVerifySslCertificatesOfServices(),
-            config.isNonStrictVerifySslCertificatesOfServices(),
-            isHostnameVerificationEnabled(config),
-            useClientCert);
-        if (isHostnameVerificationEnabled(config)) {
-            log.debug("ConnectionUtil.getHttpClient - hostname verification enabled");
-            sslContextBuilder.handlerConfigurator(HttpClientSecurityUtils.HOSTNAME_VERIFICATION_CONFIGURER);
-        } else {
-            log.debug("ConnectionUtil.getHttpClient - hostname verification disabled");
-            sslContextBuilder.handlerConfigurator(handler -> {
-                var sslEngine = handler.engine();
-                var sslParameters = sslEngine.getSSLParameters();
-                sslParameters.setEndpointIdentificationAlgorithm(null);
-                sslEngine.setSSLParameters(sslParameters);
-            });
-        }
-        return httpClient
-            .resolver(DefaultAddressResolverGroup.INSTANCE)
-            .secure(sslContextBuilder.build());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean isHostnameVerificationEnabled(HttpConfig config) {
@@ -106,12 +55,13 @@ public class ConnectionUtil {
 
     @VisibleForTesting
     public X509KeyManager x509KeyManagerSelectedAlias(HttpConfig config, KeyManagerFactory keyManagerFactory) {
-        return new ConnectionUtil.X509KeyManagerSelectedAlias(keyManagerFactory, config.getKeyAlias());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static class X509KeyManagerSelectedAlias implements X509KeyManager {
 
         private final X509KeyManager originalKm;
+
         private final String keyAlias;
 
         public X509KeyManagerSelectedAlias(KeyManagerFactory keyManagerFactory, String keyAlias) {
@@ -121,40 +71,32 @@ public class ConnectionUtil {
 
         @Override
         public String[] getClientAliases(String keyType, Principal[] issuers) {
-            return originalKm.getClientAliases(keyType, issuers);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
-            if (keyAlias != null) {
-                return keyAlias;
-            }
-            return originalKm.chooseClientAlias(keyType, issuers, socket);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public String[] getServerAliases(String keyType, Principal[] issuers) {
-            return originalKm.getServerAliases(keyType, issuers);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket) {
-            if (keyAlias != null) {
-                return keyAlias;
-            }
-            return originalKm.chooseServerAlias(keyType, issuers, socket);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public X509Certificate[] getCertificateChain(String alias) {
-            return originalKm.getCertificateChain(alias);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public PrivateKey getPrivateKey(String alias) {
-            return originalKm.getPrivateKey(alias);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

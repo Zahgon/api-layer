@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,13 +33,6 @@ public class ApiDocRedirectController {
 
     @GetMapping(REDIRECT_DOC_URL)
     public ResponseEntity<Void> getDocWithRedirect() {
-        String location = UriComponentsBuilder.fromUriString(baseUrl)
-            .path(contextPath)
-            .path("/v3/api-docs/apiv2").toUriString();
-
-        return ResponseEntity.status(301)
-            .header("Location", location)
-            .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

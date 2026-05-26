@@ -7,17 +7,14 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-
 import java.security.KeyManagementException;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -29,14 +26,11 @@ public class ApimlSSLContextBuilder extends org.apache.hc.core5.ssl.SSLContextBu
     private Collection<TrustManager> trustManagers;
 
     @Override
-    protected void initSSLContext(SSLContext sslContext, Collection<KeyManager> keyManagers,
-            Collection<TrustManager> trustManagers, SecureRandom secureRandom) throws KeyManagementException {
-        super.initSSLContext(sslContext, keyManagers, trustManagers, secureRandom);
-        this.trustManagers = trustManagers;
+    protected void initSSLContext(SSLContext sslContext, Collection<KeyManager> keyManagers, Collection<TrustManager> trustManagers, SecureRandom secureRandom) throws KeyManagementException {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public static ApimlSSLContextBuilder create() {
-        return new ApimlSSLContextBuilder();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

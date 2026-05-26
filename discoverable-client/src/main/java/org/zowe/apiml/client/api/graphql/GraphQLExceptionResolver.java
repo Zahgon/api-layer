@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api.graphql;
 
 import graphql.GraphQLError;
@@ -24,20 +23,6 @@ public class GraphQLExceptionResolver extends DataFetcherExceptionResolverAdapte
 
     @Override
     protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
-        if (ex instanceof BookAlreadyExistsException || ex instanceof BookNotFoundException) {
-            return GraphqlErrorBuilder.newError()
-                .errorType(ErrorType.BAD_REQUEST)
-                .message(ex.getMessage())
-                .path(env.getExecutionStepInfo().getPath())
-                .location(env.getField().getSourceLocation())
-                .build();
-        } else {
-            return GraphqlErrorBuilder.newError()
-                .errorType(ErrorType.INTERNAL_ERROR)
-                .message("An unexpected error occurred: " + ex.getMessage())
-                .path(env.getExecutionStepInfo().getPath())
-                .location(env.getField().getSourceLocation())
-                .build();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

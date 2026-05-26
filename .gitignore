@@ -132,3 +132,7 @@ deploy-apiml.sh
 
 tools/*
 otel/otel-collector/export/*.json
+
+.aider*
+.commit0_scripts/
+.github/workflows/

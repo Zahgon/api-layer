@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.zowe.apiml.discovery.metadata.MetadataDefaultsService;
 import org.zowe.apiml.discovery.metadata.MetadataTranslationService;
 import org.zowe.apiml.util.EurekaUtils;
-
 import java.util.Map;
 
 /**
@@ -29,6 +27,7 @@ import java.util.Map;
 public class EurekaInstanceRegisteredListener {
 
     private final MetadataTranslationService metadataTranslationService;
+
     private final MetadataDefaultsService metadataDefaultsService;
 
     /**
@@ -36,12 +35,6 @@ public class EurekaInstanceRegisteredListener {
      */
     @EventListener
     public void listen(EurekaInstanceRegisteredEvent event) {
-        final InstanceInfo instanceInfo = event.getInstanceInfo();
-        final Map<String, String> metadata = instanceInfo.getMetadata();
-        final String serviceId = EurekaUtils.getServiceIdFromInstanceId(instanceInfo.getInstanceId());
-
-        metadataTranslationService.translateMetadata(serviceId, metadata);
-        metadataDefaultsService.updateMetadata(serviceId, metadata);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

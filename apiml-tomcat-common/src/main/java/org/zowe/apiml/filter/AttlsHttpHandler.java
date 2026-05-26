@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -45,14 +44,12 @@ import org.zowe.commons.attls.StatConn;
 import org.zowe.commons.attls.UnknownEnumValueException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
@@ -63,9 +60,11 @@ public class AttlsHttpHandler implements BeanPostProcessor {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final MessageService messageService;
+
     private final LocaleContextResolver localeContextResolver;
 
     private final WebSessionManager sessionManager = new DefaultWebSessionManager();
+
     private final ServerCodecConfigurer serverCodecConfigurer = ServerCodecConfigurer.create();
 
     @Lazy
@@ -92,69 +91,20 @@ public class AttlsHttpHandler implements BeanPostProcessor {
     }
 
     Mono<Void> internalError(ServerHttpRequest request, ServerHttpResponse response) {
-        return writeError(request, response, getMessage("org.zowe.apiml.common.internalServerError"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     Mono<Void> unsecureError(ServerHttpRequest request, ServerHttpResponse response) {
-        return writeError(request, response, getMessage("org.zowe.apiml.security.common.attls.notSecure"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     ServerHttpRequest updateCertificate(ServerHttpRequest request, HttpServletRequest nativeRequest, byte[] rawCertificate) throws CertificateException {
-        if (ArrayUtils.isEmpty(rawCertificate)) {
-            return request;
-        }
-
-        var str = String.format("""
-            -----BEGIN CERTIFICATE-----
-            %s
-            -----END CERTIFICATE-----
-            """,
-            Base64.getEncoder().encodeToString(rawCertificate)
-        );
-
-        var certificate = (X509Certificate) CertificateFactory
-                .getInstance("X509")
-                .generateCertificate(new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8)));
-        var certs = new X509Certificate[]{certificate};
-        nativeRequest.setAttribute("jakarta.servlet.request.X509Certificate", certs);
-
-        var sslInfo = AttlsSslInfo.builder().peerCertificates(certs).build();
-        return request.mutate().sslInfo(sslInfo).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof HttpHandler httpHandler) {
-            return (HttpHandler) (request, response) -> {
-                log.debug("Initialize reactive AT-TLS handler");
-                try {
-                    var attlsContext = InboundAttls.get();
-
-                    if (attlsContext.getStatConn() != StatConn.SECURE) {
-                        return unsecureError(request, response);
-                    }
-
-                    var nativeRequest = ((AbstractServerHttpRequest) request).getNativeRequest();
-
-                    if (nativeRequest instanceof RequestFacade facade) {
-                        facade.setAttribute("attls", attlsContext);
-                        request = updateCertificate(request, facade, attlsContext.getCertificate());
-                    } else if (nativeRequest instanceof HttpServletRequestWrapper applicationRequest) {
-                        applicationRequest.setAttribute("attls", attlsContext);
-                        request = updateCertificate(request, applicationRequest, attlsContext.getCertificate());
-                    } else {
-                        log.error("Unsupported request type {}", nativeRequest.getClass());
-                    }
-                } catch (IoctlCallException | UnknownEnumValueException | ContextIsNotInitializedException |
-                         CertificateException | UnsatisfiedLinkError e) {
-                    log.error("Cannot verify AT-TLS status", e);
-                    return internalError(request, response);
-                }
-
-                return httpHandler.handle(request, response);
-            };
-        }
-        return bean;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Builder
@@ -162,8 +112,7 @@ public class AttlsHttpHandler implements BeanPostProcessor {
     static class AttlsSslInfo implements SslInfo {
 
         String sessionId;
+
         X509Certificate[] peerCertificates;
-
     }
-
 }

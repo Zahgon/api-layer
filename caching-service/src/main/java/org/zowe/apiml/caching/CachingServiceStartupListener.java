@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching;
 
 import jakarta.annotation.Nonnull;
@@ -25,8 +24,6 @@ public class CachingServiceStartupListener implements ApplicationListener<Applic
 
     @Override
     public void onApplicationEvent(@Nonnull final ApplicationReadyEvent event) {
-        handler.onServiceStartup("Caching Service",
-            ServiceStartupEventHandler.DEFAULT_DELAY_FACTOR);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml;
 
 import com.netflix.appinfo.DataCenterInfo;
@@ -69,10 +68,8 @@ import org.zowe.apiml.services.ServiceInfo;
 import org.zowe.apiml.zaas.security.login.Providers;
 import org.zowe.apiml.zaas.security.service.JwtSecurity;
 import reactor.core.publisher.Flux;
-
 import java.io.IOException;
 import java.util.*;
-
 import static org.zowe.apiml.services.ServiceInfoUtils.getInstances;
 import static org.zowe.apiml.services.ServiceInfoUtils.getStatus;
 
@@ -80,33 +77,25 @@ import static org.zowe.apiml.services.ServiceInfoUtils.getStatus;
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties
-@DependsOn(value = {"gatewayHealthIndicator"})
+@DependsOn(value = { "gatewayHealthIndicator" })
 @Slf4j
-@OpenAPIDefinition(
-    security = {
-        @SecurityRequirement(name = "LoginBasicAuth"),
-        @SecurityRequirement(name = "ClientCert")
-    },
-    info = @Info(title = "API Mediation Layer", description = "The API Mediation Layer REST API.")
-)
-@SecurityScheme(
-    name = "LoginBasicAuth",
-    type = SecuritySchemeType.HTTP,
-    scheme = "basic"
-)
-@SecurityScheme(
-    type = SecuritySchemeType.MUTUALTLS,
-    name = "ClientCert",
-    description = "Client certificate X509"
-)
+@OpenAPIDefinition(security = { @SecurityRequirement(name = "LoginBasicAuth"), @SecurityRequirement(name = "ClientCert") }, info = @Info(title = "API Mediation Layer", description = "The API Mediation Layer REST API."))
+@SecurityScheme(name = "LoginBasicAuth", type = SecuritySchemeType.HTTP, scheme = "basic")
+@SecurityScheme(type = SecuritySchemeType.MUTUALTLS, name = "ClientCert", description = "Client certificate X509")
 public class ModulithConfig {
 
     private final ApplicationContext applicationContext;
+
     private final Map<String, InstanceInfo> instances = new HashMap<>();
+
     private final GatewayEurekaInstanceConfigBean eurekaInstanceGw;
+
     private final CatalogEurekaInstanceConfigBean catalogEurekaInstanceConfigBean;
+
     private final EurekaClientConfig eurekaConfig;
+
     private final CachingServiceEurekaInstanceConfigBean cachingServiceEurekaInstanceConfigBean;
+
     private final ApplicationEventPublisher eventPublisher;
 
     private final Timer timer = new Timer("PeerReplicated-StaticServices");
@@ -134,9 +123,7 @@ public class ModulithConfig {
 
     @Bean
     ApplicationInfo applicationInfo() {
-        return ApplicationInfo.builder()
-            .isModulith(true)
-            .authServiceId(CoreService.GATEWAY.getServiceId()).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private int getPort(String serviceId) {
@@ -145,250 +132,93 @@ public class ModulithConfig {
 
     private InstanceInfo getInstanceInfo(String serviceId) {
         int port = getPort(serviceId);
-
-        var leaseInfo = LeaseInfo.Builder.newBuilder()
-            .setDurationInSecs(90)
-            .setRegistrationTimestamp(System.currentTimeMillis())
-            .setRenewalTimestamp(System.currentTimeMillis())
-            .setRenewalIntervalInSecs(30)
-            .setServiceUpTimestamp(System.currentTimeMillis())
-            .build();
-
-
-        Map<String, String> metadata = switch (serviceId) {
-            case "gateway" -> eurekaInstanceGw.getMetadataMap();
-            case "cachingservice" -> cachingServiceEurekaInstanceConfigBean.getMetadataMap();
-            case "apicatalog" -> {
-                metadata = catalogEurekaInstanceConfigBean.getMetadataMap();
-                if (isServerAttlsEnabled) {
-                    var allowedOrigins = "https://" + hostname + ":" + port + "," + externalUrl;
-                    metadata.put("apiml.corsEnabled", "true");
-                    metadata.put("apiml.corsAllowedOrigins", allowedOrigins);
+        var leaseInfo = LeaseInfo.Builder.newBuilder().setDurationInSecs(90).setRegistrationTimestamp(System.currentTimeMillis()).setRenewalTimestamp(System.currentTimeMillis()).setRenewalIntervalInSecs(30).setServiceUpTimestamp(System.currentTimeMillis()).build();
+        Map<String, String> metadata = switch(serviceId) {
+            case "gateway" ->
+                eurekaInstanceGw.getMetadataMap();
+            case "cachingservice" ->
+                cachingServiceEurekaInstanceConfigBean.getMetadataMap();
+            case "apicatalog" ->
+                {
+                    metadata = catalogEurekaInstanceConfigBean.getMetadataMap();
+                    if (isServerAttlsEnabled) {
+                        var allowedOrigins = "https://" + hostname + ":" + port + "," + externalUrl;
+                        metadata.put("apiml.corsEnabled", "true");
+                        metadata.put("apiml.corsAllowedOrigins", allowedOrigins);
+                    }
+                    yield metadata;
                 }
-                yield metadata;
-            }
-            default -> new HashMap<>();
+            default ->
+                new HashMap<>();
         };
-
         String homePagePath = metadata.getOrDefault("apiml.homePagePath", "/");
-
         String scheme = "https";
         if (!https && !isServerAttlsEnabled) {
             scheme = "http";
         }
-
-        return InstanceInfo.Builder.newBuilder()
-            .setInstanceId(String.format("%s:%s:%d", hostname, serviceId, port))
-            .setAppName(serviceId)
-            .setHostName(hostname)
-            .setHomePageUrl(null, String.format("%s://%s:%d%s", scheme, hostname, port, homePagePath))
-            .setStatus(InstanceInfo.InstanceStatus.UP)
-            .setIPAddr(ipAddress)
-            .setPort(port)
-            .setSecurePort(port)
-            .enablePort(InstanceInfo.PortType.SECURE, https || isServerAttlsEnabled)
-            .enablePort(InstanceInfo.PortType.UNSECURE, !https && !isServerAttlsEnabled)
-            .setVIPAddress(serviceId)
-            .setDataCenterInfo(() -> DataCenterInfo.Name.MyOwn)
-            .setLeaseInfo(leaseInfo)
-            .setLastUpdatedTimestamp(System.currentTimeMillis())
-            .setMetadata(metadata)
-            .setVIPAddress(serviceId)
-            .build();
+        return InstanceInfo.Builder.newBuilder().setInstanceId(String.format("%s:%s:%d", hostname, serviceId, port)).setAppName(serviceId).setHostName(hostname).setHomePageUrl(null, String.format("%s://%s:%d%s", scheme, hostname, port, homePagePath)).setStatus(InstanceInfo.InstanceStatus.UP).setIPAddr(ipAddress).setPort(port).setSecurePort(port).enablePort(InstanceInfo.PortType.SECURE, https || isServerAttlsEnabled).enablePort(InstanceInfo.PortType.UNSECURE, !https && !isServerAttlsEnabled).setVIPAddress(serviceId).setDataCenterInfo(() -> DataCenterInfo.Name.MyOwn).setLeaseInfo(leaseInfo).setLastUpdatedTimestamp(System.currentTimeMillis()).setMetadata(metadata).setVIPAddress(serviceId).build();
     }
 
     static ApimlInstanceRegistry getRegistry() {
-        return Optional.ofNullable(EurekaServerContextHolder.getInstance())
-            .map(EurekaServerContextHolder::getServerContext)
-            .map(EurekaServerContext::getRegistry)
-            .map(ApimlInstanceRegistry.class::cast)
-            .orElse(null);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void createLocalInstances() {
-        instances.put(CoreService.GATEWAY.getServiceId(), getInstanceInfo(CoreService.GATEWAY.getServiceId()));
-        instances.put(CoreService.DISCOVERY.getServiceId(), getInstanceInfo(CoreService.DISCOVERY.getServiceId()));
-        instances.put(CoreService.CACHING.getServiceId(), getInstanceInfo(CoreService.CACHING.getServiceId()));
-        instances.put(CoreService.API_CATALOG.getServiceId(), getInstanceInfo(CoreService.API_CATALOG.getServiceId()));
-        EurekaServerContextHolder.initialize(applicationContext.getBean(EurekaServerContext.class));
-
-        ApimlInstanceRegistry registry = getRegistry();
-        instances.forEach((key, value) -> registry.registerStatically(instances.get(key), false, CoreService.GATEWAY.getServiceId().equalsIgnoreCase(key)));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationStart() {
-        createLocalInstances();
-
-        log.info("Initialize timer for static services peer-replicated heartbeats");
-        eventPublisher.publishEvent(new ApiCatalogServiceAvailableEvent(new Object()));
-
-        // This timer calls Eureka registry's peerReplicate method to accumulate all heartbeats of statically-onboarded services once
-        timer.scheduleAtFixedRate(new TimerTask() {
-
-            @Override
-            public void run() {
-                var registry = getRegistry();
-                if (registry != null) {
-                    registry.peerAwareHeartbeat(instances.get(CoreService.GATEWAY.getServiceId()));
-                } else {
-                    log.debug("Eureka registry is not available yet.");
-                }
-            }
-
-        }, eurekaConfig.getInstanceInfoReplicationIntervalSeconds() * 1000L, eurekaConfig.getInstanceInfoReplicationIntervalSeconds() * 1000L);
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @Scheduled(initialDelay = 3000, fixedRate = 20_000) // TODO find better solution but DON'T JUST REMOVE!
+    // TODO find better solution but DON'T JUST REMOVE!
+    @Scheduled(initialDelay = 3000, fixedRate = 20_000)
     public void periodicJwtInit() {
-        var jwtSec = applicationContext.getBean(JwtSecurity.class);
-        var providers = applicationContext.getBean(Providers.class);
-        if (providers.isZosfmUsed() && !jwtSec.getZosmfListener().isZosmfReady()) {
-            jwtSec.getZosmfListener().getZosmfRegisteredListener().onEvent(new CacheRefreshedEvent());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     ReactiveDiscoveryClient registryReactiveDiscoveryClient(DiscoveryClient registryDiscoveryClient) {
-        return new ReactiveDiscoveryClient() {
-            @Override
-            public String description() {
-                return "Reactive discovery client of local instances";
-            }
-
-            @Override
-            public Flux<ServiceInstance> getInstances(String serviceId) {
-                return Flux.fromIterable(registryDiscoveryClient.getInstances(serviceId));
-            }
-
-            @Override
-            public Flux<String> getServices() {
-                return Flux.fromIterable(registryDiscoveryClient.getServices());
-            }
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     RouteRefreshListener routeRefreshListener(ApplicationEventPublisher publisher) {
-        return new RouteRefreshListener(publisher);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     DiscoveryClient registryDiscoveryClient() {
-        return new DiscoveryClient() {
-            @Override
-            public String description() {
-                return "Discovery client of local instances";
-            }
-
-            @Override
-            public List<ServiceInstance> getInstances(String serviceId) {
-                var registry = getRegistry();
-                if (registry == null) {
-                    return Collections.emptyList();
-                }
-                return Optional.ofNullable(registry.getApplication(StringUtils.upperCase(serviceId)))
-                    .map(Application::getInstances)
-                    .orElse(Collections.emptyList())
-                    .stream()
-                    .map(EurekaServiceInstance::new)
-                    .map(ServiceInstance.class::cast)
-                    .toList();
-            }
-
-            @Override
-            public List<String> getServices() {
-                var registry = getRegistry();
-                if (registry == null) {
-                    return Collections.emptyList();
-                }
-
-                return Optional.ofNullable(registry.getApplications())
-                    .map(Applications::getRegisteredApplications)
-                    .map(applications -> applications.stream().map(Application::getName).distinct().toList())
-                    .orElse(List.of());
-            }
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @Primary
     MessageService messageService() {
-        MessageService messageService = YamlMessageServiceInstance.getInstance();
-        messageService.loadMessages("/utility-log-messages.yml");
-        messageService.loadMessages("/common-log-messages.yml");
-        messageService.loadMessages("/security-common-log-messages.yml");
-
-        messageService.loadMessages("/discovery-log-messages.yml");
-        messageService.loadMessages("/gateway-log-messages.yml");
-        messageService.loadMessages("/apicatalog-log-messages.yml");
-
-        messageService.loadMessages("/zaas-log-messages.yml");
-
-        messageService.loadMessages("/caching-log-messages.yml");
-        return messageService;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     public BasicInfoService basicInfoService(DiscoveryClient discoveryClient, EurekaMetadataParser eurekaMetadataParser) {
-
-        return new BasicInfoService(null, eurekaMetadataParser) {
-            @Override
-            public List<ServiceInfo> getServicesInfo() {
-                var serviceInfos = new ArrayList<ServiceInfo>();
-                for (var serviceId : discoveryClient.getServices()) {
-                    var instances = discoveryClient.getInstances(serviceId);
-                    var instanceInfos = ServicesInfoService.extractInstanceInfo(instances);
-                    serviceInfos.add(ServiceInfo.builder()
-                        .serviceId(serviceId)
-                        .status(getStatus(instanceInfos))
-                        .apiml(getApiml(instanceInfos))
-                        .instances(getInstances(instanceInfos))
-                        .build());
-                }
-                return serviceInfos;
-            }
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Bean
     @Primary
-    TomcatReactiveWebServerFactory tomcatReactiveWebServerWithFiltersFactory(
-        HttpHandler httpHandler,
-        List<PreFluxFilter> preFluxFilters, ObjectProvider<TomcatConnectorCustomizer> connectorCustomizers,
-        ObjectProvider<TomcatContextCustomizer> contextCustomizers,
-        ObjectProvider<TomcatProtocolHandlerCustomizer<?>> protocolHandlerCustomizers,
-        List<ServletContextAware> servletContextAwareListeners) {
-
-        var factory = new TomcatReactiveWebServerFactory() {
-            @Override
-            protected void prepareContext(Host host, TomcatHttpHandlerAdapter servlet) {
-                super.prepareContext(host, new ServletWithFilters(httpHandler, servlet, preFluxFilters));
-            }
-
-            @Override
-            protected void configureContext(Context context) {
-                servletContextAwareListeners.forEach(l -> l.setServletContext(context.getServletContext()));
-                super.configureContext(context);
-            }
-        };
-        factory.getTomcatConnectorCustomizers().addAll(connectorCustomizers.orderedStream().toList());
-        factory.getTomcatContextCustomizers().addAll(contextCustomizers.orderedStream().toList());
-        factory.getTomcatProtocolHandlerCustomizers().addAll(protocolHandlerCustomizers.orderedStream().toList());
-        return factory;
+    TomcatReactiveWebServerFactory tomcatReactiveWebServerWithFiltersFactory(HttpHandler httpHandler, List<PreFluxFilter> preFluxFilters, ObjectProvider<TomcatConnectorCustomizer> connectorCustomizers, ObjectProvider<TomcatContextCustomizer> contextCustomizers, ObjectProvider<TomcatProtocolHandlerCustomizer<?>> protocolHandlerCustomizers, List<ServletContextAware> servletContextAwareListeners) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static class ServletWithFilters extends TomcatHttpHandlerAdapter {
 
         private final Servlet servlet;
+
         private final FilterChain filterChain;
 
-        public ServletWithFilters(HttpHandler httpHandler, TomcatHttpHandlerAdapter servlet,
-                                  Collection<? extends Filter> filters) {
+        public ServletWithFilters(HttpHandler httpHandler, TomcatHttpHandlerAdapter servlet, Collection<? extends Filter> filters) {
             super(httpHandler);
             this.servlet = servlet;
-
             FilterChain chain = servlet::service;
             for (var filter : filters) {
                 chain = createFilterChain(filter, chain);
@@ -397,38 +227,32 @@ public class ModulithConfig {
         }
 
         FilterChain createFilterChain(Filter filter, FilterChain filterChain) {
-            return (request, response) -> filter.doFilter(request, response, filterChain);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public void init(ServletConfig config) {
-            try {
-                servlet.init(config);
-            } catch (ServletException e) {
-                throw new RuntimeException(e);
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public ServletConfig getServletConfig() {
-            return servlet.getServletConfig();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-            this.filterChain.doFilter(req, res);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public String getServletInfo() {
-            return servlet.getServletInfo();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public void destroy() {
-            servlet.destroy();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

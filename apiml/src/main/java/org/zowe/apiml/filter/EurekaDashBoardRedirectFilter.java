@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import jakarta.servlet.FilterChain;
@@ -16,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 
 /**
@@ -32,12 +30,6 @@ public class EurekaDashBoardRedirectFilter extends PreFluxFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (StringUtils.equals(request.getRequestURI(), "/")) {
-            request.getSession().getServletContext().getRequestDispatcher("/eureka").forward(request, response);
-        } else {
-            chain.doFilter(request, response);
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

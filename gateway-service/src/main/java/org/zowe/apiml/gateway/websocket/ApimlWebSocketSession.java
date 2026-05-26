@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.websocket;
 
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakeException;
@@ -35,25 +34,6 @@ public class ApimlWebSocketSession extends TomcatWebSocketSession {
 
     @Override
     public void onError(Throwable ex) {
-        if (this.completionSink != null) {
-            // Ignore result: can't overflow, ok if not first or no one listens
-            this.completionSink.tryEmitError(ex);
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("WebSocket session completed with error", ex);
-        } else if (logger.isInfoEnabled()) {
-            logger.info("WebSocket session completed with error: " + ex.getMessage());
-        }
-        // Jakarta implementation
-        if (ex.getCause() instanceof AuthenticationException) {
-            close(new CloseStatus(1003, "Invalid login credentials"));
-            return;
-        }
-        // Netty reactor implementation
-        if (ex instanceof WebSocketClientHandshakeException e && e.getMessage().contains(String.valueOf(HttpStatus.UNAUTHORIZED.value()))) {
-            close(new CloseStatus(1003, "Invalid login credentials"));
-            return;
-        }
-        close(CloseStatus.create(CloseStatus.SERVER_ERROR.getCode(), ex.getMessage()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

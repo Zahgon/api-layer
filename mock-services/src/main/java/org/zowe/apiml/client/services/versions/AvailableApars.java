@@ -7,17 +7,16 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.services.versions;
 
 import org.zowe.apiml.client.services.apars.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AvailableApars {
+
     private final Map<String, Apar> implementedApars = new HashMap<>();
 
     public AvailableApars(List<String> usernames, List<String> passwords, String jwtKeystorePath, Integer timeout) {
@@ -27,13 +26,6 @@ public class AvailableApars {
     }
 
     public List<Apar> getApars(List<String> names) {
-        ArrayList<Apar> result = new ArrayList<>();
-        for (String name : names) {
-            if (implementedApars.containsKey(name)) {
-                result.add(implementedApars.get(name));
-            }
-        }
-
-        return result;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.service.infinispan.config;
 
 import jakarta.annotation.PostConstruct;
@@ -41,7 +40,6 @@ import org.zowe.apiml.caching.service.infinispan.ApimlSslKeyExchange;
 import org.zowe.apiml.caching.service.infinispan.exception.InfinispanConfigException;
 import org.zowe.apiml.caching.service.infinispan.storage.InfinispanStorage;
 import org.zowe.apiml.config.ApplicationInfo;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -49,7 +47,6 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
 import static org.zowe.apiml.security.SecurityUtils.formatKeyringUrl;
 import static org.zowe.apiml.security.SecurityUtils.isKeyring;
 
@@ -62,10 +59,15 @@ public class InfinispanConfig implements InitializingBean {
     private static final String KEYRING_PASSWORD = "password";
 
     private static final String ZWE_HAINSTANCE_ID = "ZWE_haInstance_id";
+
     private static final String LOCK_ZOWE_INVALIDATED = "zoweInvalidatedTokenLock";
+
     public static final String CACHE_ZOWE = "zoweCache";
+
     public static final String CACHE_ZOWE_INVALIDATED_TOKEN = "zoweInvalidatedTokenCache";
+
     private static final long SMALL_CACHE_SIZE = 10;
+
     private static final long BIG_CACHE_SIZE = 1000;
 
     @Value("${caching.storage.infinispan.initialHosts}")
@@ -117,38 +119,20 @@ public class InfinispanConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        updateKeyring();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostConstruct
     void updateKeyring() {
-        if (isKeyring(keyStore)) {
-            keyStore = formatKeyringUrl(keyStore);
-            if (StringUtils.isBlank(keyStorePass)) keyStorePass = KEYRING_PASSWORD;
-        }
-        if (isKeyring(trustStore)) {
-            trustStore = formatKeyringUrl(trustStore);
-            if (StringUtils.isBlank(trustStorePass)) trustStorePass = KEYRING_PASSWORD;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static String getRootFolder() {
-        // using getenv().get is because of system compatibility (see non-case sensitive on Windows)
-        String instanceId = System.getenv().get(ZWE_HAINSTANCE_ID);
-        if (StringUtils.isBlank(instanceId)) {
-            instanceId = "localhost";
-        }
-
-        String workspaceFolder = System.getenv().get("ZWE_zowe_workspaceDirectory");
-        if (StringUtils.isBlank(workspaceFolder)) {
-            return Paths.get("caching-service", instanceId).toString();
-        } else {
-            return Paths.get(workspaceFolder, "caching-service", instanceId).toString();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getInfinispanConfigFile() {
-        return isServerAttlsEnabled ? "infinispan-attls.xml" : "infinispan.xml";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String loadInfinispanConfigFile(ResourceLoader resourceLoader) {
@@ -166,12 +150,7 @@ public class InfinispanConfig implements InitializingBean {
         String config = loadInfinispanConfigFile(resourceLoader);
         ConfigurationBuilderHolder holder = new ParserRegistry().parse(config, MediaType.APPLICATION_XML);
         holder.getGlobalConfigurationBuilder().globalState().persistentLocation(getRootFolder()).enable();
-        holder.newConfigurationBuilder("default")
-            .persistence()
-            .addSoftIndexFileStore()
-            .clustering()
-            .cacheMode(CacheMode.REPL_SYNC)
-            .hash().numSegments(numSegments);
+        holder.newConfigurationBuilder("default").persistence().addSoftIndexFileStore().clustering().cacheMode(CacheMode.REPL_SYNC).hash().numSegments(numSegments);
         holder.getGlobalConfigurationBuilder().defaultCacheName("default");
         holder.getGlobalConfigurationBuilder().transport().stack("prod").distributedSyncTimeout(distributedSyncTimeout, TimeUnit.SECONDS);
         return holder;
@@ -179,68 +158,19 @@ public class InfinispanConfig implements InitializingBean {
 
     private ConfigurationBuilder getDistributedCacheConfig() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder
-            .encoding().mediaType(MediaType.APPLICATION_JBOSS_MARSHALLING_TYPE)
-            .persistence()
-            .addSoftIndexFileStore()
-            .clustering()
-            .cacheMode(CacheMode.REPL_SYNC)
-            .hash().numSegments(numSegments);
+        builder.encoding().mediaType(MediaType.APPLICATION_JBOSS_MARSHALLING_TYPE).persistence().addSoftIndexFileStore().clustering().cacheMode(CacheMode.REPL_SYNC).hash().numSegments(numSegments);
         return builder;
     }
 
     private ConfigurationBuilder getSimpleCacheConfig(long maxCount, Duration lifeSpan) {
         ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder
-            .encoding().mediaType(MediaType.APPLICATION_JBOSS_MARSHALLING_TYPE)
-            .memory()
-            .storage(StorageType.OFF_HEAP)
-            .maxCount(maxCount)
-            .simpleCache(true)
-            .expiration()
-            .lifespan(lifeSpan.toSeconds(), TimeUnit.SECONDS);
+        builder.encoding().mediaType(MediaType.APPLICATION_JBOSS_MARSHALLING_TYPE).memory().storage(StorageType.OFF_HEAP).maxCount(maxCount).simpleCache(true).expiration().lifespan(lifeSpan.toSeconds(), TimeUnit.SECONDS);
         return builder;
     }
 
     @Bean(destroyMethod = "stop")
     LazyCacheManager cacheManager(ResourceLoader resourceLoader, ApplicationInfo applicationInfo) {
-        System.setProperty("jgroups.tcpping.initial_hosts", initialHosts);
-        System.setProperty("jgroups.bind.port", port);
-        System.setProperty("jgroups.bind.address", address);
-        System.setProperty("jgroups.keyExchange.socketTimeout", keyExchangeSocketTimeout);
-        System.setProperty("jgroups.keyExchange.port", keyExchangePort);
-        System.setProperty("jgroups.tcp.diag.enabled", String.valueOf(Boolean.parseBoolean(tcpDiagEnabled)));
-
-        System.setProperty("infinispan.ssl.keyStoreType", keyStoreType);
-        System.setProperty("infinispan.ssl.keyStore", keyStore);
-        System.setProperty("infinispan.ssl.keyStorePassword", keyStorePass);
-
-        System.setProperty("infinispan.ssl.trustStoreType", trustStoreType);
-        System.setProperty("infinispan.ssl.trustStore", trustStore);
-        System.setProperty("infinispan.ssl.trustStorePassword", trustStorePass);
-
-        var caches = new HashMap<String, ConfigurationBuilder>();
-        caches.put(CACHE_ZOWE, getDistributedCacheConfig());
-        caches.put(CACHE_ZOWE_INVALIDATED_TOKEN, getDistributedCacheConfig());
-
-        if (applicationInfo.isModulith()) {
-            caches.put("invalidatedJwtTokens", getDistributedCacheConfig());
-
-            // 1 minute to force zosmf tokens validation against zosmf for invalidated tokens
-            caches.put("validatedJwtTokens", getSimpleCacheConfig(BIG_CACHE_SIZE, Duration.ofMinutes(1)));
-
-            //Small local caches
-            caches.put("zosmfAuthenticationEndpoint", getSimpleCacheConfig(SMALL_CACHE_SIZE, Duration.ofHours(1)));
-            caches.put("zosmfInfo", getSimpleCacheConfig(SMALL_CACHE_SIZE, Duration.ofHours(1)));
-            caches.put("zosmfJwtEndpoint", getSimpleCacheConfig(SMALL_CACHE_SIZE, Duration.ofHours(1)));
-
-            //Big local caches
-            caches.put("trustedCertificates", getSimpleCacheConfig(BIG_CACHE_SIZE, Duration.ofHours(1)));
-            caches.put("parseOIDCToken", getSimpleCacheConfig(BIG_CACHE_SIZE, Duration.ofSeconds(20)));
-            caches.put("validationOIDCToken", getSimpleCacheConfig(BIG_CACHE_SIZE, Duration.ofSeconds(20)));
-        }
-
-        return new LazyCacheManager(getCacheManagerConfig(resourceLoader), caches);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ClusteredLock lock(CacheContainer cacheManager) {
@@ -248,11 +178,11 @@ public class InfinispanConfig implements InitializingBean {
             if (prev != null) {
                 return prev;
             }
-
             EmbeddedCacheManager cm = (cacheManager instanceof LazyCacheManager lazyCacheManager) ? lazyCacheManager.getOriginal() : (EmbeddedCacheManager) cacheManager;
             try {
                 ClusteredLockManager clm = EmbeddedClusteredLockManagerFactory.from(cm);
-                clm.defineLock(LOCK_ZOWE_INVALIDATED); // it can throw AvailabilityException
+                // it can throw AvailabilityException
+                clm.defineLock(LOCK_ZOWE_INVALIDATED);
                 return clm.get(LOCK_ZOWE_INVALIDATED);
             } catch (AvailabilityException | ClusteredLockException e) {
                 log.debug("Cannot obtain lock", e);
@@ -263,10 +193,6 @@ public class InfinispanConfig implements InitializingBean {
 
     @Bean
     public Storage storage(DefaultCacheManager cacheManager) {
-        return new InfinispanStorage(
-            cacheManager,
-            () -> lock(cacheManager)
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

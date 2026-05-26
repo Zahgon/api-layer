@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.mapping;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSource;
 import org.zowe.apiml.zaas.security.service.schema.source.X509AuthSource;
 import org.zowe.commons.usermap.CertificateResponse;
-
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
@@ -32,26 +30,6 @@ public class X509NativeMapper implements AuthenticationMapper {
 
     @Override
     public String mapToMainframeUserId(AuthSource authSource) {
-        if (authSource instanceof X509AuthSource) {
-            X509AuthSource x509AuthSource = (X509AuthSource)authSource;
-            X509Certificate certificate = x509AuthSource.getRawSource();
-            if (certificate != null) {
-                try {
-                   CertificateResponse response = nativeMapper.getUserIDForCertificate(certificate.getEncoded());
-                   var userId = response.getUserId();
-                   log.debug("Certificate {} mapped to the user {}", certificate.getSubjectX500Principal().getName(), userId);
-                   if (response.getRc() == 0 && StringUtils.isNotEmpty(userId)) {
-                       return userId;
-                   }
-                } catch (CertificateEncodingException e) {
-                    log.error("Can`t get encoded data from certificate", e);
-                }
-            } else {
-                log.warn("No certificate found in the authentication source.");
-            }
-        } else {
-            log.debug("The used authentication source type is {} and not X509", authSource.getType());
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

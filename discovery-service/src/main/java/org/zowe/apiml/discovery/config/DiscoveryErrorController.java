@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.config;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import java.util.List;
 import java.util.Map;
 
@@ -37,14 +35,9 @@ public class DiscoveryErrorController extends BasicErrorController {
     }
 
     @Override
-    @RequestMapping // NOSONAR - No security risk, the controller cleans body for specified endpoint patterns
+    // NOSONAR - No security risk, the controller cleans body for specified endpoint patterns
+    @RequestMapping
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
-        HttpStatus status = getStatus(request);
-        String originalUrl = String.valueOf(request.getAttribute("jakarta.servlet.error.request_uri"));
-        if ((status == HttpStatus.NOT_FOUND) && StringUtils.startsWith(originalUrl, "/eureka/apps/")) {
-            return new ResponseEntity<>(status);
-        }
-        return super.error(request);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

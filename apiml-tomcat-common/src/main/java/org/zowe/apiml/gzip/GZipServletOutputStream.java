@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gzip;
 
 import jakarta.servlet.ServletOutputStream;
@@ -26,38 +25,36 @@ public class GZipServletOutputStream extends ServletOutputStream {
 
     @Override
     public void close() throws IOException {
-        this.gzipOutputStream.close();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void flush() throws IOException {
-        this.gzipOutputStream.flush();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void write(byte[] b) throws IOException {
-        this.gzipOutputStream.write(b);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        this.gzipOutputStream.write(b, off, len);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void write(int b) throws IOException {
-        this.gzipOutputStream.write(b);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean isReady() {
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setWriteListener(WriteListener listener) {
-//        writer is never used in this case
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
-
 }

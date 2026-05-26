@@ -7,9 +7,7 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.services;
-
 
 import com.fasterxml.jackson.core.Version;
 import com.netflix.appinfo.InstanceInfo;
@@ -20,10 +18,8 @@ import org.springframework.util.ObjectUtils;
 import org.zowe.apiml.auth.Authentication;
 import org.zowe.apiml.config.ApiInfo;
 import org.zowe.apiml.eurekaservice.client.util.EurekaMetadataParser;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.minBy;
 import static org.zowe.apiml.constants.EurekaMetadataDefinition.SERVICE_DESCRIPTION;
@@ -40,31 +36,20 @@ import static org.zowe.apiml.services.ServiceInfoUtils.*;
 public class BasicInfoService {
 
     private final EurekaClient eurekaClient;
+
     private final EurekaMetadataParser eurekaMetadataParser;
 
     public List<ServiceInfo> getServicesInfo() {
-        return eurekaClient.getApplications().getRegisteredApplications()
-                .stream().map(this::getServiceInfo)
-                .collect(Collectors.toCollection(LinkedList::new));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ServiceInfo getServiceInfo(Application application) {
         String serviceId = application.getName().toLowerCase();
-
         List<InstanceInfo> appInstances = application.getInstances();
         if (ObjectUtils.isEmpty(appInstances)) {
-            return ServiceInfo.builder()
-                    .serviceId(serviceId)
-                    .status(InstanceInfo.InstanceStatus.DOWN)
-                    .build();
+            return ServiceInfo.builder().serviceId(serviceId).status(InstanceInfo.InstanceStatus.DOWN).build();
         }
-
-        return ServiceInfo.builder()
-                .serviceId(serviceId)
-                .status(getStatus(appInstances))
-                .apiml(getApiml(appInstances))
-                .instances(getInstances(appInstances))
-                .build();
+        return ServiceInfo.builder().serviceId(serviceId).status(getStatus(appInstances)).apiml(getApiml(appInstances)).instances(getInstances(appInstances)).build();
     }
 
     /**
@@ -73,13 +58,8 @@ public class BasicInfoService {
      * - getApiInfos
      */
     public ServiceInfo.Apiml getApiml(List<InstanceInfo> appInstances) {
-        return ServiceInfo.Apiml.builder()
-                .apiInfo(getApiInfos(appInstances))
-                .service(getService(appInstances))
-                .authentication(getAuthentication(appInstances))
-                .build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * simplified version, following part is excluded:
@@ -87,11 +67,7 @@ public class BasicInfoService {
      */
     private ServiceInfo.Service getService(List<InstanceInfo> appInstances) {
         InstanceInfo instanceInfo = getInstanceWithHighestVersion(appInstances);
-
-        return ServiceInfo.Service.builder()
-                .title(instanceInfo.getMetadata().get(SERVICE_TITLE))
-                .description(instanceInfo.getMetadata().get(SERVICE_DESCRIPTION))
-                .build();
+        return ServiceInfo.Service.builder().title(instanceInfo.getMetadata().get(SERVICE_TITLE)).description(instanceInfo.getMetadata().get(SERVICE_DESCRIPTION)).build();
     }
 
     /**
@@ -100,41 +76,16 @@ public class BasicInfoService {
      * - swaggerUrl
      */
     private List<ServiceInfo.ApiInfoExtended> getApiInfos(List<InstanceInfo> appInstances) {
-        return appInstances.stream()
-                .map(instanceInfo -> new AbstractMap.SimpleEntry<>(instanceInfo, eurekaMetadataParser.parseApiInfo(instanceInfo.getMetadata())))
-                .flatMap(entry -> entry.getValue().stream()
-                        .map(apiInfo -> ApiInfoExtended.builder()
-                                .apiId(apiInfo.getApiId())
-                                .basePath(getBasePath(apiInfo, entry.getKey()))
-                                .gatewayUrl(apiInfo.getGatewayUrl())
-                                .documentationUrl(apiInfo.getDocumentationUrl())
-                                .version(apiInfo.getVersion())
-                                .codeSnippet(apiInfo.getCodeSnippet())
-                                .isDefaultApi(apiInfo.isDefaultApi())
-                                .build()))
-                .collect(groupingBy(
-                        apiInfo -> new AbstractMap.SimpleEntry<>(apiInfo.getApiId(), getMajorVersion(apiInfo)),
-                        minBy(Comparator.comparingInt(ServiceInfoUtils::getMajorVersion))
-                ))
-                .values()
-                .stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        return appInstances.stream().map(instanceInfo -> new AbstractMap.SimpleEntry<>(instanceInfo, eurekaMetadataParser.parseApiInfo(instanceInfo.getMetadata()))).flatMap(entry -> entry.getValue().stream().map(apiInfo -> ApiInfoExtended.builder().apiId(apiInfo.getApiId()).basePath(getBasePath(apiInfo, entry.getKey())).gatewayUrl(apiInfo.getGatewayUrl()).documentationUrl(apiInfo.getDocumentationUrl()).version(apiInfo.getVersion()).codeSnippet(apiInfo.getCodeSnippet()).isDefaultApi(apiInfo.isDefaultApi()).build())).collect(groupingBy(apiInfo -> new AbstractMap.SimpleEntry<>(apiInfo.getApiId(), getMajorVersion(apiInfo)), minBy(Comparator.comparingInt(ServiceInfoUtils::getMajorVersion)))).values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     private List<Authentication> getAuthentication(List<InstanceInfo> appInstances) {
-        return appInstances.stream()
-                .map(instanceInfo -> eurekaMetadataParser.parseAuthentication(instanceInfo.getMetadata()))
-                .filter(a -> !a.isEmpty())
-                .distinct()
-            .toList();
+        return appInstances.stream().map(instanceInfo -> eurekaMetadataParser.parseAuthentication(instanceInfo.getMetadata())).filter(a -> !a.isEmpty()).distinct().toList();
     }
 
     private InstanceInfo getInstanceWithHighestVersion(List<InstanceInfo> appInstances) {
         InstanceInfo instanceInfo = appInstances.get(0);
         Version highestVersion = Version.unknownVersion();
-
         for (InstanceInfo currentInfo : appInstances) {
             List<ApiInfo> apiInfoList = eurekaMetadataParser.parseApiInfo(currentInfo.getMetadata());
             for (ApiInfo apiInfo : apiInfoList) {

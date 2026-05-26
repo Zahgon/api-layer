@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.caching.api;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +28,6 @@ import org.zowe.apiml.config.ApplicationInfo;
 import org.zowe.apiml.message.core.Message;
 import org.zowe.apiml.message.core.MessageService;
 import reactor.core.publisher.Mono;
-
 import java.util.Optional;
 
 @Slf4j
@@ -37,43 +35,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/cachingservice/api/v1")
 public class CachingController {
+
     private final Storage storage;
+
     private final MessageService messageService;
 
     @Autowired(required = false)
     ApplicationInfo applicationInfo;
 
-
-    @GetMapping(value = {"/cache", "/cache/"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Retrieves all values in the cache",
-        description = "Values returned for the calling service")
+    @GetMapping(value = { "/cache", "/cache/" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Retrieves all values in the cache", description = "Values returned for the calling service")
     @ResponseBody
     public Mono<ResponseEntity<Object>> getAllValues(ServerHttpRequest request) {
-        return Mono.fromCallable(() -> getServiceId(request).<ResponseEntity<Object>>map(
-            s -> {
-                try {
-                    return new ResponseEntity<>(storage.readForService(s), HttpStatus.OK);
-                } catch (Exception exception) {
-                    return handleInternalError(exception, request);
-                }
-            }
-        ).orElseGet(this::getUnauthorizedResponse));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @DeleteMapping(value = {"/cache", "/cache/"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete all values for service from the cache",
-        description = "Will delete all key-value pairs for specific service")
+    @DeleteMapping(value = { "/cache", "/cache/" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete all values for service from the cache", description = "Will delete all key-value pairs for specific service")
     public Mono<ResponseEntity<Object>> deleteAllValues(ServerHttpRequest request) {
-        return Mono.fromCallable(() -> getServiceId(request).map(
-            s -> {
-                try {
-                    storage.deleteForService(s);
-                    return new ResponseEntity<>(HttpStatus.OK);
-                } catch (Exception exception) {
-                    return handleInternalError(exception, request);
-                }
-            }
-        ).orElseGet(this::getUnauthorizedResponse));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ResponseEntity<Object> getUnauthorizedResponse() {
@@ -83,36 +63,28 @@ public class CachingController {
     }
 
     @GetMapping(value = "/cache/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Retrieves a specific value in the cache",
-        description = "Value returned is for the provided {key}")
+    @Operation(summary = "Retrieves a specific value in the cache", description = "Value returned is for the provided {key}")
     @ResponseBody
     public Mono<ResponseEntity<Object>> getValue(@PathVariable String key, ServerHttpRequest request) {
-        return Mono.fromCallable(() -> keyRequest(storage::read,
-            key, request, HttpStatus.OK));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @DeleteMapping(value = "/cache/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete key from the cache",
-        description = "Will delete key-value pair for the provided {key}")
+    @Operation(summary = "Delete key from the cache", description = "Will delete key-value pair for the provided {key}")
     public Mono<ResponseEntity<Object>> delete(@PathVariable String key, ServerHttpRequest request) {
-        return Mono.fromCallable(() -> keyRequest(storage::delete,
-            key, request, HttpStatus.NO_CONTENT));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @PostMapping(value = {"/cache", "/cache/"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create a new key in the cache",
-        description = "A new key-value pair will be added to the cache")
+    @PostMapping(value = { "/cache", "/cache/" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create a new key in the cache", description = "A new key-value pair will be added to the cache")
     public Mono<ResponseEntity<Object>> createKey(@RequestBody KeyValue keyValue, ServerHttpRequest request) {
-        return Mono.fromCallable(() -> keyValueRequest(storage::create,
-            keyValue, request, HttpStatus.CREATED));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostMapping(value = "/cache-list/{mapKey}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Add a new item in the cache map",
-        description = "A new key-value pair will be added to the specific cache map with given map key.")
+    @Operation(summary = "Add a new item in the cache map", description = "A new key-value pair will be added to the specific cache map with given map key.")
     public Mono<ResponseEntity<Object>> storeMapItem(@PathVariable String mapKey, @RequestBody KeyValue keyValue, ServerHttpRequest request) {
-        return Mono.fromCallable(() -> mapKeyValueRequest(storage::storeMapItem,
-            mapKey, keyValue, request, HttpStatus.CREATED));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private boolean isStorageIncompatible(Exception exception) {
@@ -124,87 +96,36 @@ public class CachingController {
     }
 
     @GetMapping(value = "/cache-list/{mapKey}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Retrieves all the items in the cache map",
-        description = "Values returned for the calling service and specific cache map.")
+    @Operation(summary = "Retrieves all the items in the cache map", description = "Values returned for the calling service and specific cache map.")
     @ResponseBody
     public Mono<ResponseEntity<Object>> getAllMapItems(@PathVariable String mapKey, ServerHttpRequest request) {
-        return Mono.fromCallable(() -> getServiceId(request).<ResponseEntity<Object>>map(
-            s -> {
-                log.debug("Storing for serviceId: {}", s);
-                try {
-                    return new ResponseEntity<>(storage.getAllMapItems(s, mapKey), HttpStatus.OK);
-                } catch (Exception exception) {
-                    if (isStorageIncompatible(exception)) {
-                        return handleIncompatibleStorageMethod(exception, request);
-                    }
-                    return handleInternalError(exception, request);
-                }
-            }
-        ).orElseGet(this::getUnauthorizedResponse));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @GetMapping(value = {"/cache-list", "/cache-list/"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Retrieves all the maps in the cache",
-        description = "Values returned for the calling service")
+    @GetMapping(value = { "/cache-list", "/cache-list/" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Retrieves all the maps in the cache", description = "Values returned for the calling service")
     @ResponseBody
     public Mono<ResponseEntity<Object>> getAllMaps(ServerHttpRequest request) {
-        return Mono.fromCallable(() -> getServiceId(request).<ResponseEntity<Object>>map(
-            s -> {
-                log.debug("Get all for serviceId: {}", s);
-                try {
-                    return new ResponseEntity<>(storage.getAllMaps(s), HttpStatus.OK);
-                } catch (Exception exception) {
-                    if (isStorageIncompatible(exception)) {
-                        return handleIncompatibleStorageMethod(exception, request);
-                    }
-                    return handleInternalError(exception, request);
-                }
-            }
-        ).orElseGet(this::getUnauthorizedResponse));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @DeleteMapping(value = "/cache-list/evict/rules/{mapKey}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete a record from a rules map in the cache",
-        description = "Will delete a key-value pair from a specific rules map")
+    @Operation(summary = "Delete a record from a rules map in the cache", description = "Will delete a key-value pair from a specific rules map")
     public Mono<ResponseEntity<Object>> evictRules(@PathVariable String mapKey, ServerHttpRequest request) {
-        return Mono.fromCallable(() -> getServiceId(request).map(
-            s -> {
-                log.debug("Delete record for serviceId: {}", s);
-                try {
-                    storage.removeNonRelevantRules(s, mapKey);
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                } catch (Exception exception) {
-                    return handleInternalError(exception, request);
-                }
-            }
-        ).orElseGet(this::getUnauthorizedResponse));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @DeleteMapping(value = "/cache-list/evict/tokens/{mapKey}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete a record from an invalid tokens map in the cache",
-        description = "Will delete a key-value pair from a specific tokens map")
+    @Operation(summary = "Delete a record from an invalid tokens map in the cache", description = "Will delete a key-value pair from a specific tokens map")
     public Mono<ResponseEntity<Object>> evictTokens(@PathVariable String mapKey, ServerHttpRequest request) {
-        return Mono.fromCallable(() -> getServiceId(request).map(
-            s -> {
-                log.debug("Evict tokens for serviceId: {}", s);
-                try {
-                    storage.removeNonRelevantTokens(s, mapKey);
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                } catch (Exception exception) {
-                    return handleInternalError(exception, request);
-                }
-            }
-        ).orElseGet(this::getUnauthorizedResponse));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @PutMapping(value = {"/cache", "/cache/"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update key in the cache",
-        description = "Value at the key in the provided key-value pair will be updated to the provided value")
+    @PutMapping(value = { "/cache", "/cache/" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update key in the cache", description = "Value at the key in the provided key-value pair will be updated to the provided value")
     public Mono<ResponseEntity<Object>> update(@RequestBody KeyValue keyValue, ServerHttpRequest request) {
-        return Mono.fromCallable(() -> keyValueRequest(storage::update,
-            keyValue, request, HttpStatus.NO_CONTENT));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     private ResponseEntity<Object> exceptionToResponse(StorageException exception) {
         log.debug("Storage exception", exception);
@@ -227,9 +148,7 @@ public class CachingController {
             if (key == null) {
                 keyNotInCache();
             }
-
             KeyValue pair = keyOperation.storageRequest(serviceId.get(), key);
-
             return new ResponseEntity<>(pair, successStatus);
         } catch (StorageException exception) {
             return exceptionToResponse(exception);
@@ -244,18 +163,14 @@ public class CachingController {
      * Do the storage operation passed in as Lambda
      * Properly handle and package Exceptions.
      */
-    private ResponseEntity<Object> keyValueRequest(KeyValueOperation keyValueOperation, KeyValue keyValue,
-                                                   ServerHttpRequest request, HttpStatus successStatus) {
+    private ResponseEntity<Object> keyValueRequest(KeyValueOperation keyValueOperation, KeyValue keyValue, ServerHttpRequest request, HttpStatus successStatus) {
         Optional<String> serviceId = getServiceId(request);
         if (serviceId.isEmpty()) {
             return getUnauthorizedResponse();
         }
-
         try {
             checkForInvalidPayload(keyValue);
-
             keyValueOperation.storageRequest(serviceId.get(), keyValue);
-
             return new ResponseEntity<>(successStatus);
         } catch (StorageException exception) {
             return exceptionToResponse(exception);
@@ -264,19 +179,15 @@ public class CachingController {
         }
     }
 
-    private ResponseEntity<Object> mapKeyValueRequest(MapKeyValueOperation operation, String mapKey, KeyValue keyValue,
-                                                      ServerHttpRequest request, HttpStatus successStatus) {
+    private ResponseEntity<Object> mapKeyValueRequest(MapKeyValueOperation operation, String mapKey, KeyValue keyValue, ServerHttpRequest request, HttpStatus successStatus) {
         Optional<String> serviceId = getServiceId(request);
         if (serviceId.isEmpty()) {
             return getUnauthorizedResponse();
         }
-
         try {
             log.debug("All map for serviceId: {}", serviceId.get());
             checkForInvalidPayload(keyValue);
-
             operation.storageRequest(serviceId.get(), mapKey, keyValue);
-
             return new ResponseEntity<>(successStatus);
         } catch (StorageException exception) {
             return exceptionToResponse(exception);
@@ -288,11 +199,9 @@ public class CachingController {
     private Optional<String> getServiceId(ServerHttpRequest request) {
         Optional<String> certificateServiceId = getCertificateServiceId(request);
         Optional<String> specificServiceId = getHeader(request, "X-CS-Service-ID");
-
         if (certificateServiceId.isPresent() && specificServiceId.isPresent()) {
             return Optional.of(certificateServiceId.get() + ", SERVICE=" + specificServiceId.get());
         }
-
         return specificServiceId.or(() -> certificateServiceId);
     }
 
@@ -305,10 +214,7 @@ public class CachingController {
     }
 
     private Optional<String> extractFromSslInfo(ServerHttpRequest request) {
-        return Optional.ofNullable(request.getSslInfo())
-            .map(SslInfo::getPeerCertificates)
-            .filter(certs -> certs.length > 0)
-            .map(certs -> certs[0].getSubjectX500Principal().getName());
+        return Optional.ofNullable(request.getSslInfo()).map(SslInfo::getPeerCertificates).filter(certs -> certs.length > 0).map(certs -> certs[0].getSubjectX500Principal().getName());
     }
 
     private Optional<String> getHeader(ServerHttpRequest request, String headerName) {
@@ -339,19 +245,16 @@ public class CachingController {
     }
 
     private StorageException invalidPayloadException(String keyValue, String message) {
-        return new StorageException(Messages.INVALID_PAYLOAD.getKey(), Messages.INVALID_PAYLOAD.getStatus(),
-            keyValue, message);
+        return new StorageException(Messages.INVALID_PAYLOAD.getKey(), Messages.INVALID_PAYLOAD.getStatus(), keyValue, message);
     }
 
     private void checkForInvalidPayload(KeyValue keyValue) {
         if (keyValue == null) {
             throw invalidPayloadException(null, "No KeyValue provided in the payload");
         }
-
         if (keyValue.getValue() == null) {
             throw invalidPayloadException(keyValue.toString(), "No value provided in the payload");
         }
-
         if (keyValue.getKey() == null) {
             throw invalidPayloadException(keyValue.toString(), "No key provided in the payload");
         }
@@ -359,16 +262,19 @@ public class CachingController {
 
     @FunctionalInterface
     interface KeyOperation {
+
         KeyValue storageRequest(String serviceId, String key);
     }
 
     @FunctionalInterface
     interface KeyValueOperation {
+
         KeyValue storageRequest(String serviceId, KeyValue keyValue) throws StorageException;
     }
 
     @FunctionalInterface
     interface MapKeyValueOperation {
+
         KeyValue storageRequest(String serviceId, String mapKey, KeyValue keyValue);
     }
 }

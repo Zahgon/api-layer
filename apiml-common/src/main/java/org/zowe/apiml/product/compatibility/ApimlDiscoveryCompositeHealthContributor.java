@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.compatibility;
 
 import org.springframework.boot.actuate.health.CompositeHealthContributor;
@@ -17,7 +16,6 @@ import org.springframework.boot.actuate.health.NamedContributor;
 import org.springframework.cloud.client.discovery.health.DiscoveryHealthIndicator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -36,22 +34,22 @@ import java.util.stream.Collectors;
  */
 @Component
 public class ApimlDiscoveryCompositeHealthContributor implements CompositeHealthContributor {
+
     private final Map<String, DiscoveryHealthIndicator> indicators;
 
     public ApimlDiscoveryCompositeHealthContributor(Collection<DiscoveryHealthIndicator> indicators) {
         Assert.notNull(indicators, "'indicators' must not be null");
-        this.indicators = indicators.stream()
-            .collect(Collectors.toMap(DiscoveryHealthIndicator::getName, Function.identity()));
+        this.indicators = indicators.stream().collect(Collectors.toMap(DiscoveryHealthIndicator::getName, Function.identity()));
     }
 
     @Override
     public HealthContributor getContributor(String name) {
-        return asHealthIndicator(this.indicators.get(name));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Iterator<NamedContributor<HealthContributor>> iterator() {
-        return this.indicators.values().stream().map(this::asNamedContributor).iterator();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private NamedContributor<HealthContributor> asNamedContributor(DiscoveryHealthIndicator indicator) {
@@ -59,14 +57,13 @@ public class ApimlDiscoveryCompositeHealthContributor implements CompositeHealth
 
             @Override
             public String getName() {
-                return indicator.getName();
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             @Override
             public HealthIndicator getContributor() {
-                return asHealthIndicator(indicator);
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
-
         };
     }
 
@@ -75,6 +72,6 @@ public class ApimlDiscoveryCompositeHealthContributor implements CompositeHealth
     }
 
     public Map<String, DiscoveryHealthIndicator> getIndicators() {
-        return Collections.unmodifiableMap(indicators);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

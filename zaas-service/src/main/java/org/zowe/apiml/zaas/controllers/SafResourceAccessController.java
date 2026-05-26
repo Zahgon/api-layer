@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,47 +28,46 @@ import org.zowe.apiml.security.common.auth.saf.SafResourceAccessVerifying;
 @RestController
 @RequestMapping("/zaas")
 @RequiredArgsConstructor
-@SuppressWarnings("squid:S1075") // CONTEXT_PATH and FULL_CONTEXT_PATH don't need to be parametrized
+// CONTEXT_PATH and FULL_CONTEXT_PATH don't need to be parametrized
+@SuppressWarnings("squid:S1075")
 public class SafResourceAccessController {
 
     private final SafResourceAccessVerifying safResourceAccessVerifying;
+
     private final MessageService messageService;
+
     public static final String CONTEXT_PATH = "/auth/check";
+
     public static final String FULL_CONTEXT_PATH = "/zaas/auth/check";
 
     @PostMapping(path = CONTEXT_PATH, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiMessageView> hasSafAccess(@RequestBody CheckRequestModel request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (safResourceAccessVerifying
-            .hasSafResourceAccess(authentication, request.getResourceClass(),
-                request.getResourceName(), request.getAccessLevel().name())) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(
-                messageService.createMessage("org.zowe.apiml.security.unauthorized",authentication.getPrincipal().toString()).mapToView(),
-                HttpStatus.UNAUTHORIZED);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
     static class CheckRequestModel {
+
         private String resourceClass;
+
         private String resourceName;
+
         private AccessLevel accessLevel;
     }
 
     @Data
     @AllArgsConstructor
     static class ErrorInfo {
+
         private String error;
+
         private String exception;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({HttpMessageNotReadableException.class})
+    @ExceptionHandler({ HttpMessageNotReadableException.class })
     @ResponseBody
     public ErrorInfo errorDeserializingRequest(HttpServletRequest req, Exception ex) {
-        return new ErrorInfo("Failed to deserialize the request body", ex.getMessage());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

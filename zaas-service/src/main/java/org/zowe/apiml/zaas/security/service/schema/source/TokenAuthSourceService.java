@@ -7,12 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import org.zowe.apiml.message.core.MessageType;
 import org.zowe.apiml.message.log.ApimlLogger;
-
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.function.Function;
@@ -33,10 +31,6 @@ public abstract class TokenAuthSourceService implements AuthSourceService {
      * or Optional.empty() when no authentication source found.
      */
     public Optional<AuthSource> getAuthSourceFromRequest(HttpServletRequest request) {
-        getLogger().log(MessageType.DEBUG, "Getting JWT token from request.");
-        Optional<String> authToken = getToken(request);
-        getLogger().log(MessageType.DEBUG, String.format("JWT token %s in request.", authToken.isPresent() ? "found" : "not found"));
-        return authToken.map(getMapper());
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

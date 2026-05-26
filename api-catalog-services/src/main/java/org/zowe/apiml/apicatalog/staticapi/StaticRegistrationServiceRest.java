@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.staticapi;
 
 import lombok.RequiredArgsConstructor;
@@ -21,12 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-
 import static org.apache.hc.core5.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -54,32 +51,11 @@ public class StaticRegistrationServiceRest implements StaticRegistrationService 
 
     @Override
     public Mono<StaticAPIResponse> refresh() {
-        return Flux.fromIterable(getDiscoveryServiceUrls())
-            .flatMap(uri -> webClientClientCert
-                .post().uri(uri)
-                .header(ACCEPT, APPLICATION_JSON_VALUE)
-                .headers(headers -> {
-                    boolean isHttp = uri.startsWith("http://");
-                    if (isHttp && !isServerAttlsEnabled) {
-                        String basicToken = "Basic " + Base64.getEncoder().encodeToString((eurekaUserid + ":" + eurekaPassword).getBytes());
-                        headers.add(HttpHeaders.AUTHORIZATION, basicToken);
-                    }
-                })
-                .exchangeToMono(response -> response
-                    .bodyToMono(String.class)
-                    .flatMap(body -> (response.statusCode().is2xxSuccessful() || StringUtils.isNotBlank(body)) ?
-                        Mono.just(new StaticAPIResponse(response.statusCode().value(), body)) : Mono.empty()
-                    )
-                )
-                .doOnError(IOException.class, e -> log.debug("Error refreshing static APIs from {}, error message: {}", uri, e.getMessage()))
-            )
-            .switchIfEmpty(Flux.just(new StaticAPIResponse(500, "Error making static API refresh request to the Discovery Service")))
-            .next();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private List<String> getDiscoveryServiceUrls() {
         String[] discoveryServiceLocations = discoveryConfigProperties.getLocations();
-
         List<String> discoveryServiceUrls = new ArrayList<>();
         for (String location : discoveryServiceLocations) {
             location = location.replace("/eureka", "");
@@ -88,5 +64,4 @@ public class StaticRegistrationServiceRest implements StaticRegistrationService 
         }
         return discoveryServiceUrls;
     }
-
 }

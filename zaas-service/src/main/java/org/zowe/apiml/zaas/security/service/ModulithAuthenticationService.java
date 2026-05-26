@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -33,17 +32,12 @@ import org.zowe.apiml.zaas.security.service.zosmf.ZosmfService;
 @ConditionalOnBean(name = "modulithConfig")
 public class ModulithAuthenticationService extends AuthenticationService {
 
-    public ModulithAuthenticationService(ApplicationContext applicationContext,
-            AuthConfigurationProperties authConfigurationProperties, JwtSecurity jwtSecurityInitializer,
-            ZosmfService zosmfService, EurekaClient eurekaClient, RestTemplate restTemplate, CacheManager cacheManager,
-            CacheUtils cacheUtils) {
-        super(applicationContext, authConfigurationProperties, jwtSecurityInitializer, zosmfService, eurekaClient, restTemplate,
-                cacheManager, cacheUtils);
+    public ModulithAuthenticationService(ApplicationContext applicationContext, AuthConfigurationProperties authConfigurationProperties, JwtSecurity jwtSecurityInitializer, ZosmfService zosmfService, EurekaClient eurekaClient, RestTemplate restTemplate, CacheManager cacheManager, CacheUtils cacheUtils) {
+        super(applicationContext, authConfigurationProperties, jwtSecurityInitializer, zosmfService, eurekaClient, restTemplate, cacheManager, cacheUtils);
     }
 
     @Override
     protected String getInvalidateUrl(InstanceInfo instanceInfo, String jwtToken) {
-        return EurekaUtils.getUrl(instanceInfo) + "/gateway/api/v1/auth/invalidate/" + jwtToken;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

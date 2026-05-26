@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,10 +72,8 @@ import org.zowe.apiml.zaas.security.service.schema.source.AuthSourceService;
 import org.zowe.apiml.zaas.security.ticket.SuccessfulTicketHandler;
 import org.zowe.apiml.zaas.zaas.ExtractAuthSourceFilter;
 import org.zowe.apiml.zaas.zaas.ZaasAuthenticationFilter;
-
 import java.util.Collections;
 import java.util.Set;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
@@ -90,7 +87,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
  * <p>
  * Authentication providers are initialized per filterchain's needs. No unused auth providers on chains.
  */
-
 @ConditionalOnProperty(name = "apiml.security.filterChainConfiguration", havingValue = "new", matchIfMissing = false)
 @ConditionalOnMissingBean(name = "modulithConfig")
 @Configuration
@@ -100,20 +96,32 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class NewSecurityConfiguration {
 
     private final ObjectMapper securityObjectMapper;
+
     private final AuthenticationService authenticationService;
+
     private final AuthConfigurationProperties authConfigurationProperties;
+
     private final HandlerInitializer handlerInitializer;
 
     private final SuccessfulAccessTokenHandler successfulAuthAccessTokenHandler;
+
     private final SuccessfulQueryHandler successfulQueryHandler;
+
     private final SuccessfulTicketHandler successfulTicketHandler;
+
     private final SuccessfulRefreshHandler successfulRefreshHandler;
+
     private final FailedAccessTokenHandler failedAccessTokenHandler;
+
     @Qualifier("publicKeyCertificatesBase64")
     private final Set<String> publicKeyCertificatesBase64;
+
     private final CertificateValidator certificateValidator;
+
     private final X509AuthenticationProvider x509AuthenticationProvider;
+
     private final AuthSourceService authSourceService;
+
     private final AuthExceptionHandler authExceptionHandler;
 
     @Value("${server.attlsServer.enabled:false}")
@@ -140,53 +148,22 @@ public class NewSecurityConfiguration {
 
         @Bean
         SecurityFilterChain authenticationFunctionalityFilterChain(HttpSecurity http) throws Exception {
-            baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers( // no http method to catch all attempts to login and handle them here. Otherwise it falls to default filterchain and tries to route the calls, which doesnt make sense
-                authConfigurationProperties.getZaasLoginEndpoint(),
-                authConfigurationProperties.getZaasLogoutEndpoint()
-            )))
-                .authorizeHttpRequests(requests -> requests
-                        .anyRequest().permitAll())
-
-                .logout(logout -> logout
-                    .logoutRequestMatcher(new AntPathRequestMatcher(
-                        authConfigurationProperties.getZaasLogoutEndpoint(), HttpMethod.POST.name()
-                    ))
-                    .addLogoutHandler(logoutHandler())
-                    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT)))
-
-                .authenticationProvider(compoundAuthProvider) // for authenticating credentials
-                .authenticationProvider(new CertificateAuthenticationProvider()) // this is a dummy auth provider so the x509 prefiltering doesn't fail with nullpointer (no auth provider) or No AuthenticationProvider found for org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
-                .with(new CustomSecurityFilters(), Customizer.withDefaults());
-
-            return http.build();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         private class CustomSecurityFilters extends AbstractHttpConfigurer<CustomSecurityFilters, HttpSecurity> {
 
             @Override
             public void configure(HttpSecurity http) {
-                AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-                //drive filter order this way
-                http.addFilterBefore(new CategorizeCertsFilter(publicKeyCertificatesBase64, certificateValidator), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                    .addFilterBefore(loginFilter("/**", authenticationManager), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                    .addFilterAfter(x509ForwardingAwareAuthenticationFilter("/**"), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class) // this filter consumes certificates from custom attribute and maps them to credentials and authenticates them
-                    .addFilterAfter(new ShouldBeAlreadyAuthenticatedFilter("/**", handlerInitializer.getAuthenticationFailureHandler()), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class); // this filter stops processing of filter chain because there is nothing on /auth/login endpoint
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             private LoginFilter loginFilter(String loginEndpoint, AuthenticationManager authenticationManager) {
-                return new LoginFilter(
-                    loginEndpoint,
-                    handlerInitializer.getSuccessfulLoginHandler(),
-                    handlerInitializer.getAuthenticationFailureHandler(),
-                    securityObjectMapper,
-                    authenticationManager,
-                    handlerInitializer.getResourceAccessExceptionHandler());
+                return new LoginFilter(loginEndpoint, handlerInitializer.getSuccessfulLoginHandler(), handlerInitializer.getAuthenticationFailureHandler(), securityObjectMapper, authenticationManager, handlerInitializer.getResourceAccessExceptionHandler());
             }
 
             private X509ForwardingAwareAuthenticationFilter x509ForwardingAwareAuthenticationFilter(String loginEndpoint) {
-                return new X509ForwardingAwareAuthenticationFilter(loginEndpoint,
-                    handlerInitializer.getSuccessfulLoginHandler(),
-                    x509AuthenticationProvider);
+                return new X509ForwardingAwareAuthenticationFilter(loginEndpoint, handlerInitializer.getSuccessfulLoginHandler(), x509AuthenticationProvider);
             }
         }
 
@@ -194,7 +171,6 @@ public class NewSecurityConfiguration {
             FailedAuthenticationHandler failure = handlerInitializer.getAuthenticationFailureHandler();
             return new JWTLogoutHandler(authenticationService, failure);
         }
-
     }
 
     /**
@@ -209,56 +185,34 @@ public class NewSecurityConfiguration {
      *   - LoginFilter - attempts to log in a user using basic authentication credentials, generates access token and stops the chain on success, reply with the token
      *   - X509ForwardingAwareAuthenticationFilter - attempts to log in a user using forwarded client certificate, generates access token and stops the chain on success, reply with the token
      *   - ShouldBeAlreadyAuthenticatedFilter - stops filter chain if none of the authentications was successful
-     *
      */
     @Configuration
     @RequiredArgsConstructor
     @Order(7)
     class AccessToken {
+
         private final CompoundAuthProvider compoundAuthProvider;
+
         private final AuthenticationProvider tokenAuthenticationProvider;
 
         @Bean
         SecurityFilterChain accessTokenFilterChain(HttpSecurity http) throws Exception {
-            baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers( // no http method to catch all attempts to login and handle them here. Otherwise it falls to default filterchain and tries to route the calls, which doesnt make sense
-                authConfigurationProperties.getZaasAccessTokenEndpoint()
-            )))
-                .authorizeHttpRequests(requests -> requests
-                    .anyRequest().permitAll())
-                .authenticationProvider(compoundAuthProvider) // for authenticating credentials
-                .authenticationProvider(tokenAuthenticationProvider)
-                .authenticationProvider(new CertificateAuthenticationProvider()) // this is a dummy auth provider so the x509 prefiltering doesn't fail with nullpointer (no auth provider) or No AuthenticationProvider found for org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
-                .with(new CustomSecurityFilters(), Customizer.withDefaults());
-
-            return http.build();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         private class CustomSecurityFilters extends AbstractHttpConfigurer<CustomSecurityFilters, HttpSecurity> {
+
             @Override
             public void configure(HttpSecurity http) {
-                AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-                //drive filter order this way
-                http.addFilterBefore(new CategorizeCertsFilter(publicKeyCertificatesBase64, certificateValidator), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                    .addFilterBefore(new StoreAccessTokenInfoFilter(handlerInitializer.getUnAuthorizedHandler().getHandler()), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                    .addFilterBefore(accessTokenFilter("/**", authenticationManager), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                    .addFilterAfter(x509ForwardingAwareAuthenticationFilter("/**"), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class) // this filter consumes certificates from custom attribute and maps them to credentials and authenticates them
-                    .addFilterAfter(new ShouldBeAlreadyAuthenticatedFilter("/**", handlerInitializer.getAuthenticationFailureHandler()), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class); // this filter stops processing of filter chain because there is nothing on /auth/access-token/generate endpoint
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             private LoginFilter accessTokenFilter(String endpoint, AuthenticationManager authenticationManager) {
-                return new LoginFilter(
-                    endpoint,
-                    successfulAuthAccessTokenHandler,
-                    failedAccessTokenHandler,
-                    securityObjectMapper,
-                    authenticationManager,
-                    handlerInitializer.getResourceAccessExceptionHandler());
+                return new LoginFilter(endpoint, successfulAuthAccessTokenHandler, failedAccessTokenHandler, securityObjectMapper, authenticationManager, handlerInitializer.getResourceAccessExceptionHandler());
             }
 
             private X509ForwardingAwareAuthenticationFilter x509ForwardingAwareAuthenticationFilter(String loginEndpoint) {
-                return new X509ForwardingAwareAuthenticationFilter(loginEndpoint,
-                    successfulAuthAccessTokenHandler,
-                    x509AuthenticationProvider);
+                return new X509ForwardingAwareAuthenticationFilter(loginEndpoint, successfulAuthAccessTokenHandler, x509AuthenticationProvider);
             }
         }
 
@@ -282,42 +236,25 @@ public class NewSecurityConfiguration {
 
             @Bean
             SecurityFilterChain authProtectedEndpointsFilterChain(HttpSecurity http) throws Exception {
-                baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers( // no http method to catch all attempts to login and handle them here. Otherwise it falls to default filterchain and tries to route the calls, which doesnt make sense
-                        authConfigurationProperties.getZaasRevokeMultipleAccessTokens() + "/**",
-                        authConfigurationProperties.getZaasEvictAccessTokensAndRules()
-                )))
-                    .authorizeHttpRequests(requests -> requests
-                        .anyRequest().authenticated())
-                    .authenticationProvider(compoundAuthProvider) // for authenticating credentials
-                    .with(new CustomSecurityFilters(), Customizer.withDefaults());
-                return http.build();
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             private class CustomSecurityFilters extends AbstractHttpConfigurer<AccessToken.CustomSecurityFilters, HttpSecurity> {
+
                 @Override
                 public void configure(HttpSecurity http) {
-                    http.addFilterAfter(new CategorizeCertsFilter(publicKeyCertificatesBase64, certificateValidator), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                        .addFilterAfter(x509ForwardingAwareAuthenticationFilter(), CategorizeCertsFilter.class)
-                        .addFilterAfter(loginFilter(http), X509AuthAwareFilter.class);
+                    throw new UnsupportedOperationException("STUB: not implemented");
                 }
 
                 private NonCompulsoryAuthenticationProcessingFilter loginFilter(HttpSecurity http) {
                     AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-                    return new BasicAuthFilter("/**",
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        securityObjectMapper,
-                        authenticationManager,
-                        handlerInitializer.getResourceAccessExceptionHandler());
+                    return new BasicAuthFilter("/**", handlerInitializer.getAuthenticationFailureHandler(), securityObjectMapper, authenticationManager, handlerInitializer.getResourceAccessExceptionHandler());
                 }
 
                 private X509ForwardingAwareAuthenticationFilter x509ForwardingAwareAuthenticationFilter() {
-                    return new X509AuthAwareFilter("/**",
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        x509AuthenticationProvider);
+                    return new X509AuthAwareFilter("/**", handlerInitializer.getAuthenticationFailureHandler(), x509AuthenticationProvider);
                 }
-
             }
-
         }
 
         @Configuration
@@ -327,21 +264,9 @@ public class NewSecurityConfiguration {
 
             @Bean
             SecurityFilterChain authZaasEndpointsFilterChain(HttpSecurity http) throws Exception {
-                baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers( // no http method to catch all attempts to login and handle them here. Otherwise it falls to default filterchain and tries to route the calls, which doesnt make sense
-                        "/zaas/scheme/**"
-                )))
-                    .authorizeHttpRequests(requests -> requests
-                        .anyRequest().authenticated())
-                    .x509(x509 -> x509.userDetailsService(x509UserDetailsService()))
-                    .addFilterAfter(new CategorizeCertsFilter(publicKeyCertificatesBase64, certificateValidator), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                    .addFilterAfter(new ExtractAuthSourceFilter(authSourceService, authExceptionHandler), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                    .addFilterAfter(new ZaasAuthenticationFilter(authSourceService, authExceptionHandler), CategorizeCertsFilter.class);
-
-                return http.build();
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
-
         }
-
 
         /**
          * Query and Ticket and Refresh endpoints share single filter that handles auth with and without certificate. This logic is encapsulated in the queryFilter or ticketFilter.
@@ -356,32 +281,18 @@ public class NewSecurityConfiguration {
 
             @Bean
             SecurityFilterChain queryFilterChain(HttpSecurity http) throws Exception {
-                return baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers(
-                        authConfigurationProperties.getZaasQueryEndpoint()
-                    )))
-                    .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
-                    .authenticationProvider(tokenAuthenticationProvider)
-                    .logout(AbstractHttpConfigurer::disable) // logout filter in this chain not needed
-                    .with(new CustomSecurityFilters(), Customizer.withDefaults())
-                    .build();
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             private class CustomSecurityFilters extends AbstractHttpConfigurer<CustomSecurityFilters, HttpSecurity> {
+
                 @Override
                 public void configure(HttpSecurity http) {
-                    AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-                    http.addFilterBefore(queryFilter("/**", authenticationManager), UsernamePasswordAuthenticationFilter.class);
+                    throw new UnsupportedOperationException("STUB: not implemented");
                 }
 
                 private QueryFilter queryFilter(String queryEndpoint, AuthenticationManager authenticationManager) {
-                    return new QueryFilter(
-                        queryEndpoint,
-                        successfulQueryHandler,
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        authenticationService,
-                        HttpMethod.GET,
-                        false,
-                        authenticationManager);
+                    return new QueryFilter(queryEndpoint, successfulQueryHandler, handlerInitializer.getAuthenticationFailureHandler(), authenticationService, HttpMethod.GET, false, authenticationManager);
                 }
             }
         }
@@ -390,7 +301,6 @@ public class NewSecurityConfiguration {
          * Query and Ticket and Refresh endpoints share single filter that handles auth with and without certificate. This logic is encapsulated in the queryFilter or ticketFilter.
          * Ticket endpoint does require certificate to be present in RequestContext. It verifies the JWT token.
          */
-
         @Configuration
         @RequiredArgsConstructor
         @Order(3)
@@ -400,33 +310,18 @@ public class NewSecurityConfiguration {
 
             @Bean
             SecurityFilterChain ticketFilterChain(HttpSecurity http) throws Exception {
-                return baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers(
-                    authConfigurationProperties.getZaasTicketEndpoint()
-                ))).authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
-                    .authenticationProvider(tokenAuthenticationProvider)
-                    .logout(AbstractHttpConfigurer::disable) // logout filter in this chain not needed
-                    .x509(x509 -> x509 //default x509 filter, authenticates trusted cert, ticketFilter(..) depends on this
-                        .userDetailsService(new SimpleUserDetailService())
-                    ).with(new CustomSecurityFilters(), withDefaults())
-                    .build();
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             private class CustomSecurityFilters extends AbstractHttpConfigurer<CustomSecurityFilters, HttpSecurity> {
+
                 @Override
                 public void configure(HttpSecurity http) {
-                    AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-                    http.addFilterBefore(ticketFilter("/**", authenticationManager), UsernamePasswordAuthenticationFilter.class);
+                    throw new UnsupportedOperationException("STUB: not implemented");
                 }
 
                 private QueryFilter ticketFilter(String ticketEndpoint, AuthenticationManager authenticationManager) {
-                    return new QueryFilter(
-                        ticketEndpoint,
-                        successfulTicketHandler,
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        authenticationService,
-                        HttpMethod.POST,
-                        true,
-                        authenticationManager);
+                    return new QueryFilter(ticketEndpoint, successfulTicketHandler, handlerInitializer.getAuthenticationFailureHandler(), authenticationService, HttpMethod.POST, true, authenticationManager);
                 }
             }
         }
@@ -446,35 +341,18 @@ public class NewSecurityConfiguration {
 
             @Bean
             SecurityFilterChain refreshFilterChain(HttpSecurity http) throws Exception {
-                baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers(
-                        authConfigurationProperties.getZaasRefreshEndpoint()
-                ))).authorizeHttpRequests(requests -> requests
-                        .anyRequest().authenticated())
-                    .authenticationProvider(tokenAuthenticationProvider)
-                    .logout(AbstractHttpConfigurer::disable) // logout filter in this chain not needed
-                    .x509(x509 -> x509 //default x509 filter, authenticates trusted cert, refreshFilter(..) depends on this
-                        .userDetailsService(new SimpleUserDetailService()))
-                    .with(new CustomSecurityFilters(), Customizer.withDefaults());
-
-                return http.build();
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             private class CustomSecurityFilters extends AbstractHttpConfigurer<CustomSecurityFilters, HttpSecurity> {
+
                 @Override
                 public void configure(HttpSecurity http) {
-                    AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-                    http.addFilterBefore(refreshFilter("/**", authenticationManager), UsernamePasswordAuthenticationFilter.class);
+                    throw new UnsupportedOperationException("STUB: not implemented");
                 }
 
                 private QueryFilter refreshFilter(String ticketEndpoint, AuthenticationManager authenticationManager) {
-                    return new QueryFilter(
-                        ticketEndpoint,
-                        successfulRefreshHandler,
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        authenticationService,
-                        HttpMethod.POST,
-                        true,
-                        authenticationManager);
+                    return new QueryFilter(ticketEndpoint, successfulRefreshHandler, handlerInitializer.getAuthenticationFailureHandler(), authenticationService, HttpMethod.POST, true, authenticationManager);
                 }
             }
         }
@@ -487,15 +365,10 @@ public class NewSecurityConfiguration {
         @RequiredArgsConstructor
         @Order(4)
         class CertificateProtectedEndpoints {
+
             @Bean
             SecurityFilterChain certificateEndpointsFilterChain(HttpSecurity http) throws Exception {
-                return baseConfigure(http.securityMatchers(matchers -> matchers
-                    .requestMatchers(AuthController.CONTROLLER_PATH + AuthController.INVALIDATE_PATH, AuthController.CONTROLLER_PATH + AuthController.DISTRIBUTE_PATH))
-                ).authorizeHttpRequests(requests -> requests
-                        .anyRequest().authenticated())
-                    .logout(AbstractHttpConfigurer::disable) // logout filter in this chain not needed
-                    .x509(x509 -> x509 // default x509 filter, authenticates trusted cert
-                        .userDetailsService(new SimpleUserDetailService())).build();
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
         }
 
@@ -510,82 +383,46 @@ public class NewSecurityConfiguration {
         class CertificateOrAuthProtectedEndpoints {
 
             private final CompoundAuthProvider compoundAuthProvider;
+
             private final AuthenticationProvider tokenAuthenticationProvider;
 
             @Bean
             public SecurityFilterChain certificateOrAuthEndpointsFilterChain(HttpSecurity http) throws Exception {
-                baseConfigure(
-                    http.securityMatchers(matchers -> matchers
-                        .requestMatchers("/application/**")
-                        .requestMatchers(HttpMethod.POST, SafResourceAccessController.FULL_CONTEXT_PATH)
-                    )
-                ).authorizeHttpRequests(requests -> requests
-                        .anyRequest()
-                        .authenticated()
-                    )
-                    .logout(AbstractHttpConfigurer::disable);  // logout filter in this chain not needed
-
-                return http.authenticationProvider(compoundAuthProvider) // for authenticating credentials
-                    .authenticationProvider(tokenAuthenticationProvider) // for authenticating Tokens
-                    .authenticationProvider(new CertificateAuthenticationProvider())
-                    .with(new CustomSecurityFilters(), Customizer.withDefaults())
-                    .build();
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
 
             private class CustomSecurityFilters extends AbstractHttpConfigurer<CustomSecurityFilters, HttpSecurity> {
+
                 @Override
                 public void configure(HttpSecurity http) {
-                    AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-                    // place the following filters before the x509 filter
-                    http
-                        .addFilterAfter(new CategorizeCertsFilter(publicKeyCertificatesBase64, certificateValidator), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                        .addFilterAfter(x509ForwardingAwareAuthenticationFilter(),  CategorizeCertsFilter.class) // this filter consumes certificates from custom attribute and maps them to credentials and authenticates them
-                        .addFilterBefore(basicFilter(authenticationManager), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                        .addFilterBefore(cookieFilter(authenticationManager), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class)
-                        .addFilterBefore(bearerContentFilter(authenticationManager), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class);
+                    throw new UnsupportedOperationException("STUB: not implemented");
                 }
 
                 /**
                  * Processes basic authentication credentials and authenticates them
                  */
                 private BasicContentFilter basicFilter(AuthenticationManager authenticationManager) {
-                    return new BasicContentFilter(
-                        authenticationManager,
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        handlerInitializer.getResourceAccessExceptionHandler(),
-                        new String[] {"/"});
+                    return new BasicContentFilter(authenticationManager, handlerInitializer.getAuthenticationFailureHandler(), handlerInitializer.getResourceAccessExceptionHandler(), new String[] { "/" });
                 }
 
                 /**
                  * Processes token credentials stored in cookie and authenticates them
                  */
                 private CookieContentFilter cookieFilter(AuthenticationManager authenticationManager) {
-                    return new CookieContentFilter(
-                        authenticationManager,
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        handlerInitializer.getResourceAccessExceptionHandler(),
-                        authConfigurationProperties,
-                        new String[] {"/"});
+                    return new CookieContentFilter(authenticationManager, handlerInitializer.getAuthenticationFailureHandler(), handlerInitializer.getResourceAccessExceptionHandler(), authConfigurationProperties, new String[] { "/" });
                 }
 
                 /**
                  * Secures content with a Bearer token
                  */
                 private BearerContentFilter bearerContentFilter(AuthenticationManager authenticationManager) {
-                    return new BearerContentFilter(
-                        authenticationManager,
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        handlerInitializer.getResourceAccessExceptionHandler(),
-                        new String[] {"/"});
+                    return new BearerContentFilter(authenticationManager, handlerInitializer.getAuthenticationFailureHandler(), handlerInitializer.getResourceAccessExceptionHandler(), new String[] { "/" });
                 }
 
                 private X509ForwardingAwareAuthenticationFilter x509ForwardingAwareAuthenticationFilter() {
-                    return new X509AuthAwareFilter("/**",
-                        handlerInitializer.getAuthenticationFailureHandler(),
-                        x509AuthenticationProvider);
+                    return new X509AuthAwareFilter("/**", handlerInitializer.getAuthenticationFailureHandler(), x509AuthenticationProvider);
                 }
             }
-
         }
 
         /**
@@ -602,28 +439,13 @@ public class NewSecurityConfiguration {
             // Web security only needs to be configured once, putting it to multiple filter chains causes multiple evaluations of the same rules
             @Bean
             WebSecurityCustomizer webSecurityCustomizer() {
-                return web -> {
-                    if (!isHealthEndpointProtected) {
-                        web.ignoring().requestMatchers("/application/health", "/application/eurekaversion");
-                    }
-                    // Endpoints that skip Spring Security completely
-                    // There is no CORS filter on these endpoints. If you require CORS processing, use a defined filter chain
-                    web.ignoring()
-                        .requestMatchers("/error",
-                            "/application/info", "/application/version",
-                            AuthController.CONTROLLER_PATH + AuthController.ALL_PUBLIC_KEYS_PATH,
-                            AuthController.CONTROLLER_PATH + AuthController.CURRENT_PUBLIC_KEYS_PATH);
-                };
+                throw new UnsupportedOperationException("STUB: not implemented");
             }
         }
 
         @Bean
         SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-            return baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers("/**", "/gateway/version")))
-                .authorizeHttpRequests(requests -> requests
-                    .anyRequest()
-                    .permitAll()).logout(AbstractHttpConfigurer::disable)
-                .build();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 
@@ -631,32 +453,10 @@ public class NewSecurityConfiguration {
      * Common configuration for all filterchains
      */
     protected HttpSecurity baseConfigure(HttpSecurity http) throws Exception {
-        if (isServerAttlsEnabled) {
-            http.addFilterBefore(new AttlsFilter(), org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter.class);
-            http.addFilterBefore(new SecureConnectionFilter(), AttlsFilter.class);
-        }
-
-        /*
-         * Parent authentication manager is used as a fallback when no authentication provider is able to authenticate the request.
-         * Spring provides the default provider manager as the parent for fallback. This can lead to unexpected behavior as we never use
-         * spring defaults for authentication.
-         */
-        http.setSharedObject(AuthenticationManagerBuilder.class,
-            http.getSharedObject(AuthenticationManagerBuilder.class).parentAuthenticationManager(null));
-
-        return http
-                .cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)    // NOSONAR we are using SAMESITE cookie to mitigate CSRF
-                .headers(headers -> headers
-                    .httpStrictTransportSecurity(hsts -> {})
-                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
-                )
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(handlerInitializer.getBasicAuthUnauthorizedHandler()))
-                    .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(handlerInitializer.getBasicAuthUnauthorizedHandler()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private UserDetailsService x509UserDetailsService() {
         return username -> new User(username, "", Collections.emptyList());
     }
-
 }

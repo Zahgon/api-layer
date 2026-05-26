@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.zos;
 
 import java.io.OutputStream;
@@ -18,210 +17,201 @@ public class ZUtilDummy implements ZUtil {
 
     @Override
     public String[] environ() {
-        return new String[0];
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String formatStackTrace(Throwable t) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getCodePageCurrentLocale() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public long getCpuTimeMicros() {
-        return 0;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getCurrentJobId() {
-        return "STC1111";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getCurrentJobname() {
-        return "ZWE1AG";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getCurrentProcStepname() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getCurrentStepname() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public long getCurrentTimeMicros() {
-        return 0;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getCurrentTsoPrefix() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getCurrentUser() {
-        return "ZWEUSER";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getDefaultPlatformEncoding() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getEnv(String varName) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Properties getEnvironment() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getJavaVersionInfo() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getJzosDllVersion() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getJzosJarVersion() {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getLoggingLevel() {
-        return 0;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getPid() {
-        return 1234567;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public int getPPid() {
-        return 0;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public byte[] getTodClock() {
-        return new byte[0];
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void getTodClock(byte[] buffer) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public byte[] getTodClockExtended() {
-        return new byte[0];
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void getTodClockExtended(byte[] buffer) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void logDiagnostic(int level, String msg) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public PrintStream newEncodedPrintStream(OutputStream os, boolean autoFlush) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public PrintStream newEncodedPrintStream(OutputStream os, boolean autoFlush, String encoding) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public PrintStream newEncodedPrintStream(OutputStream os, boolean autoFlush, String encoding, boolean enable) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void peekOSMemory(long address, byte[] bytes) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void peekOSMemory(long address, byte[] bytes, int offset, int len) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public long peekOSMemory(long address, int len) {
-        return 0;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void redirectStandardStreams() {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean redirectStandardStreams(String requestedEncoding, boolean enableTranscoding) {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setDefaultPlatformEncoding(String encoding) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setEnv(String varName, String varValue) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setLoggingLevel(int level) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void smfRecord(int type, int subtype, byte[] rec) {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String substituteSystemSymbols(String pattern) {
-          return switch (pattern) {
-            case "&SYSNAME." -> "SYSNAME";
-            case "&SYSCLONE." -> "SYSCLONE";
-            case "&SYSPLEX." -> "SYSPLEX";
-            case "&SMFID." -> "LR10";
-            case "&ENVIRON." -> "DEV";
-            case "&OSLEVEL." -> "030200";
-            default -> null;
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String substituteSystemSymbols(String pattern, boolean warn) {
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void touch() {
-        // dummy implementation - do nothing
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

@@ -7,12 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.metadata;
 
 import org.zowe.apiml.product.discovery.ServiceOverrideData;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.Map;
 
@@ -31,21 +29,19 @@ public class MetadataDefaultsService {
     private Map<String, ServiceOverrideData> additionalServiceMetadata = Collections.emptyMap();
 
     public void updateMetadata(String serviceId, Map<String, String> metadata) {
-        final ServiceOverrideData sod = additionalServiceMetadata.get(serviceId);
-
-        if (sod != null) {
-            update(sod, metadata);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void update(ServiceOverrideData sod, Map<String, String> metadata) {
-        switch (sod.getMode()) {
+        switch(sod.getMode()) {
             case FORCE_UPDATE:
                 metadata.putAll(sod.getMetadata());
                 break;
-            case UPDATE: default:
+            case UPDATE:
+            default:
                 for (final Map.Entry<String, String> entry : sod.getMetadata().entrySet()) {
-                    if (metadata.containsKey(entry.getKey())) continue;
+                    if (metadata.containsKey(entry.getKey()))
+                        continue;
                     metadata.put(entry.getKey(), entry.getValue());
                 }
                 break;
@@ -53,7 +49,6 @@ public class MetadataDefaultsService {
     }
 
     public void setAdditionalServiceMetadata(Map<String, ServiceOverrideData> additionalServiceMetadata) {
-        this.additionalServiceMetadata = Collections.unmodifiableMap(additionalServiceMetadata);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

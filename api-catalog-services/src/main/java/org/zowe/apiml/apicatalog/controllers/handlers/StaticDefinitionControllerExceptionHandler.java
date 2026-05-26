@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.handlers;
 
 import lombok.RequiredArgsConstructor;
@@ -22,10 +21,8 @@ import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.message.core.Message;
 import org.zowe.apiml.message.core.MessageService;
 import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
@@ -33,9 +30,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
  */
 @Slf4j
 @Order(0)
-@ControllerAdvice(assignableTypes = {StaticDefinitionController.class})
+@ControllerAdvice(assignableTypes = { StaticDefinitionController.class })
 @RequiredArgsConstructor
 public class StaticDefinitionControllerExceptionHandler {
+
     private final MessageService messageService;
 
     /**
@@ -46,14 +44,7 @@ public class StaticDefinitionControllerExceptionHandler {
      */
     @ExceptionHandler(IOException.class)
     public Mono<ResponseEntity<ApiMessageView>> handleIOException(IOException exception) {
-        log.error("Cannot write the static definition file because: {}", exception.getMessage());
-        Message message = messageService.createMessage("org.zowe.apiml.apicatalog.StaticDefinitionGenerationFailed",
-            exception);
-
-        return Mono.just(ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(APPLICATION_JSON)
-            .body(message.mapToView()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -64,12 +55,6 @@ public class StaticDefinitionControllerExceptionHandler {
      */
     @ExceptionHandler(FileAlreadyExistsException.class)
     public Mono<ResponseEntity<ApiMessageView>> handleFileAlreadyExistsException(FileAlreadyExistsException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.apicatalog.StaticDefinitionGenerationFailed",
-            exception);
-
-        return Mono.just(ResponseEntity
-            .status(HttpStatus.CONFLICT)
-            .contentType(APPLICATION_JSON)
-            .body(message.mapToView()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

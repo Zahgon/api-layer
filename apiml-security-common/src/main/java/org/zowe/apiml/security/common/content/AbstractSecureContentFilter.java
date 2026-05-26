@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.content;
 
 import jakarta.servlet.FilterChain;
@@ -27,7 +26,6 @@ import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.error.ResourceAccessExceptionHandler;
 import org.zowe.apiml.security.common.handler.ServletErrorUtils;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
@@ -40,20 +38,19 @@ import java.util.function.BiConsumer;
 public abstract class AbstractSecureContentFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
+
     private final AuthenticationFailureHandler failureHandler;
+
     private final ResourceAccessExceptionHandler resourceAccessExceptionHandler;
+
     private final String[] endpoints;
+
     @InjectApimlLogger
     private final ApimlLogger apimlLog = ApimlLogger.empty();
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        if (endpoints == null || endpoints.length == 0) {
-            return false;
-        }
-
-        String path = request.getServletPath();
-        return Arrays.stream(endpoints).noneMatch(path::startsWith);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -76,36 +73,6 @@ public abstract class AbstractSecureContentFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        var authenticationToken = Optional.<AbstractAuthenticationToken>empty();
-        try {
-            authenticationToken = extractContent(request);
-        } catch (AuthenticationException authenticationException) {
-            failureHandler.onAuthenticationFailure(request, response, authenticationException);
-        }
-
-        if (authenticationToken.isPresent()) {
-            Authentication authentication = null;
-            try {
-                authentication = authenticationManager.authenticate(authenticationToken.get());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                filterChain.doFilter(request, response);
-            } catch (AuthenticationException authenticationException) {
-                failureHandler.onAuthenticationFailure(request, response, authenticationException);
-            } catch (RuntimeException e) {
-                var consumer = ServletErrorUtils.createApiErrorWriter(response, apimlLog);
-                var addHeader = (BiConsumer<String, String>) response::addHeader;
-                resourceAccessExceptionHandler.handleException(request.getRequestURI(), consumer, addHeader, e);
-            } finally {
-                // TODO: remove once fixed directly in Spring - org.springframework.security.core.CredentialsContainer#eraseCredentials
-                if (authentication != null) {
-                    Object credentials = authentication.getCredentials();
-                    if (credentials instanceof char[]) {
-                        Arrays.fill((char[]) credentials, (char) 0);
-                    }
-                }
-            }
-        } else {
-            filterChain.doFilter(request, response);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

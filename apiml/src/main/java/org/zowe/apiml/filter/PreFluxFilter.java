@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import jakarta.servlet.*;
@@ -16,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-
 import java.io.IOException;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,38 +25,19 @@ public abstract class PreFluxFilter implements Filter {
     @Value("${apiml.service.port:10010}")
     private int externalPort;
 
-    protected abstract void doFilterInternal(HttpServletRequest request, HttpServletResponse response,  FilterChain chain) throws IOException, ServletException;
+    protected abstract void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
-
-        if (type.isApplicable(request, externalPort)) {
-            doFilterInternal(request, response, chain);
-        } else {
-            chain.doFilter(request, response);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public enum Type {
-        INTERNAL_ONLY,
-        EXTERNAL_ONLY,
-        BOTH;
+
+        INTERNAL_ONLY, EXTERNAL_ONLY, BOTH;
 
         boolean isApplicable(HttpServletRequest request, int externalPort) {
-            switch (this) {
-                case BOTH:
-                    return true;
-                case INTERNAL_ONLY:
-                    return request.getServerPort() != externalPort;
-                case EXTERNAL_ONLY:
-                    return request.getServerPort() == externalPort;
-                default:
-                    return false;
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

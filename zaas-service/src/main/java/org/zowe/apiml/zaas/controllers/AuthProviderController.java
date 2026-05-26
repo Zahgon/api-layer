@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.controllers;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zowe.apiml.zaas.security.config.CompoundAuthProvider;
 
-
 // These end points are activated only for diag profile.
 @Profile("diag")
 @AllArgsConstructor
@@ -26,19 +24,20 @@ import org.zowe.apiml.zaas.security.config.CompoundAuthProvider;
 @RequestMapping(AuthProviderController.CONTROLLER_PATH)
 public class AuthProviderController {
 
-    public static final String CONTROLLER_PATH = "/zaas/authentication"; // NOSONAR
+    // NOSONAR
+    public static final String CONTROLLER_PATH = "/zaas/authentication";
 
     private CompoundAuthProvider compoundAuthProvider;
 
     @PostMapping()
     @ResponseBody
     public ResponseEntity<Object> updateAuthProviderConfig(@RequestBody AuthProvider provider) {
-        compoundAuthProvider.setLoginAuthProvider(provider.getProvider());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Data
     private static class AuthProvider {
+
         private String provider;
     }
 }

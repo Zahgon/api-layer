@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.handlers;
 
 import lombok.RequiredArgsConstructor;
@@ -23,14 +22,13 @@ import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.message.core.Message;
 import org.zowe.apiml.message.core.MessageService;
 import reactor.core.publisher.Mono;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
  * This class creates responses for exceptional behavior of the CatalogApiDocController
  */
 @Order(0)
-@ControllerAdvice(assignableTypes = {ApiDocController.class})
+@ControllerAdvice(assignableTypes = { ApiDocController.class })
 @RequiredArgsConstructor
 public class CatalogApiDocControllerExceptionHandler {
 
@@ -44,12 +42,7 @@ public class CatalogApiDocControllerExceptionHandler {
      */
     @ExceptionHandler(ApiDocNotFoundException.class)
     public Mono<ResponseEntity<ApiMessageView>> handleApiDocNotFoundException(ApiDocNotFoundException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.apicatalog.apiDocNotFound", exception.getMessage());
-
-        return Mono.just(ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .contentType(APPLICATION_JSON)
-            .body(message.mapToView()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -60,12 +53,6 @@ public class CatalogApiDocControllerExceptionHandler {
      */
     @ExceptionHandler(ServiceNotFoundException.class)
     public Mono<ResponseEntity<ApiMessageView>> handleServiceNotFoundException(ServiceNotFoundException exception) {
-        Message message = messageService.createMessage("org.zowe.apiml.apicatalog.serviceNotFound", exception.getMessage());
-
-        return Mono.just(ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .contentType(APPLICATION_JSON)
-            .body(message.mapToView()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

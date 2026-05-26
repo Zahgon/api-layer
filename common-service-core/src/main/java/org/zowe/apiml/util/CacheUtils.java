@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.support.NoOpCache;
 import org.zowe.apiml.cache.CompositeKey;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -62,22 +60,7 @@ public class CacheUtils {
      * @param keyPredicate condition to filter keys to evict
      */
     public void evictSubset(CacheManager cacheManager, String cacheName, Predicate<CompositeKey> keyPredicate) {
-        final Cache cache = cacheManager.getCache(cacheName);
-        if (cache == null) throw new IllegalArgumentException("Unknown cache " + cacheName);
-        final Object nativeCache = cache.getNativeCache();
-        if (nativeCache instanceof javax.cache.Cache) {
-            Spliterator<javax.cache.Cache.Entry<Object, Object>> spliterator = ((javax.cache.Cache<Object, Object>) nativeCache).spliterator();
-            Set<Object> keysToRemove = StreamSupport.stream(spliterator, true)
-                    // if the key matches the predicate then evict the record or
-                    // if the key is not compositeKey (unknown for evict) evict record (as failover)
-                .filter(e -> !(e.getKey() instanceof CompositeKey key) || keyPredicate.test(key))
-                    .map(javax.cache.Cache.Entry::getKey)
-                    .collect(Collectors.toSet());
-            ((javax.cache.Cache<Object, Object>) nativeCache).removeAll(keysToRemove);
-        } else {
-            // in case of using different cache manager, evict all records for sure
-            cache.clear();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -90,18 +73,6 @@ public class CacheUtils {
      * @return collection with all stored records
      */
     public <T> List<T> getAllRecords(CacheManager cacheManager, String cacheName) {
-        final Cache cache = cacheManager.getCache(cacheName);
-        if (cache == null) throw new IllegalArgumentException("Unknown cache " + cacheName);
-
-        final Object nativeCache = cache.getNativeCache();
-        if (nativeCache instanceof javax.cache.Cache) {
-            Spliterator<javax.cache.Cache.Entry<Object, T>> spliterator = ((javax.cache.Cache<Object, T>) nativeCache).spliterator();
-            return StreamSupport.stream(spliterator, true).map(javax.cache.Cache.Entry::getValue).toList();
-        } else if (nativeCache instanceof NoOpCache) {
-            return Collections.emptyList();
-        } else {
-            throw new IllegalArgumentException("Unsupported type of cache : " + nativeCache.getClass());
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

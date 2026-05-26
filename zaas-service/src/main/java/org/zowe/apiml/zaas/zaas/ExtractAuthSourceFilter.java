@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.zaas;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.zowe.apiml.security.common.handler.ServletErrorUtils;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSource;
 import org.zowe.apiml.zaas.security.service.schema.source.AuthSourceService;
 import org.zowe.apiml.security.common.error.AuthExceptionHandler;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,37 +26,22 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-
 @RequiredArgsConstructor
 public class ExtractAuthSourceFilter extends OncePerRequestFilter {
 
     public static final String AUTH_SOURCE_ATTR = "zaas.auth.source";
+
     public static final String AUTH_SOURCE_PARSED_ATTR = "zaas.auth.source.parsed";
 
     private final AuthSourceService authSourceService;
+
     private final AuthExceptionHandler authExceptionHandler;
+
     @InjectApimlLogger
     private final ApimlLogger apimlLog = ApimlLogger.empty();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            Optional<AuthSource> authSource = authSourceService.getAuthSourceFromRequest(request);
-            if (authSource.isPresent()) {
-                AuthSource.Parsed parsed = authSourceService.parse(authSource.get());
-                request.setAttribute(AUTH_SOURCE_ATTR, authSource.get());
-                request.setAttribute(AUTH_SOURCE_PARSED_ATTR, parsed);
-                filterChain.doFilter(request, response);
-            } else {
-                throw new InsufficientAuthenticationException("No authentication source found in the request.");
-            }
-        }
-        catch (RuntimeException ex) {
-            var consumer = ServletErrorUtils.createApiErrorWriter(response, apimlLog);
-            var addHeader = (BiConsumer<String, String>) response::addHeader;
-            authExceptionHandler.handleException(request.getRequestURI(), consumer, addHeader, ex);
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

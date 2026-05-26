@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import org.zowe.apiml.client.model.UploadFileResponse;
@@ -17,17 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class MultipartController {
-    @PostMapping(
-        value = "api/v1/multipart",
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    @PostMapping(value = "api/v1/multipart", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UploadFileResponse uploadFileWithPost(@RequestParam("file") MultipartFile file) {
-        return new UploadFileResponse(file.getOriginalFilename(), file.getContentType(), file.getSize());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    @PutMapping(
-        value = "api/v1/multipart",
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "api/v1/multipart", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UploadFileResponse uploadFileWithPut(@RequestParam("file") MultipartFile file) {
-        return new UploadFileResponse(file.getOriginalFilename(), file.getContentType(), file.getSize());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

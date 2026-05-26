@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -16,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName(value = "health")
 public class Health {
+
     private String status;
 
     @JsonCreator
@@ -24,10 +24,10 @@ public class Health {
     }
 
     public String getStatus() {
-        return status;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

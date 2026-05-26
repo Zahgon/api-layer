@@ -7,10 +7,10 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 public class AuthSchemeException extends RuntimeException {
+
     final String[] params;
 
     public AuthSchemeException(String message) {
@@ -18,10 +18,12 @@ public class AuthSchemeException extends RuntimeException {
         params = null;
     }
 
-    public AuthSchemeException(String message, String ... params) {
+    public AuthSchemeException(String message, String... params) {
         super(message);
         this.params = params;
     }
 
-    public String[] getParams() { return params; }
+    public String[] getParams() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

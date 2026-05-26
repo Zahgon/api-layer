@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.api;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.CertificateEncodingException;
@@ -36,51 +34,29 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- *
  */
 @RestController
 @RequestMapping("/api/v1/request")
-@Tag(
-    description = "/api/v1/request",
-    name = "The request info API")
+@Tag(description = "/api/v1/request", name = "The request info API")
 public class RequestInfoController {
 
-    @GetMapping(
-        value = "",
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @Operation(
-        summary = "Returns all base information about request",
-        description = "Data contains sign information, headers and content")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Information from request"),
-        @ApiResponse(responseCode = "500", description = "Error in parsing of request ")
-    })
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Returns all base information about request", description = "Data contains sign information, headers and content")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Information from request"), @ApiResponse(responseCode = "500", description = "Error in parsing of request ") })
     @ResponseBody
     public RequestInfo getRequestInfo(HttpServletRequest httpServletRequest) throws CertificateEncodingException, IOException {
-        RequestInfo out = new RequestInfo();
-
-        setCerts(httpServletRequest, out);
-        setHeaders(httpServletRequest, out);
-        setCookie(httpServletRequest, out);
-        setContent(httpServletRequest, out);
-
-        return out; // NOSONAR
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void setCerts(HttpServletRequest httpServletRequest, RequestInfo requestInfo) throws CertificateEncodingException {
         X509Certificate[] certs = (X509Certificate[]) httpServletRequest.getAttribute("jakarta.servlet.request.X509Certificate");
-        if (certs == null) return;
-
+        if (certs == null)
+            return;
         requestInfo.signed = certs.length > 0;
         requestInfo.certs = new Certificate[certs.length];
         for (int i = 0; i < certs.length; i++) {
             final X509Certificate cert = certs[i];
-            final Certificate certDto = new Certificate(
-                cert.getSerialNumber(),
-                Base64.getEncoder().encodeToString(cert.getPublicKey().getEncoded()),
-                Base64.getEncoder().encodeToString(cert.getEncoded())
-            );
+            final Certificate certDto = new Certificate(cert.getSerialNumber(), Base64.getEncoder().encodeToString(cert.getPublicKey().getEncoded()), Base64.getEncoder().encodeToString(cert.getEncoded()));
             requestInfo.certs[i] = certDto;
         }
     }
@@ -94,7 +70,8 @@ public class RequestInfoController {
     }
 
     private void setCookie(HttpServletRequest httpServletRequest, RequestInfo requestInfo) {
-        if (httpServletRequest.getCookies() == null) return;
+        if (httpServletRequest.getCookies() == null)
+            return;
         for (Cookie cookie : httpServletRequest.getCookies()) {
             requestInfo.cookies.put(cookie.getName(), cookie.getValue());
         }
@@ -122,7 +99,6 @@ public class RequestInfoController {
 
         @Schema(description = "Text content in the original request")
         private String content;
-
     }
 
     @Schema(description = "Certificate info detail")
@@ -130,9 +106,9 @@ public class RequestInfoController {
     public class Certificate {
 
         private final BigInteger serialNo;
+
         private final String publicKeyEncodedBase64;
+
         private final String encodedBase64;
-
     }
-
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.stomp;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +23,6 @@ public class StompController {
     @MessageMapping("/replyWithSameSize/{id}")
     @SendTo("/topic/replyWithSameSize/{id}")
     public String replyWithSameSize(@DestinationVariable String id, @Payload String payload) throws IllegalArgumentException {
-        var payloadSize = payload.getBytes().length;
-        log.info("Received stomp message id {} with payload size {}. Sending the same size back.", id, payloadSize);
-
-        char c = 'B';
-        return String.valueOf(c).repeat(payloadSize);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service.scheme;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,15 +22,11 @@ public class Zowe implements SchemeHandler {
 
     @Override
     public AuthenticationScheme getAuthenticationScheme() {
-        return AuthenticationScheme.ZOWE_JWT;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void apply(ServiceInstance serviceInstance, RouteDefinition routeDefinition, Authentication auth) {
-        FilterDefinition filterDef = new FilterDefinition();
-        filterDef.setName("ZoweFilterFactory");
-        filterDef.addArg("serviceId", StringUtils.lowerCase(serviceInstance.getServiceId()));
-        routeDefinition.getFilters().add(filterDef);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

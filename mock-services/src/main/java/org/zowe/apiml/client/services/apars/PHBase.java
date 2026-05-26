@@ -7,13 +7,11 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.services.apars;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 import java.util.Map;
 
@@ -26,113 +24,37 @@ public class PHBase extends FunctionalApar {
 
     @Override
     protected ResponseEntity<?> handleAuthenticationCreate(Map<String, String> headers, HttpServletResponse response) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected ResponseEntity<?> handleAuthenticationVerify(Map<String, String> headers, HttpServletResponse response) {
-        if (noAuthentication(headers)) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        if (containsInvalidOrNoUser(headers) && !ltpaIsPresent(headers)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        setLtpaToken(response);
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected ResponseEntity<?> handleAuthenticationDefault(Map<String, String> headers) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected ResponseEntity<?> handleInformation(Map<String, String> headers, HttpServletResponse response) {
-        if (containsInvalidOrNoUser(headers)) {
-            return validInfo();
-        }
-
-        setLtpaToken(response);
-        return validInfo();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected ResponseEntity<?> handleAuthenticationDelete(Map<String, String> headers) {
-        if (!validLtpaCookie(headers)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected ResponseEntity<?> handleFiles(Map<String, String> headers) {
-        String authorization = headers.get(AUTHORIZATION_HEADER);
-
-        if (authorization != null) {
-            if (!isValidAuthHeader(authorization) && !ltpaIsPresent(headers)) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-            // if auth header contains invalid token, zOSMF returns 401
-            if (authorization.startsWith("Bearer") && !isValidTokenInAuthHeader(authorization)) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            if (!isValidJwtCookie(headers) && !ltpaIsPresent(headers)) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-        }
-
-        return datasets();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @SuppressWarnings("squid:S1192")
     private ResponseEntity<?> datasets() {
-        return new ResponseEntity<>("{\n" +
-            "  \"items\": [\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PAGEDUMP.VMVD21M\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PAGEDUMP.VMVD22M\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PAGEDUMP.VMVD23M\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PAGEDUMP.VMVD24M\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PARMLIB\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PARMLIB.ARCHIVE\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PARMLIB.D200328\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PARMLIBN\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PDEFLIB\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PHELP\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PROCLIB\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PROCLIBX\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"dsname\": \"SYS1.PSEGLIB\"\n" +
-            "    }\n" +
-            "  ],\n" +
-            "  \"returnedRows\": 13,\n" +
-            "  \"JSONversion\": 1\n" +
-            "}", HttpStatus.OK);
+        return new ResponseEntity<>("{\n" + "  \"items\": [\n" + "    {\n" + "      \"dsname\": \"SYS1.PAGEDUMP.VMVD21M\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PAGEDUMP.VMVD22M\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PAGEDUMP.VMVD23M\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PAGEDUMP.VMVD24M\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PARMLIB\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PARMLIB.ARCHIVE\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PARMLIB.D200328\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PARMLIBN\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PDEFLIB\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PHELP\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PROCLIB\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PROCLIBX\"\n" + "    },\n" + "    {\n" + "      \"dsname\": \"SYS1.PSEGLIB\"\n" + "    }\n" + "  ],\n" + "  \"returnedRows\": 13,\n" + "  \"JSONversion\": 1\n" + "}", HttpStatus.OK);
     }
 
     private ResponseEntity<?> validInfo() {

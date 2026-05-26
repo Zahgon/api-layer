@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.zowe.apiml.config.ApiInfo;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@EqualsAndHashCode(of = {"serviceId"})
+@EqualsAndHashCode(of = { "serviceId" })
 public class APIService implements Serializable {
 
     private static final long serialVersionUID = 5119572678327579985L;
@@ -73,7 +71,8 @@ public class APIService implements Serializable {
     private boolean ssoAllInstances;
 
     @Schema(description = "The API information for each API ID for this service")
-    private Map<String, ApiInfo> apis = new HashMap<>(); // NOSONAR
+    private Map<String, ApiInfo> // NOSONAR
+    apis = new HashMap<>();
 
     private List<String> instances = new ArrayList<>();
 
@@ -83,6 +82,7 @@ public class APIService implements Serializable {
     }
 
     public static class Builder {
+
         private final APIService apiService;
 
         public Builder(String serviceId) {
@@ -91,68 +91,55 @@ public class APIService implements Serializable {
         }
 
         public Builder title(String title) {
-            apiService.title = title;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder description(String description) {
-            apiService.description = description;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder tileDescription(String tileDescription) {
-            apiService.tileDescription = tileDescription;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder status(String status) {
-            apiService.status = status;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder secured(boolean secured) {
-            apiService.secured = secured;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder baseUrl(String baseUrl) {
-            apiService.baseUrl = baseUrl;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder homePageUrl(String homePageUrl) {
-            apiService.homePageUrl = homePageUrl;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder basePath(String basePath) {
-            apiService.basePath = basePath;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder apiDoc(String apiDoc) {
-            apiService.apiDoc = apiDoc;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder sso(boolean sso) {
-            apiService.sso = sso;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder instanceId(String id) {
-            apiService.instances.add(id);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public Builder apis(Map<String, ApiInfo> apis) {
-            apiService.apis = apis;
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         public APIService build() {
-            return apiService;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
-
 }

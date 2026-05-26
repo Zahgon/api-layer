@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.util;
 
 import lombok.experimental.UtilityClass;
-
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,28 +27,7 @@ public class StringUtils {
      * @return the input string without the initial and final occurrence of str
      */
     public static String removeFirstAndLastOccurrence(String input, String str) {
-        if (input == null) {
-            return null;
-        }
-
-        input = input.trim();
-
-        if (str == null) {
-            return input;
-        }
-
-        int startIndex = input.startsWith(str) ? str.length() : 0;
-        int endIndex = input.endsWith(str) ? str.length() : 0;
-
-        if ((startIndex == 0) && (endIndex == 0)) {
-            return input;
-        }
-
-        if (startIndex + endIndex >= input.length()) {
-            return "";
-        }
-
-        return input.substring(startIndex, input.length() - endIndex);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -61,7 +38,7 @@ public class StringUtils {
      * @return
      */
     public static String prependSubstring(String uri, String subStr) {
-        return prependSubstring(uri, subStr, true);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -73,7 +50,7 @@ public class StringUtils {
      * @return result string prepended with subStr
      */
     public static String prependSubstring(String uri, String subStr, boolean checkAlreadyPrepended) {
-        return prependSubstring(uri, subStr, checkAlreadyPrepended, true);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -87,23 +64,7 @@ public class StringUtils {
      * @return
      */
     public static String prependSubstring(String uri, String subStr, boolean checkAlreadyPrepended, boolean shouldTrimWhitespaceFirst) {
-        if (uri == null) {
-            return null;
-        }
-
-        if (subStr == null) {
-            return null;
-        }
-
-        if (shouldTrimWhitespaceFirst) {
-            uri = uri.trim();
-        }
-
-        if (!checkAlreadyPrepended || !uri.startsWith(subStr)) {
-            uri = subStr + uri;
-        }
-
-        return uri;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -114,20 +75,7 @@ public class StringUtils {
      * @return
      */
     public static String removeLastOccurrence(String input, String subStr) {
-        if (input == null) {
-            return null;
-        }
-
-        input = input.trim();
-        if (input.isEmpty()) {
-            return "";
-        }
-
-        if (input.endsWith(subStr)) {
-            input = input.substring(0, input.length() - 1);
-        }
-
-        return input;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -138,30 +86,6 @@ public class StringUtils {
      * @return
      */
     public static String resolveExpressions(String expression, Map<String, String> properties) {
-        if ((expression == null) || (properties == null)) {
-            return expression;
-        }
-        StringBuilder result = new StringBuilder(expression.length());
-        int i = 0;
-        Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
-        while (matcher.find()) {
-            // Strip leading "${" and trailing "}" off.
-            result.append(expression, i, matcher.start());
-            String property = matcher.group();
-            property = property.substring(2, property.length() - 1);
-            if (properties.containsKey(property)) {
-                //look up property and replace
-                property = properties.get(property);
-            } else {
-                //property not found, don't replace
-                property = matcher.group();
-            }
-            result.append(property);
-            i = matcher.end();
-        }
-        result.append(expression.substring(i));
-        return result.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
-
 }

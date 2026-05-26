@@ -7,16 +7,16 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import java.util.Date;
 
 @JsonTypeName(value = "greeting")
 public class Greeting {
+
     private final Date date;
+
     private final String content;
 
     public Greeting(Date date, String content) {
@@ -25,10 +25,10 @@ public class Greeting {
     }
 
     public Date getDate() {
-        return date;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getContent() {
-        return content;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

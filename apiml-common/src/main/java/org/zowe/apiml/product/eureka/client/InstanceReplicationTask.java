@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.eureka.client;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -20,9 +19,11 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
      * explicitly.
      */
     private final String appName;
+
     private final String id;
 
     private final InstanceInfo instanceInfo;
+
     private final InstanceInfo.InstanceStatus overriddenStatus;
 
     private final boolean replicateInstanceInfo;
@@ -36,11 +37,7 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
         this.replicateInstanceInfo = false;
     }
 
-    protected InstanceReplicationTask(String peerNodeName,
-                                      PeerAwareInstanceRegistryImpl.Action action,
-                                      InstanceInfo instanceInfo,
-                                      InstanceInfo.InstanceStatus overriddenStatus,
-                                      boolean replicateInstanceInfo) {
+    protected InstanceReplicationTask(String peerNodeName, PeerAwareInstanceRegistryImpl.Action action, InstanceInfo instanceInfo, InstanceInfo.InstanceStatus overriddenStatus, boolean replicateInstanceInfo) {
         super(peerNodeName, action);
         this.appName = instanceInfo.getAppName();
         this.id = instanceInfo.getId();
@@ -50,26 +47,26 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
     }
 
     public String getTaskName() {
-        return appName + '/' + id + ':' + action + '@' + peerNodeName;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getAppName() {
-        return appName;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getId() {
-        return id;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public InstanceInfo getInstanceInfo() {
-        return instanceInfo;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public InstanceInfo.InstanceStatus getOverriddenStatus() {
-        return overriddenStatus;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public boolean shouldReplicateInstanceInfo() {
-        return replicateInstanceInfo;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

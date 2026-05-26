@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.audit;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.zowe.apiml.security.common.auth.saf.SafResourceAccessSaf;
 import org.zowe.apiml.security.common.auth.saf.SafResourceAccessVerifying;
 import org.zowe.apiml.util.ClassOrDefaultProxyUtils;
-
 import jakarta.annotation.PostConstruct;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -67,6 +65,7 @@ public class RauditxService {
 
     // documented types at https://www.ibm.com/docs/en/zos/2.2.0?topic=records-smf-record-type-83-subtype-2
     private static final int RELOCATED_RECORD_TYPE_BIND_USER = 103;
+
     private static final int RELOCATED_RECORD_TYPE_BIND_SOURCE_USER = 107;
 
     @Value("${rauditx.fmid:AZWE001}")
@@ -90,68 +89,28 @@ public class RauditxService {
     private int qualifierFailed;
 
     String getCurrentUser() {
-        try {
-            Class<?> zutilClass = Class.forName("com.ibm.jzos.ZUtil");
-            MethodHandle getCurrentUser = MethodHandles.publicLookup().findStatic(zutilClass, "getCurrentUser", MethodType.methodType(String.class));
-            return (String) getCurrentUser.invoke();
-        } catch (Throwable t) {
-            log.debug("Cannot obtain current userId", t);
-            return null;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void logNoPrivileges(String userId) {
-        if (StringUtils.isBlank(userId)) {
-            log.debug("Cannot issue any Rauditx record off z/OS.");
-        } else {
-            log.warn("The calling userid ({}) must have READ authority to the IRR.RAUDITX profile in the FACILITY class to issue a Rauditx record.", userId);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     SafResourceAccessVerifying getNativeSafResourceAccessVerifying() {
-        try {
-            return new SafResourceAccessSaf();
-        } catch (Exception e) {
-            log.debug("Cannot create instance of SafResourceAccessSaf");
-            return null;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @PostConstruct
     public void verifyPrivileges() {
-        String userId = getCurrentUser();
-        boolean hasAccess = false;
-        if (!StringUtils.isBlank(userId)) {
-            SafResourceAccessVerifying safResourceAccessVerifying = getNativeSafResourceAccessVerifying();
-            if (safResourceAccessVerifying != null) {
-                try {
-                    hasAccess = safResourceAccessVerifying.hasSafResourceAccess(
-                        new UsernamePasswordAuthenticationToken(userId, null),
-                        "FACILITY", "IRR.RAUDITX", "READ"
-                    );
-                } catch (Exception e) {
-                    log.debug("There was a problem while verifying user access. {}", e.getMessage(), e);
-                }
-            }
-        }
-        if (!hasAccess) {
-            logNoPrivileges(userId);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     void setDefault(RauditxBuilder builder) {
-        builder.subtype(subtype).event(event);
-
-        builder.rauditx.setComponent(component);
-        builder.rauditx.setFmid(fmid);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected Rauditx createMock() {
-        return (Rauditx) Proxy.newProxyInstance(
-            RauditxService.class.getClassLoader(),
-            new Class[] { Rauditx.class },
-            (proxy, method, args) -> null
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -174,19 +133,7 @@ public class RauditxService {
      * @return The builder of Rauditx record
      */
     public RauditxBuilder builder() {
-        Rauditx rauditx = ClassOrDefaultProxyUtils.createProxy(
-            Rauditx.class,
-            "com.ibm.jzos.Rauditx",
-            this::createMock,
-            new ClassOrDefaultProxyUtils.ByMethodName<>(
-                "com.ibm.jzos.RauditxException", RauditxException.class,
-                "getSafReturnCode", "getRacfReturnCode", "getRacfReasonCode"
-            )
-        );
-
-        RauditxBuilder builder = new RauditxBuilder(rauditx);
-        setDefault(builder);
-        return builder;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @RequiredArgsConstructor
@@ -200,9 +147,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder success() {
-            rauditx.setEventSuccess();
-            qualifier(qualifierSuccess);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -211,9 +156,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder failure() {
-            rauditx.setEventFailure();
-            qualifier(qualifierFailed);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -221,8 +164,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder authentication() {
-            rauditx.setAuthenticationEvent();
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -230,8 +172,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder authorization() {
-            rauditx.setAuthorizationEvent();
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -239,8 +180,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder alwaysLogSuccesses() {
-            rauditx.setAlwaysLogSuccesses();
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -248,8 +188,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder neverLogSuccesses() {
-            rauditx.setNeverLogSuccesses();
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -257,8 +196,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder alwaysLogFailures() {
-            rauditx.setAlwaysLogFailures();
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -266,8 +204,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder neverLogFailures() {
-            rauditx.setNeverLogFailures();
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -275,8 +212,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder checkWarningMode() {
-            rauditx.setCheckWarningMode();
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -286,8 +222,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder ignoreSuccessWithNoAuditLogRecord(boolean ignoreSuccessWithNoAuditLogRecord) {
-            rauditx.setIgnoreSuccessWithNoAuditLogRecord(ignoreSuccessWithNoAuditLogRecord);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -296,8 +231,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder logString(String logString) {
-            rauditx.setLogString(logString);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -307,8 +241,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder messageSegment(String messageSegment) {
-            rauditx.addMessageSegment(messageSegment);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -317,8 +250,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder userId(String userId) {
-            rauditx.addRelocateSection(RELOCATED_RECORD_TYPE_BIND_USER, userId);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -327,8 +259,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder sourceUserId(String userId) {
-            rauditx.addRelocateSection(RELOCATED_RECORD_TYPE_BIND_SOURCE_USER, userId);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -338,8 +269,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder event(int event) {
-            rauditx.setEvent(event);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -350,8 +280,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder qualifier(int qualifier) {
-            rauditx.setQualifier(qualifier);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -361,8 +290,7 @@ public class RauditxService {
          * @return builder to next action
          */
         public RauditxBuilder subtype(int subtype) {
-            rauditx.setSubtype(subtype);
-            return this;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         /**
@@ -370,13 +298,7 @@ public class RauditxService {
          * be written in the console log (level debug).
          */
         public void issue() {
-            try {
-                rauditx.issue();
-            } catch (RauditxException re) {
-                log.debug("Cannot issue RAuditX record", re);
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
-
     }
-
 }

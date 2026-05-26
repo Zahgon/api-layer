@@ -7,14 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 /**
@@ -24,6 +22,7 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class OIDCAuthSource implements AuthSource {
+
     public static final AuthSource.AuthSourceType type = AuthSource.AuthSourceType.OIDC;
 
     @EqualsAndHashCode.Include
@@ -31,12 +30,12 @@ public class OIDCAuthSource implements AuthSource {
 
     @Override
     public String getRawSource() {
-        return source;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public AuthSource.AuthSourceType getType() {
-        return type;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Setter

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.discovery.config;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,6 @@ import org.zowe.apiml.security.common.config.HandlerInitializer;
 import org.zowe.apiml.security.common.content.BasicContentFilter;
 import org.zowe.apiml.security.common.content.BearerContentFilter;
 import org.zowe.apiml.security.common.content.CookieContentFilter;
-
 import java.util.Collections;
 
 /**
@@ -47,15 +45,18 @@ import java.util.Collections;
 @Configuration
 @RequiredArgsConstructor
 @EnableApimlAuth
-@Profile({"https", "attlsServer"})
+@Profile({ "https", "attlsServer" })
 @ConditionalOnMissingBean(name = "modulithConfig")
 public class HttpsWebSecurityConfig extends AbstractWebSecurityConfigurer {
 
     private static final String DISCOVERY_REALM = "API Mediation Discovery Service realm";
 
     private final HandlerInitializer handlerInitializer;
+
     private final AuthConfigurationProperties securityConfigurationProperties;
+
     private final GatewayLoginProvider gatewayLoginProvider;
+
     private final GatewayTokenProvider gatewayTokenProvider;
 
     @Value("${server.attlsServer.enabled:false}")
@@ -69,21 +70,7 @@ public class HttpsWebSecurityConfig extends AbstractWebSecurityConfigurer {
 
     @Bean
     WebSecurityCustomizer httpsWebSecurityCustomizer() {
-        String[] noSecurityAntMatchers = {
-            "/eureka/css/**",
-            "/eureka/js/**",
-            "/eureka/fonts/**",
-            "/eureka/images/**",
-            "/application/info",
-            "/favicon.ico"
-        };
-        return web -> {
-            web.ignoring().requestMatchers(noSecurityAntMatchers);
-
-            if (!isHealthEndpointProtected) {
-                web.ignoring().requestMatchers("/application/health");
-            }
-        };
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -92,7 +79,7 @@ public class HttpsWebSecurityConfig extends AbstractWebSecurityConfigurer {
     @Bean
     @Order(1)
     SecurityFilterChain errorHandler(HttpSecurity http) throws Exception {
-        return baseConfigure(http.securityMatcher("/error")).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -101,21 +88,7 @@ public class HttpsWebSecurityConfig extends AbstractWebSecurityConfigurer {
     @Bean
     @Order(3)
     SecurityFilterChain basicAuthOrTokenFilterChain(HttpSecurity http) throws Exception {
-        baseConfigure(http.securityMatchers(matchers -> matchers.requestMatchers(
-            "/application/**",
-            "/*"
-        )))
-            .authenticationProvider(gatewayLoginProvider)
-            .authenticationProvider(gatewayTokenProvider)
-            .authorizeHttpRequests(requests -> requests
-                .requestMatchers("/**").authenticated())
-            .httpBasic(basic -> basic.realmName(DISCOVERY_REALM));
-        if (isServerAttlsEnabled) {
-            http.addFilterBefore(new SecureConnectionFilter(), UsernamePasswordAuthenticationFilter.class);
-        }
-
-        return http.with(new CustomSecurityFilters(), t -> {
-        }).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -124,20 +97,7 @@ public class HttpsWebSecurityConfig extends AbstractWebSecurityConfigurer {
     @Bean
     @Order(2)
     SecurityFilterChain clientCertificateFilterChain(HttpSecurity http) throws Exception {
-        baseConfigure(http.securityMatcher("/eureka/**"));
-        if (verifySslCertificatesOfServices) {
-            http.x509(x509 -> x509.userDetailsService(x509UserDetailsService()))
-                .authorizeHttpRequests(requests -> requests
-                    .anyRequest().authenticated()
-                );
-            if (isServerAttlsEnabled) {
-                http.addFilterBefore(new AttlsFilter(), X509AuthenticationFilter.class);
-                http.addFilterBefore(new SecureConnectionFilter(), AttlsFilter.class);
-            }
-        } else {
-            http.authorizeHttpRequests(requests -> requests.anyRequest().permitAll());
-        }
-        return http.build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -146,58 +106,29 @@ public class HttpsWebSecurityConfig extends AbstractWebSecurityConfigurer {
     @Bean
     @Order(4)
     SecurityFilterChain basicAuthOrTokenOrCertFilterChain(HttpSecurity http) throws Exception {
-        baseConfigure(http.securityMatcher("/discovery/**"))
-            .authenticationProvider(gatewayLoginProvider)
-            .authenticationProvider(gatewayTokenProvider)
-            .httpBasic(basic -> basic.realmName(DISCOVERY_REALM));
-        if (verifySslCertificatesOfServices) {
-            http.authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
-                .x509(x509 -> x509.userDetailsService(x509UserDetailsService()));
-            if (isServerAttlsEnabled) {
-                http.addFilterBefore(new AttlsFilter(), X509AuthenticationFilter.class);
-                http.addFilterBefore(new SecureConnectionFilter(), AttlsFilter.class);
-            }
-        }
-
-        return http.with(new CustomSecurityFilters(), t -> {
-        }).build();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-
     private class CustomSecurityFilters extends AbstractHttpConfigurer<CustomSecurityFilters, HttpSecurity> {
+
         @Override
         public void configure(HttpSecurity http) {
-            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-
-            http.addFilterBefore(basicFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(cookieFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(bearerContentFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         private BasicContentFilter basicFilter(AuthenticationManager authenticationManager) {
-            return new BasicContentFilter(
-                authenticationManager,
-                handlerInitializer.getAuthenticationFailureHandler(),
-                handlerInitializer.getResourceAccessExceptionHandler());
+            return new BasicContentFilter(authenticationManager, handlerInitializer.getAuthenticationFailureHandler(), handlerInitializer.getResourceAccessExceptionHandler());
         }
 
         private CookieContentFilter cookieFilter(AuthenticationManager authenticationManager) {
-            return new CookieContentFilter(
-                authenticationManager,
-                handlerInitializer.getAuthenticationFailureHandler(),
-                handlerInitializer.getResourceAccessExceptionHandler(),
-                securityConfigurationProperties);
+            return new CookieContentFilter(authenticationManager, handlerInitializer.getAuthenticationFailureHandler(), handlerInitializer.getResourceAccessExceptionHandler(), securityConfigurationProperties);
         }
 
         /**
          * Secures content with a Bearer token
          */
         private BearerContentFilter bearerContentFilter(AuthenticationManager authenticationManager) {
-            return new BearerContentFilter(
-                authenticationManager,
-                handlerInitializer.getAuthenticationFailureHandler(),
-                handlerInitializer.getResourceAccessExceptionHandler()
-            );
+            return new BearerContentFilter(authenticationManager, handlerInitializer.getAuthenticationFailureHandler(), handlerInitializer.getResourceAccessExceptionHandler());
         }
     }
 

@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.security.service.schema.source;
 
 import lombok.RequiredArgsConstructor;
@@ -21,13 +20,11 @@ import org.zowe.apiml.message.core.MessageType;
 import org.zowe.apiml.message.log.ApimlLogger;
 import org.zowe.apiml.product.logging.annotations.InjectApimlLogger;
 import org.zowe.apiml.security.common.error.InvalidCertificateException;
-
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Optional;
-
 import static org.zowe.apiml.security.common.filter.CategorizeCertsFilter.ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE;
 
 /**
@@ -35,15 +32,17 @@ import static org.zowe.apiml.security.common.filter.CategorizeCertsFilter.ATTR_N
  * This implementation relies on concrete implementation of {@link AuthenticationMapper} for validation and parsing of
  * the client certificate.
  */
-
 @RequiredArgsConstructor
 public class X509AuthSourceService implements AuthSourceService {
+
     @InjectApimlLogger
     protected final ApimlLogger logger = ApimlLogger.empty();
 
     @Qualifier("x509Mapper")
     private final AuthenticationMapper mapper;
+
     private final TokenCreationService tokenService;
+
     private final AuthenticationService authenticationService;
 
     /**
@@ -56,11 +55,7 @@ public class X509AuthSourceService implements AuthSourceService {
      */
     @Override
     public Optional<AuthSource> getAuthSourceFromRequest(HttpServletRequest request) {
-        logger.log(MessageType.DEBUG, "Getting X509 client certificate from custom attribute '" + ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE + "'.");
-        X509Certificate clientCert = getCertificateFromRequest(request, ATTR_NAME_CLIENT_AUTH_X509_CERTIFICATE);
-        clientCert = isValid(clientCert) ? clientCert : null;
-        logger.log(MessageType.DEBUG, String.format("X509 client certificate %s in request.", clientCert == null ? "not found" : "found"));
-        return clientCert == null ? Optional.empty() : Optional.of(new X509AuthSource(clientCert));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -71,11 +66,7 @@ public class X509AuthSourceService implements AuthSourceService {
      * @return true if client certificate is valid, false otherwise.
      */
     public boolean isValid(AuthSource authSource) {
-        if (authSource instanceof X509AuthSource) {
-            X509Certificate clientCert = (X509Certificate) authSource.getRawSource();
-            return isValid(clientCert);
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -85,8 +76,7 @@ public class X509AuthSourceService implements AuthSourceService {
      * @return true if client certificate is valid, false otherwise.
      */
     protected boolean isValid(X509Certificate clientCert) {
-        logger.log(MessageType.DEBUG, "Validating X509 client certificate.");
-        return clientCert != null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -96,29 +86,21 @@ public class X509AuthSourceService implements AuthSourceService {
      * @return parsed authentication source or null if error occurred during parsing.
      */
     public AuthSource.Parsed parse(AuthSource authSource) {
-        if (authSource instanceof X509AuthSource) {
-            logger.log(MessageType.DEBUG, "Parsing X509 client certificate.");
-            return isValid(authSource) ? parseClientCert((X509AuthSource) authSource, mapper) : null;
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public String getLtpaToken(AuthSource authSource) {
-        String jwt = getJWT(authSource);
-        return jwt != null ? authenticationService.getLtpaToken(jwt) : null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     // Gets client certificate from request
     protected X509Certificate getCertificateFromRequest(HttpServletRequest request, String attributeName) {
-        X509Certificate[] certs = (X509Certificate[]) request.getAttribute(attributeName);
-        return getOne(certs);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected X509Certificate getOne(X509Certificate[] certs) {
-        if (certs != null && certs.length > 0) {
-            return certs[0];
-        } else return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -134,8 +116,7 @@ public class X509AuthSourceService implements AuthSourceService {
             String commonName = mapper.mapToMainframeUserId(x509AuthSource);
             String encodedCert = Base64.getEncoder().encodeToString(clientCert.getEncoded());
             String distinguishedName = clientCert.getSubjectDN().toString();
-            return new Parsed(commonName, clientCert.getNotBefore(), clientCert.getNotAfter(),
-                Origin.X509, encodedCert, distinguishedName);
+            return new Parsed(commonName, clientCert.getNotBefore(), clientCert.getNotAfter(), Origin.X509, encodedCert, distinguishedName);
         } catch (CertificateEncodingException e) {
             logger.log(MessageType.ERROR, "Exception parsing certificate.", e);
             throw new InvalidCertificateException("Exception parsing certificate. " + e.getLocalizedMessage());
@@ -144,20 +125,6 @@ public class X509AuthSourceService implements AuthSourceService {
 
     @Override
     public String getJWT(AuthSource authSource) {
-        if (authSource instanceof X509AuthSource) {
-            logger.log(MessageType.DEBUG, "Get JWT token from X509 client certificate.");
-            String userId = mapper.mapToMainframeUserId(authSource);
-            if (userId == null) {
-                logger.log(MessageType.DEBUG, "It was not possible to map provided certificate to the mainframe identity.");
-                throw new AuthSchemeException("org.zowe.apiml.zaas.security.schema.x509.mappingFailed");
-            }
-            try {
-                return tokenService.createJwtTokenWithoutCredentials(userId);
-            } catch (Exception e) {
-                logger.log(MessageType.DEBUG, "ZAAS failed to obtain token - authentication request to get token failed.", e.getLocalizedMessage());
-                throw new AuthSchemeException("org.zowe.apiml.zaas.security.token.authenticationFailed");
-            }
-        }
-        return null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

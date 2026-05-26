@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.passticket;
 
 /**
@@ -27,6 +26,6 @@ public class IRRPassTicketEvaluationException extends AbstractIRRPassTicketExcep
 
     @Override
     public String getMessage() {
-        return getMessage("Error on evaluation of PassTicket:");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

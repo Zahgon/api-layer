@@ -7,9 +7,7 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gzip;
-
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +20,9 @@ import java.util.zip.GZIPOutputStream;
 public class GZipResponseWrapper extends HttpServletResponseWrapper {
 
     private GZipServletOutputStream gzipOutputStream;
+
     private PrintWriter printWriter = null;
+
     private boolean disableFlushBuffer = false;
 
     /**
@@ -37,13 +37,7 @@ public class GZipResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public void close() throws IOException {
-        if (this.printWriter != null) {
-            this.printWriter.close();
-        }
-
-        if (this.gzipOutputStream != null) {
-            this.gzipOutputStream.close();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -53,61 +47,30 @@ public class GZipResponseWrapper extends HttpServletResponseWrapper {
      */
     @Override
     public void flushBuffer() throws IOException {
-        flush();
-
-        // doing this might leads to response already committed exception
-        // when the PageInfo has not yet built but the buffer already flushed
-        // Happens in Weblogic when a servlet forward to a JSP page and the forward
-        // method trigger a flush before it forwarded to the JSP
-        // disableFlushBuffer for that purpose is 'true' by default
-        if (!disableFlushBuffer) {
-            super.flushBuffer();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Flushes all the streams for this response.
      */
     public void flush() throws IOException {
-        if (printWriter != null) {
-            printWriter.flush();
-        }
-
-        if (gzipOutputStream != null) {
-            gzipOutputStream.flush();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public ServletOutputStream getOutputStream() {
-        if (this.printWriter != null) {
-            throw new IllegalStateException(
-                "PrintWriter obtained already - cannot get OutputStream");
-        }
-
-        return this.gzipOutputStream;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        if (this.printWriter == null) {
-            this.gzipOutputStream = new GZipServletOutputStream(
-                getResponse().getOutputStream());
-
-            this.printWriter = new PrintWriter(new OutputStreamWriter(
-                this.gzipOutputStream, getResponse().getCharacterEncoding()), true);
-        }
-
-        return this.printWriter;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     @Override
     public void setContentLength(int length) {
-        //ignore, since content length of zipped content
-        //does not match content length of unzipped content.
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * Set if the wrapped reponse's buffer flushing should be disabled.
@@ -115,7 +78,6 @@ public class GZipResponseWrapper extends HttpServletResponseWrapper {
      * @param disableFlushBuffer true if the wrapped reponse's buffer flushing should be disabled
      */
     public void setDisableFlushBuffer(boolean disableFlushBuffer) {
-        this.disableFlushBuffer = disableFlushBuffer;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

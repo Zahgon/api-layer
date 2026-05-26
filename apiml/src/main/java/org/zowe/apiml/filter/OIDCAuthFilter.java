@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ import org.zowe.apiml.util.CookieUtil;
 import org.zowe.apiml.zaas.security.mapping.AuthenticationMapper;
 import org.zowe.apiml.zaas.security.service.schema.source.OIDCAuthSource;
 import reactor.core.publisher.Mono;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -54,34 +52,21 @@ import java.util.Optional;
 public class OIDCAuthFilter extends AbstractTokenAuthFilter {
 
     private final OIDCProvider oidcProvider;
+
     private final AuthenticationMapper oidcMapper;
+
     private final AuthConfigurationProperties authConfigurationProperties;
+
     private final List<String> userIdFieldPath;
 
     @Override
     protected AuthConfigurationProperties getAuthConfigurationProperties() {
-        return authConfigurationProperties;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .map(Authentication::isAuthenticated)
-            .defaultIfEmpty(false)
-            .flatMap(alreadyAuthenticated -> {
-                if (alreadyAuthenticated) {
-                    return chain.filter(exchange);
-                }
-
-                var tokenOpt = resolveToken(exchange.getRequest());
-                if (tokenOpt.isEmpty()) {
-                    return chain.filter(exchange);
-                }
-
-                var token = tokenOpt.get();
-                return attemptOidcAuthentication(exchange, chain, token);
-            });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -91,15 +76,13 @@ public class OIDCAuthFilter extends AbstractTokenAuthFilter {
      * On failure, continues the chain unmodified.
      */
     private Mono<Void> attemptOidcAuthentication(ServerWebExchange exchange, WebFilterChain chain, String token) {
-        return Mono.fromCallable(() -> authenticate(token))
-            .flatMap(authOpt -> {
-                if (authOpt.isPresent()) {
-                    var sanitized = stripToken(exchange);
-                    return chain.filter(sanitized)
-                        .contextWrite(context -> ReactiveSecurityContextHolder.withAuthentication(authOpt.get()));
-                }
-                return chain.filter(exchange);
-            });
+        return Mono.fromCallable(() -> authenticate(token)).flatMap(authOpt -> {
+            if (authOpt.isPresent()) {
+                var sanitized = stripToken(exchange);
+                return chain.filter(sanitized).contextWrite(context -> ReactiveSecurityContextHolder.withAuthentication(authOpt.get()));
+            }
+            return chain.filter(exchange);
+        });
     }
 
     private Optional<TokenAuthentication> authenticate(String token) {
@@ -107,7 +90,6 @@ public class OIDCAuthFilter extends AbstractTokenAuthFilter {
             log.debug("Token is not OIDC or it is invalid");
             return Optional.empty();
         }
-
         List<String> userIds;
         try {
             userIds = JwtUtils.getFieldValuesFromToken(token, userIdFieldPath);
@@ -115,16 +97,13 @@ public class OIDCAuthFilter extends AbstractTokenAuthFilter {
             log.debug("Cannot extract userId from OIDC token: {}", e.getMessage());
             return Optional.empty();
         }
-
         var authSource = new OIDCAuthSource(token);
         authSource.setDistributedId(userIds);
-
         String mainframeUser = oidcMapper.mapToMainframeUserId(authSource);
         if (StringUtils.isBlank(mainframeUser)) {
             log.debug("OIDC token identity mapping failed - no mainframe user found");
             return Optional.empty();
         }
-
         log.debug("OIDC token authenticated, mapped to mainframe user: {}", mainframeUser);
         return Optional.of(TokenAuthentication.createAuthenticated(mainframeUser, token, TokenAuthentication.Type.OIDC));
     }
@@ -135,25 +114,19 @@ public class OIDCAuthFilter extends AbstractTokenAuthFilter {
      */
     private ServerWebExchange stripToken(ServerWebExchange exchange) {
         String cookieName = authConfigurationProperties.getCookieProperties().getCookieName();
-        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-            .headers(headers -> {
-                headers.remove(HttpHeaders.AUTHORIZATION);
-                List<String> cookies = headers.get(HttpHeaders.COOKIE);
-                if (cookies != null) {
-                    List<String> filtered = cookies.stream()
-                        .map(cookieHeader -> CookieUtil.removeCookie(cookieHeader, cookieName))
-                        .filter(s -> !s.isEmpty()).toList();
-                    headers.remove(HttpHeaders.COOKIE);
-                    log.debug("Removing cookies.");
-                    if (!filtered.isEmpty()) {
-                        log.debug("Adding filtered cookies: {}", filtered.size());
-                        filtered.forEach(c -> headers.add(HttpHeaders.COOKIE, c));
-                    }
+        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate().headers(headers -> {
+            headers.remove(HttpHeaders.AUTHORIZATION);
+            List<String> cookies = headers.get(HttpHeaders.COOKIE);
+            if (cookies != null) {
+                List<String> filtered = cookies.stream().map(cookieHeader -> CookieUtil.removeCookie(cookieHeader, cookieName)).filter(s -> !s.isEmpty()).toList();
+                headers.remove(HttpHeaders.COOKIE);
+                log.debug("Removing cookies.");
+                if (!filtered.isEmpty()) {
+                    log.debug("Adding filtered cookies: {}", filtered.size());
+                    filtered.forEach(c -> headers.add(HttpHeaders.COOKIE, c));
                 }
-            })
-            .build();
+            }
+        }).build();
         return exchange.mutate().request(mutatedRequest).build();
     }
-
-
 }

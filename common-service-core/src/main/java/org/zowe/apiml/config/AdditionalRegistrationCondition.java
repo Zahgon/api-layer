@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.config;
 
 import lombok.RequiredArgsConstructor;
@@ -16,9 +15,7 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
-
 import java.util.List;
-
 import static org.zowe.apiml.config.AdditionalRegistrationParser.DISCOVERYSERVICEURLS_PATTERN;
 
 @Slf4j
@@ -27,12 +24,6 @@ public class AdditionalRegistrationCondition implements Condition {
 
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        String dcUrls = context.getEnvironment().getProperty("apiml.service.additionalRegistration[0].discoveryServiceUrls");
-        List<String> additionalKeys = ((StandardEnvironment) context.getEnvironment()).getSystemEnvironment()
-            .keySet().stream().map(String::toUpperCase).filter(key -> DISCOVERYSERVICEURLS_PATTERN.matcher(key).matches())
-            .toList();
-        boolean isAdditionalRegistrationsDetected = dcUrls != null || !additionalKeys.isEmpty();
-        log.debug("isAdditionalRegistrationsDetected: {}", isAdditionalRegistrationsDetected);
-        return isAdditionalRegistrationsDetected;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

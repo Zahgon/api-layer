@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.filters;
 
 import lombok.AccessLevel;
@@ -29,16 +28,7 @@ public abstract class AbstractEncodedCharactersFilterFactory extends AbstractGat
      */
     @Override
     public GatewayFilter apply(Object routeId) {
-        return ((exchange, chain) -> {
-            String uri = exchange.getRequest().getURI().toString();
-
-            if (!shouldFilter(uri)) {
-                return chain.filter(exchange);
-            }
-
-            throw getException(uri);
-
-        });
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     abstract RuntimeException getException(String uri);

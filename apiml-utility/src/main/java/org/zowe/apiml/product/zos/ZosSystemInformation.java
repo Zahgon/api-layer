@@ -7,13 +7,11 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.zos;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.zowe.apiml.util.ClassOrDefaultProxyUtils;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,34 +19,33 @@ import java.util.Optional;
 public class ZosSystemInformation {
 
     public static final String ZOS_JOB_ID = "zos.jobid";
+
     public static final String ZOS_JOB_NAME = "zos.jobname";
+
     public static final String ZOS_USER_ID = "zos.userid";
+
     public static final String ZOS_PID = "zos.pid";
+
     public static final String ZOS_SYSNAME = "zos.sysname";
+
     public static final String ZOS_SYSCLONE = "zos.sysclone";
+
     public static final String ZOS_SYSPLEX = "zos.sysplex";
+
     public static final String ZOS_SMF_ID = "zos.smfid";
+
     public static final String ZOS_ENVIRON = "zos.environ";
+
     public static final String OS_NAME = "os.name";
 
     private ZUtil zUtil;
 
     public static boolean isRunningOnZos() {
-        return "z/OS".equals(System.getProperty(OS_NAME));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Map<String, Object> get() {
-        return Map.of(
-            ZOS_JOB_ID, zUtil.getCurrentJobId(),
-            ZOS_JOB_NAME, zUtil.getCurrentJobname(),
-            ZOS_USER_ID, zUtil.getCurrentUser(),
-            ZOS_PID, zUtil.getPid(),
-            ZOS_SYSNAME, getSystemSymbol("&SYSNAME."),
-            ZOS_SYSCLONE, getSystemSymbol("&SYSCLONE."),
-            ZOS_SYSPLEX, getSystemSymbol("&SYSPLEX."),
-            ZOS_SMF_ID, getSystemSymbol("&SMFID."),
-            ZOS_ENVIRON, getSystemSymbol("&ENVIRON.")
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private String getSystemSymbol(String systemSymbol) {
@@ -56,20 +53,11 @@ public class ZosSystemInformation {
             return "";
         }
         var symbol = zUtil.substituteSystemSymbols(systemSymbol);
-
-        return Optional.ofNullable(symbol)
-            .filter(s -> !systemSymbol.equalsIgnoreCase(symbol))
-            .orElse("");
+        return Optional.ofNullable(symbol).filter(s -> !systemSymbol.equalsIgnoreCase(symbol)).orElse("");
     }
 
     @PostConstruct
     public void afterPropertiesSet() throws Exception {
-        if (isRunningOnZos()) {
-            zUtil = ClassOrDefaultProxyUtils.createProxy(ZUtil.class, "com.ibm.jzos.ZUtil", ZUtilDummy::new);
-        } else {
-            zUtil = new ZUtilDummy();
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

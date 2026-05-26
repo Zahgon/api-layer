@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaas.cache;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -23,22 +22,24 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.zowe.apiml.product.gateway.GatewayClient;
 import org.zowe.apiml.product.instance.ServiceAddress;
-
 import java.util.Map;
-
 
 /**
  * Client for interaction with Caching Service
  * Supports basic CRUD operations
  */
 @Slf4j
-@SuppressWarnings({"squid:S1192"}) // literals are repeating in debug logs only
+// literals are repeating in debug logs only
+@SuppressWarnings({ "squid:S1192" })
 public class CachingServiceClient implements CachingClient {
 
     private final GatewayClient gatewayClient;
+
     private final RestTemplate restTemplate;
+
     @Value("${apiml.cachingServiceClient.apiPath:/cachingservice/api/v1/cache}")
     private String CACHING_API_PATH;
+
     @Value("${apiml.cachingServiceClient.list.apiPath:/cachingservice/api/v1/cache-list/}")
     private String CACHING_LIST_API_PATH;
 
@@ -49,7 +50,7 @@ public class CachingServiceClient implements CachingClient {
     }
 
     public static HttpHeaders getDefaultHeaders() {
-        return defaultHeaders;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public CachingServiceClient(RestTemplate restTemplate, GatewayClient gatewayClient) {
@@ -74,43 +75,16 @@ public class CachingServiceClient implements CachingClient {
      * @param kv {@link KeyValue} to store
      * @throws CachingServiceClientException when http response from caching is not 2xx, such as connect exception or cache conflict
      */
-
     public void create(KeyValue kv) throws CachingServiceClientException {
-        try {
-            restTemplate.exchange(getGatewayAddress() + CACHING_API_PATH, HttpMethod.POST, new HttpEntity<>(kv, defaultHeaders), String.class);
-        } catch (RestClientException e) {
-            throw new CachingServiceClientException("Unable to create keyValue: " + kv.toString() + ", caused by: " + e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public void appendList(String mapKey, KeyValue kv) throws CachingServiceClientException {
-        try {
-            var url = getGatewayAddress() + CACHING_LIST_API_PATH + mapKey;
-            log.debug("append list url: {}", url);
-            restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(kv, defaultHeaders), String.class);
-        } catch (RestClientException e) {
-            throw new CachingServiceClientException("Unable to create keyValue: " + kv.toString() + " in a map under " + mapKey + " key, caused by: " + e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Map<String, Map<String, String>> readAllMaps() throws CachingServiceClientException {
-        try {
-            var responseType = new ParameterizedTypeReference<Map<String, Map<String, String>>>() {
-            };
-            var url = getGatewayAddress() + CACHING_LIST_API_PATH;
-            log.debug("readAllMaps url: {}", url);
-            var response = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                if (response.getBody() != null && !response.getBody().isEmpty()) {     //NOSONAR tests return null
-                    return response.getBody();
-                }
-                return Map.of();
-            } else {
-                throw new CachingServiceClientException("Unable to read all key-value maps from cache list, caused by response from caching service is null or has no body");
-            }
-        } catch (Exception e) {
-            throw new CachingServiceClientException("Unable to read all key-value maps from cache list, caused by: " + e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -119,11 +93,7 @@ public class CachingServiceClient implements CachingClient {
      * @param key the map key
      */
     public void evictTokens(String key) {
-        try {
-            restTemplate.exchange(getGatewayAddress() + CACHING_LIST_API_PATH + "evict/tokens/" + key, HttpMethod.DELETE, new HttpEntity<>(null, defaultHeaders), String.class);
-        } catch (RestClientException e) {
-            throw new CachingServiceClientException("Unable to delete key: " + key + ", caused by: " + e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -132,13 +102,8 @@ public class CachingServiceClient implements CachingClient {
      * @param key the map key
      */
     public void evictRules(String key) {
-        try {
-            restTemplate.exchange(getGatewayAddress() + CACHING_LIST_API_PATH + "evict/rules/" + key, HttpMethod.DELETE, new HttpEntity<>(null, defaultHeaders), String.class);
-        } catch (RestClientException e) {
-            throw new CachingServiceClientException("Unable to delete key: " + key + ", caused by: " + e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 
     /**
      * Reads {@link KeyValue} from Caching Service
@@ -148,22 +113,7 @@ public class CachingServiceClient implements CachingClient {
      * @throws CachingServiceClientException when http response from caching is not 2xx, such as connect exception or 404 key not found in cache
      */
     public KeyValue read(String key) throws CachingServiceClientException {
-        try {
-            ResponseEntity<KeyValue> response = restTemplate.exchange(getGatewayAddress() + CACHING_API_PATH + "/" + key, HttpMethod.GET, new HttpEntity<KeyValue>(null, defaultHeaders), KeyValue.class);
-            if (response != null && response.hasBody()) { //NOSONAR tests return null
-                return response.getBody();
-            }
-        } catch (RestClientException e) {
-            if (!(
-                (e instanceof HttpStatusCodeException httpStatusCodeException) &&
-                (httpStatusCodeException.getStatusCode() == HttpStatus.NOT_FOUND)
-            )) {
-                throw new CachingServiceClientException("Unable to read key: " + key + ", caused by: " + e.getMessage(), e);
-            }
-        }
-
-        // record not found
-        throw new CachingServiceClientException("Unable to read key: " + key + ", caused by response from caching service is null or has no body");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -173,11 +123,7 @@ public class CachingServiceClient implements CachingClient {
      * @throws CachingServiceClientException when http response from caching is not 2xx, such as connect exception or 404 key not found in cache
      */
     public void update(KeyValue kv) throws CachingServiceClientException {
-        try {
-            restTemplate.exchange(getGatewayAddress() + CACHING_API_PATH, HttpMethod.PUT, new HttpEntity<>(kv, defaultHeaders), String.class);
-        } catch (RestClientException e) {
-            throw new CachingServiceClientException("Unable to update keyValue: " + kv.toString() + ", caused by: " + e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -187,11 +133,7 @@ public class CachingServiceClient implements CachingClient {
      * @throws CachingServiceClientException when http response from caching is not 2xx, such as connect exception or 404 key not found in cache
      */
     public void delete(String key) throws CachingServiceClientException {
-        try {
-            restTemplate.exchange(getGatewayAddress() + CACHING_API_PATH + "/" + key, HttpMethod.DELETE, new HttpEntity<KeyValue>(null, defaultHeaders), String.class);
-        } catch (RestClientException e) {
-            throw new CachingServiceClientException("Unable to delete key: " + key + ", caused by: " + e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -201,7 +143,9 @@ public class CachingServiceClient implements CachingClient {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Data
     public static class KeyValue {
+
         private final String key;
+
         private final String value;
 
         @JsonCreator
@@ -210,5 +154,4 @@ public class CachingServiceClient implements CachingClient {
             value = "";
         }
     }
-
 }

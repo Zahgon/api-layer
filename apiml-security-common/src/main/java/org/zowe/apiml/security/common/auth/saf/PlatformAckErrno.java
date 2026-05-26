@@ -7,11 +7,9 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.auth.saf;
 
 import lombok.RequiredArgsConstructor;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,12 +37,14 @@ public enum PlatformAckErrno {
     }
 
     public final String shortErrorName;
+
     public final int errno;
+
     public final String explanation;
+
     public final PlatformErrorType errorType;
 
     public static PlatformAckErrno valueOfErrno(int errno) {
-        return BY_ERRNO.getOrDefault(errno, null);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

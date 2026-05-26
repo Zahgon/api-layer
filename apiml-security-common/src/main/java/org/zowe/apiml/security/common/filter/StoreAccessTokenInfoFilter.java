@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.security.common.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +25,6 @@ import org.zowe.apiml.security.common.error.AccessTokenMissingBodyException;
 import org.zowe.apiml.security.common.error.AuthExceptionHandler;
 import org.zowe.apiml.security.common.handler.ServletErrorUtils;
 import org.zowe.apiml.security.common.handler.SuccessfulAccessTokenHandler;
-
 import java.io.IOException;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -37,38 +35,18 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 public class StoreAccessTokenInfoFilter extends OncePerRequestFilter {
+
     public static final String TOKEN_REQUEST = "tokenRequest";
 
     private static final ObjectReader mapper = new ObjectMapper().reader();
 
     private final AuthExceptionHandler authExceptionHandler;
+
     @InjectApimlLogger
     private final ApimlLogger apimlLog = ApimlLogger.empty();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException {
-        var consumer = ServletErrorUtils.createApiErrorWriter(response, apimlLog);
-        var addHeader = (BiConsumer<String, String>) response::addHeader;
-        try {
-            ServletInputStream inputStream = request.getInputStream();
-            if (inputStream.available() != 0) {
-                SuccessfulAccessTokenHandler.AccessTokenRequest accessTokenRequest = mapper.readValue(inputStream, SuccessfulAccessTokenHandler.AccessTokenRequest.class);
-                Set<String> scopes = accessTokenRequest.getScopes();
-                if (scopes == null || scopes.isEmpty()) {
-                    authExceptionHandler.handleException(request.getRequestURI(), consumer, addHeader, new AccessTokenMissingBodyException("Scopes are missing in the request."));
-                    return;
-                }
-                accessTokenRequest.setScopes(scopes.stream().map(String::toLowerCase).collect(Collectors.toSet()));
-                request.setAttribute(TOKEN_REQUEST, accessTokenRequest);
-                filterChain.doFilter(request, response);
-            } else {
-                authExceptionHandler.handleException(request.getRequestURI(), consumer, addHeader, new AccessTokenMissingBodyException("Body is missing in the request."));
-            }
-
-        } catch (IOException e) {
-            authExceptionHandler.handleException(request.getRequestURI(), consumer, addHeader, new AccessTokenInvalidBodyException("Format of the request body is invalid. Exception message: " + e.getMessage()));
-        }
-
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

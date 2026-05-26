@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.product.version;
 
 import java.text.DateFormat;
@@ -21,6 +20,7 @@ public class BuildInfoDetails {
     private static final String UNKNOWN = "Unknown";
 
     private final Properties build;
+
     private final Properties git;
 
     public BuildInfoDetails(Properties build, Properties git) {
@@ -29,37 +29,26 @@ public class BuildInfoDetails {
     }
 
     public String getArtifact() {
-        return build.get("build.artifact") == null ? UNKNOWN : String.valueOf(build.get("build.artifact"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getVersion() {
-        return build.get("build.version") == null ? UNKNOWN : String.valueOf(build.get("build.version"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getNumber() {
-        if (String.valueOf(build.get("build.number")).equals("n/a")) {
-            return "n/a";
-        } else {
-            return String.valueOf(build.get("build.number"));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public Date getTime() {
-        DateFormat dateFormat = new SimpleDateFormat();
-        Date date = null;
-        try {
-            date = dateFormat.parse(String.valueOf(build.get("build.time")));
-        } catch (ParseException e) {
-            //do nothing if there's parse problem
-        }
-        return date;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getMachine() {
-        return build.get("build.machine") == null ? UNKNOWN : String.valueOf(build.get("build.machine"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public String getCommitId() {
-        return git.get("git.commit.id.abbrev") == null ? UNKNOWN : String.valueOf(git.get("git.commit.id.abbrev"));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

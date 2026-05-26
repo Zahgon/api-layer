@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.config;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
@@ -16,15 +15,12 @@ import org.zowe.apiml.eurekaservice.client.config.ApiMediationServiceConfig;
 import org.zowe.apiml.eurekaservice.client.util.ApiMediationServiceConfigReader;
 import org.zowe.apiml.exception.ServiceDefinitionException;
 
-@ConfigurationProperties(
-    value = "apiml.service"
-)
+@ConfigurationProperties(value = "apiml.service")
 public class DiscoveryClientConfig extends ApiMediationServiceConfig {
 
     @PostConstruct
     @Override
     public void setIpAddressIfNotPresents() throws ServiceDefinitionException {
-        ApiMediationServiceConfigReader.setServiceIpAddress(this);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

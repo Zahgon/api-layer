@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.filter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -38,26 +36,6 @@ public class CachedBodyFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return DataBufferUtils.join(exchange.getRequest().getBody())
-            .flatMap(dataBuffer -> {
-                var bytes = new byte[dataBuffer.readableByteCount()];
-                dataBuffer.read(bytes);
-                DataBufferUtils.release(dataBuffer);
-                exchange.getAttributes().put(CACHED_BODY_ATTR, new String(bytes, StandardCharsets.UTF_8));
-                var decoratedRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
-                    @Override
-                    public Flux<DataBuffer> getBody() {
-                        return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));
-                    }
-                };
-                return chain.filter(exchange.mutate().request(decoratedRequest).build());
-            })
-            .switchIfEmpty(chain.filter(exchange.mutate().request(new ServerHttpRequestDecorator(exchange.getRequest()) {
-                @Override
-                    public Flux<DataBuffer> getBody() {
-                        return Flux.just(exchange.getResponse().bufferFactory().wrap(new byte[]{}));
-                    }
-            }).build()));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

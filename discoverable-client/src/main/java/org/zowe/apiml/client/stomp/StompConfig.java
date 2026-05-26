@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.client.stomp;
 
 import org.springframework.context.annotation.Configuration;
@@ -23,19 +22,16 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
-        registry.setSendBufferSizeLimit(5_898_240);
-        registry.setMessageSizeLimit(5_898_240);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws/stomp")
-            .setAllowedOriginPatterns("*");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

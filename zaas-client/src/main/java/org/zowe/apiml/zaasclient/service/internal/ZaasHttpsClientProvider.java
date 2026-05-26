@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.zaasclient.service.internal;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +23,6 @@ import org.apache.hc.core5.util.Timeout;
 import org.zowe.apiml.zaasclient.config.ConfigProperties;
 import org.zowe.apiml.zaasclient.exception.ZaasConfigurationErrorCodes;
 import org.zowe.apiml.zaasclient.exception.ZaasConfigurationException;
-
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -39,6 +37,7 @@ import java.util.regex.Pattern;
 
 @AllArgsConstructor
 class ZaasHttpsClientProvider implements CloseableClientProvider {
+
     private static final int REQUEST_TIMEOUT = 30 * 1000;
 
     private static final Pattern KEYRING_PATTERN = Pattern.compile("^(safkeyring[^:]*):/{2,4}([^/]+)/([^/]+)$");
@@ -46,10 +45,13 @@ class ZaasHttpsClientProvider implements CloseableClientProvider {
     private ConfigProperties configProperties;
 
     private TrustManagerFactory tmf;
+
     private KeyManagerFactory kmf;
 
     private final char[] keyStorePassword;
+
     private final String keyStoreType;
+
     private final String keyStorePath;
 
     private CloseableHttpClient httpsClient;
@@ -58,9 +60,7 @@ class ZaasHttpsClientProvider implements CloseableClientProvider {
         if (configProperties.getTrustStorePath() == null) {
             throw new ZaasConfigurationException(ZaasConfigurationErrorCodes.TRUST_STORE_NOT_PROVIDED);
         }
-
         this.configProperties = configProperties;
-
         initializeTrustManagerFactory(configProperties.getTrustStorePath(), configProperties.getTrustStoreType(), configProperties.getTrustStorePassword());
         this.keyStorePath = configProperties.getKeyStorePath();
         this.keyStorePassword = configProperties.getKeyStorePassword();
@@ -68,42 +68,22 @@ class ZaasHttpsClientProvider implements CloseableClientProvider {
     }
 
     static boolean isKeyring(String input) {
-        if (input == null) return false;
-        Matcher matcher = KEYRING_PATTERN.matcher(input);
-        return matcher.matches();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     static String formatKeyringUrl(String input) {
-        if (input == null) return null;
-        Matcher matcher = KEYRING_PATTERN.matcher(input);
-        if (matcher.matches()) {
-            return matcher.group(1) + "://" + matcher.group(2) + "/" + matcher.group(3);
-        }
-        return input;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public synchronized CloseableHttpClient getHttpClient() throws ZaasConfigurationException {
-        if (httpsClient == null) {
-            if (kmf == null) {
-                initializeKeyStoreManagerFactory();
-            }
-            var hostnameVerifier = configProperties.isNonStrictVerifySslCertificatesOfServices() ?
-                new NoopHostnameVerifier() : HttpsSupport.getDefaultHostnameVerifier();
-            var sslConnectionSocketFactory = new SSLConnectionSocketFactory(getSSLContext(), hostnameVerifier);
-            var manager = PoolingHttpClientConnectionManagerBuilder.create().setSSLSocketFactory(sslConnectionSocketFactory).build();
-
-            httpsClient = createSecureHttpClient(manager).build();
-        }
-        return httpsClient;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    private void initializeTrustManagerFactory(String trustStorePath, String trustStoreType, char[] trustStorePassword)
-        throws ZaasConfigurationException {
+    private void initializeTrustManagerFactory(String trustStorePath, String trustStoreType, char[] trustStorePassword) throws ZaasConfigurationException {
         try {
             tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             KeyStore trustStore = getKeystore(trustStorePath, trustStoreType, trustStorePassword);
-
             tmf.init(trustStore);
         } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException e) {
             throw new ZaasConfigurationException(ZaasConfigurationErrorCodes.WRONG_CRYPTO_CONFIGURATION, e);
@@ -120,7 +100,6 @@ class ZaasHttpsClientProvider implements CloseableClientProvider {
             } else {
                 keyStore = getEmptyKeystore();
             }
-
             kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(keyStore, keyStorePassword);
         } catch (NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | KeyStoreException e) {
@@ -142,7 +121,6 @@ class ZaasHttpsClientProvider implements CloseableClientProvider {
     private KeyStore getEmptyKeystore() throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
         KeyStore emptyKeystore = KeyStore.getInstance(KeyStore.getDefaultType());
         emptyKeystore.load(null, null);
-
         return emptyKeystore;
     }
 
@@ -157,11 +135,7 @@ class ZaasHttpsClientProvider implements CloseableClientProvider {
     private SSLContext getSSLContext() throws ZaasConfigurationException {
         try {
             SSLContext sslContext = SSLContext.getInstance(configProperties.getProtocol());
-            sslContext.init(
-                kmf != null ? kmf.getKeyManagers() : null,
-                tmf.getTrustManagers(),
-                new SecureRandom()
-            );
+            sslContext.init(kmf != null ? kmf.getKeyManagers() : null, tmf.getTrustManagers(), new SecureRandom());
             return sslContext;
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new ZaasConfigurationException(ZaasConfigurationErrorCodes.WRONG_CRYPTO_CONFIGURATION, e);
@@ -172,16 +146,6 @@ class ZaasHttpsClientProvider implements CloseableClientProvider {
      * Create Http Configuration with defaults for maximum of connections and maximum of connections per route.
      */
     public HttpClientBuilder createSecureHttpClient(PoolingHttpClientConnectionManager connectionManager) {
-        RequestConfig requestConfig = RequestConfig.custom()
-            .setConnectionRequestTimeout(Timeout.ofMilliseconds(REQUEST_TIMEOUT))
-            .build();
-        UserTokenHandler userTokenHandler = (route, context) -> context.getAttribute("my-token");
-
-        return HttpClientBuilder.create().setUserTokenHandler(userTokenHandler).setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(connectionManager).disableCookieManagement()
-            .evictExpiredConnections()
-            .evictIdleConnections(Timeout.ofSeconds(REQUEST_TIMEOUT))
-            .disableAuthCaching();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

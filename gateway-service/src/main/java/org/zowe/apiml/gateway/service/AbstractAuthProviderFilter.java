@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.gateway.service;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.zowe.apiml.product.constants.CoreService;
 import org.zowe.apiml.security.common.error.ServiceNotAccessibleException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -30,6 +28,7 @@ public abstract class AbstractAuthProviderFilter<T> {
     protected static final RobinRoundIterator<ServiceInstance> robinRound = new RobinRoundIterator<>();
 
     protected final WebClient webClient;
+
     protected final InstanceInfoService instanceInfoService;
 
     protected abstract Mono<T> processResponse(WebClient.RequestHeadersSpec<?> rhs);
@@ -37,38 +36,18 @@ public abstract class AbstractAuthProviderFilter<T> {
     protected abstract String getEndpointPath();
 
     protected Flux<ServiceInstance> getZaasInstances() {
-        return instanceInfoService.getServiceInstances(CoreService.ZAAS.getServiceId());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    private Mono<T> requestWithHa(
-        Iterator<ServiceInstance> serviceInstanceIterator,
-        Function<ServiceInstance, WebClient.RequestHeadersSpec<?>> requestCreator
-    ) {
-        return processResponse(requestCreator.apply(serviceInstanceIterator.next()))
-            .switchIfEmpty(serviceInstanceIterator.hasNext() ?
-                requestWithHa(serviceInstanceIterator, requestCreator) : Mono.empty()
-            );
+    private Mono<T> requestWithHa(Iterator<ServiceInstance> serviceInstanceIterator, Function<ServiceInstance, WebClient.RequestHeadersSpec<?>> requestCreator) {
+        return processResponse(requestCreator.apply(serviceInstanceIterator.next())).switchIfEmpty(serviceInstanceIterator.hasNext() ? requestWithHa(serviceInstanceIterator, requestCreator) : Mono.empty());
     }
 
     public String getEndpointUrl(ServiceInstance instance) {
-        return UriComponentsBuilder.newInstance()
-            .scheme(instance.getScheme())
-            .host(instance.getHost())
-            .port(instance.getPort())
-            .path(getEndpointPath())
-            .toUriString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    protected Mono<T> invoke(
-        List<ServiceInstance> serviceInstances,
-        Function<ServiceInstance, WebClient.RequestHeadersSpec<?>> requestCreator
-    ) {
-        Iterator<ServiceInstance> i = robinRound.getIterator(serviceInstances);
-        if (!i.hasNext()) {
-            throw new ServiceNotAccessibleException("There are no instance of ZAAS available");
-        }
-
-        return requestWithHa(i, requestCreator);
+    protected Mono<T> invoke(List<ServiceInstance> serviceInstances, Function<ServiceInstance, WebClient.RequestHeadersSpec<?>> requestCreator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

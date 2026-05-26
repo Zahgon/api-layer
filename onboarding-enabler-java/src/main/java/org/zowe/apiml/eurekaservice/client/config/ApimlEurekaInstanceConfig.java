@@ -7,15 +7,12 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.eurekaservice.client.config;
 
 import com.netflix.appinfo.DataCenterInfo;
 import com.netflix.appinfo.EurekaInstanceConfig;
 import com.netflix.discovery.CommonConstants;
-
 import lombok.Data;
-
 import java.util.Map;
 
 /**
@@ -24,23 +21,41 @@ import java.util.Map;
  */
 @Data
 public class ApimlEurekaInstanceConfig implements EurekaInstanceConfig {
+
     private boolean securePortEnabled;
+
     private boolean instanceEnabledOnit = true;
+
     private boolean nonSecurePortEnabled;
+
     private DataCenterInfo dataCenterInfo = () -> DataCenterInfo.Name.MyOwn;
+
     private int leaseExpirationDurationInSeconds = 90;
+
     private int leaseRenewalIntervalInSeconds = 30;
+
     private int nonSecurePort;
+
     private int securePort;
+
     private Map<String, String> metadataMap;
+
     private String appGroupName;
+
     private String appname;
+
     private String aSGName;
+
     private String healthCheckUrl;
+
     private String healthCheckUrlPath;
+
     private String homePageUrl;
+
     private String homePageUrlPath;
+
     private String hostName;
+
     private String instanceId;
 
     /**
@@ -51,12 +66,19 @@ public class ApimlEurekaInstanceConfig implements EurekaInstanceConfig {
      * We keep the field here, because the method {@link EurekaInstanceConfig#getIpAddress()} is part of EurekaInstanceConfig interface.
      */
     private String ipAddress;
+
     private String secureHealthCheckUrl;
+
     private String secureVirtualHostName;
+
     private String statusPageUrl;
+
     private String statusPageUrlPath;
+
     private String virtualHostName;
+
     private String[] defaultAddressResolutionOrder = new String[0];
+
     private String namespace = CommonConstants.DEFAULT_CONFIG_NAMESPACE;
 
     /**
@@ -65,7 +87,7 @@ public class ApimlEurekaInstanceConfig implements EurekaInstanceConfig {
      */
     @Override
     public boolean getSecurePortEnabled() {
-        return securePortEnabled;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -75,6 +97,6 @@ public class ApimlEurekaInstanceConfig implements EurekaInstanceConfig {
      */
     @Override
     public String getHostName(boolean refresh) {
-        return hostName;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

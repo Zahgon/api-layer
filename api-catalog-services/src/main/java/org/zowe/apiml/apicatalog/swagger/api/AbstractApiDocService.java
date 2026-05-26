@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.swagger.api;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.zowe.apiml.product.gateway.GatewayClient;
 import org.zowe.apiml.product.routing.RoutedService;
 import org.zowe.apiml.product.routing.RoutedServices;
 import org.zowe.apiml.product.routing.ServiceType;
-
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,9 +26,11 @@ import java.util.Optional;
 public abstract class AbstractApiDocService<T, N> {
 
     protected final ApplicationInfo applicationInfo;
+
     protected final GatewayClient gatewayClient;
 
     protected static final String EXTERNAL_DOCUMENTATION = "External documentation";
+
     protected static final String HIDDEN_TAG = "apimlHidden";
 
     public abstract String transformApiDoc(String serviceId, ApiDocInfo apiDocInfo);
@@ -40,32 +40,11 @@ public abstract class AbstractApiDocService<T, N> {
     protected abstract void updateExternalDoc(T swaggerAPI, ApiDocInfo apiDocInfo);
 
     protected String getHostname() {
-        return gatewayClient.getGatewayConfigProperties().getHostname();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void preparePath(N path, ApiDocPath<N> apiDocPath, ApiDocInfo apiDocInfo, String basePath, String originalEndpoint, String serviceId) {
-        log.trace("Swagger Service Id: " + serviceId);
-        log.trace("Original Endpoint: " + originalEndpoint);
-        log.trace("Base Path: " + basePath);
-
-        // Retrieve route which matches endpoint
-        String endPoint = getEndPoint(basePath, originalEndpoint);
-        RoutedService route = getRoutedServiceByApiInfo(apiDocInfo, endPoint);
-        if (route == null) {
-            route = apiDocInfo.getRoutes().getBestMatchingServiceUrl(endPoint, ServiceType.API);
-        }
-
-        if (route == null) {
-            log.debug("Could not transform endpoint '{}' for service '{}'. Please check the service configuration.", endPoint, serviceId);
-        } else {
-            apiDocPath.addPrefix(route.getGatewayUrl());
-        }
-
-        Pair<String, String> endPointPairs = getEndPointPairs(endPoint, serviceId, route);
-        log.trace("Final Endpoint: " + endPointPairs.getRight());
-
-        apiDocPath.addShortPath(endPointPairs.getLeft(), path);
-        apiDocPath.addLongPath(endPointPairs.getRight(), path);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -76,12 +55,7 @@ public abstract class AbstractApiDocService<T, N> {
      * @return endpoint
      */
     protected String getEndPoint(String swaggerBasePath, String originalEndpoint) {
-        if (swaggerBasePath != null && !swaggerBasePath.equals(OpenApiUtil.SEPARATOR)) {
-            String newEndpoint = swaggerBasePath + originalEndpoint;
-            // handles case where base path ends in '/' and originalEndpoint starts with '/'
-            return newEndpoint.replace("//", "/");
-        }
-        return originalEndpoint;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -93,14 +67,7 @@ public abstract class AbstractApiDocService<T, N> {
      * @return the endpoint pairs
      */
     protected Pair<String, String> getEndPointPairs(String endPoint, String serviceId, RoutedService route) {
-        if (route == null) {
-            return Pair.of(endPoint, endPoint);
-        } else {
-            String updatedShortEndPoint = getShortEndPoint(route.getServiceUrl(), endPoint);
-            String updatedLongEndPoint = OpenApiUtil.SEPARATOR + serviceId + OpenApiUtil.SEPARATOR + route.getGatewayUrl() + updatedShortEndPoint;
-
-            return Pair.of(updatedShortEndPoint, updatedLongEndPoint);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -111,11 +78,7 @@ public abstract class AbstractApiDocService<T, N> {
      * @return short endpoint
      */
     protected String getShortEndPoint(String routeServiceUrl, String endPoint) {
-        String shortEndPoint = endPoint;
-        if (!routeServiceUrl.equals(OpenApiUtil.SEPARATOR)) {
-            shortEndPoint = shortEndPoint.replaceFirst(routeServiceUrl, "");
-        }
-        return shortEndPoint;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -124,10 +87,7 @@ public abstract class AbstractApiDocService<T, N> {
      * @return false if there is a rule with non-empty (slash or missing) gatewayUrl or serviceUrl, otherwise true
      */
     protected boolean isDefinedOnlyBypassRoutes(ApiDocInfo apiDocInfo) {
-        return Optional.ofNullable(apiDocInfo)
-            .map(ApiDocInfo::getRoutes)
-            .map(RoutedServices::isDefinedOnlyBypassRoutes)
-            .orElse(true);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -138,17 +98,6 @@ public abstract class AbstractApiDocService<T, N> {
      * @return the RoutedService
      */
     protected RoutedService getRoutedServiceByApiInfo(ApiDocInfo apiDocInfo, String endPoint) {
-        ApiInfo apiInfo = apiDocInfo.getApiInfo();
-        if (apiInfo == null) {
-            return null;
-        } else {
-            String gatewayUrl = apiInfo.getGatewayUrl();
-            RoutedService route = apiDocInfo.getRoutes().findServiceByGatewayUrl(gatewayUrl);
-            if ((route != null) && endPoint.toLowerCase().startsWith(route.getServiceUrl())) {
-                return route;
-            } else {
-                return null;
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

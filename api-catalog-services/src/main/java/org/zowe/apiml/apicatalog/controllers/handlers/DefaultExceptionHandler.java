@@ -7,7 +7,6 @@
  *
  * Copyright Contributors to the Zowe Project.
  */
-
 package org.zowe.apiml.apicatalog.controllers.handlers;
 
 import jakarta.servlet.ServletException;
@@ -22,7 +21,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.zowe.apiml.message.api.ApiMessageView;
 import org.zowe.apiml.security.common.error.AuthExceptionHandler;
 import reactor.core.publisher.Mono;
-
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
@@ -35,21 +33,6 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<ApiMessageView>> handleException(ServerWebExchange exchange, Exception exception) {
-        AtomicReference<ResponseEntity<ApiMessageView>> responseJson = new AtomicReference<>();
-        BiConsumer<ApiMessageView, HttpStatus> consumer = (message, status) ->
-            responseJson.set(ResponseEntity
-                .status(status)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(message)
-            );
-
-        try {
-            authExceptionHandler.handleException(exchange.getRequest().getPath().value(), consumer, exchange.getResponse().getHeaders()::add, exception);
-            return Mono.just(responseJson.get());
-        } catch (ServletException e) {
-            log.error("Cannot handle exception: {}", exception, e);
-            return Mono.error(() -> new RuntimeException(e));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }
